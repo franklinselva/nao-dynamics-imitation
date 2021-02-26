@@ -1,5 +1,13 @@
 # nao-dynamics-imitation
 
+## Requirements
+
+Requirements  | Version
+------------- | -------------
+Python  | 2.7 or Python3
+Cmake  | 3
+Make Generator | Unix Generator
+
 ## Installation
 
 The installation is tested on M1 Macbook Big Sur.
