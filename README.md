@@ -7,6 +7,18 @@ Requirements  | Version
 Python  | 2.7 or Python3
 Cmake  | 3
 Make Generator | Unix Generator
+Xsens | Analyse
+
+
+## Procedure
+
+
+* Install CMake, Python and Generator
+* Install NAO C++ SDK   
+* Initialize Worktree
+* Configure and Build
+* Run
+
 
 ## Installation
 
@@ -21,7 +33,6 @@ https://developer.softbankrobotics.com/nao6/naoqi-developer-guide/sdks/c-sdk/c-s
 But the python version used here is 3.7 instead of 2.7. To ensure everything is working, the installation is tested in ```virtualenv```.
 It can also be installed systemwide too.
 
-
 To initialize the worktree, please run the instruction from belo,
 
 https://developer.softbankrobotics.com/nao6/naoqi-developer-guide/creating-application/creating-new-application-outside-choregraphe-using
@@ -35,4 +46,10 @@ git clone <git repo id>
 ```
 qibuild configure
 qibuild make
+```
+
+## Run
+
+```
+./nao_dynamics_imitation_xsens --pip <ROBOTIP> --pport <ROBOTPORT>
 ```
