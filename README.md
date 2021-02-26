@@ -1,4 +1,4 @@
-# master-thesis-nao
+# nao-dynamics-imitation
 
 ## Installation
 
