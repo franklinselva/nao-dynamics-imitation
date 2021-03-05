@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 # Define the name of the reference name
 set(PROG nao_dynamics_imitation)
@@ -27,8 +27,8 @@ set(_srcs
 	xsens_imitation_v7.cpp
 	xsens_tool.cpp
 	xsens_tool.h
-	robot_v3.h
-	robot_v3.cpp
+	robot.h
+	robot.cpp
 
 	# Jacobian Files
 	Jacobian/Jacobian.h
