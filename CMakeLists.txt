@@ -16,34 +16,91 @@ set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
 find_package(qibuild)
 find_package(qimodule)
 
-
 # Make sure the generated header can be found:
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(.)
 
-include_directories(".")
+
+############################################################
+#################### BUILD LIBRARIES #######################
+############################################################
+
+#### qpOASES####
+
+set(qpOASES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/qpOASES)
+FILE(GLOB qpOASES_include ${qpOASES_PATH}/include/*.hpp ${qpOASES_PATH}/include/qpOASES/)
+FILE(GLOB qpOASES_src ${qpOASES_PATH}/src/*.cpp)
+
+# set(qpOASES_src ${qpOASES}/src/*.cpp)
+set(QPOASES_LIBRARIES ${qpOASES_PATH}/libs)
+set(QPOASES_INCLUDE_DIRS ${qpOASES_PATH}/include)
+
+add_library(qpOASES SHARED ${qpOASES_src} ${qpOASES_include})
+
+INSTALL(TARGETS qpOASES
+  LIBRARY DESTINATION ${QPOASES_LIBRARIES}
+  ARCHIVE DESTINATION ${QPOASES_LIBRARIES}
+  RUNTIME DESTINATION ${QPOASES_LIBRARIES}
+)
+
+# lib files
+INSTALL(FILES ${QPOASES_LIBRARIES}/libqpOASES.a 
+	DESTINATION lib)
+
+# headers
+INSTALL(FILES ${QPOASES_INCLUDE_DIRS}/include/qpOASES.hpp
+  DESTINATION include)
+
+INSTALL(DIRECTORY ${QPOASES_INCLUDE_DIRS}/include/qpOASES
+  DESTINATION include
+  FILES_MATCHING PATTERN "*.hpp"
+  PATTERN "*.ipp"
+  PATTERN ".svn" EXCLUDE)
+
+
+#### JACOBIAN ####
+set(JACOBIAN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/Jacobian)
+FILE(GLOB JACOBIAN_include ${JACOBIAN_PATH}/include/Jacobian.h)
+FILE(GLOB JACOBIAN_src ${JACOBIAN_PATH}/src/*.cpp)
+
+# set(qpOASES_src ${qpOASES}/src/*.cpp)
+set(JACOBIAN_LIBRARIES ${JACOBIAN_PATH}/libs)
+set(JACOBIAN_INCLUDE_DIRS ${JACOBIAN_PATH}/include)
+
+add_library(JACOBIAN SHARED ${JACOBIAN_src} ${JACOBIAN_include})
+
+INSTALL(TARGETS JACOBIAN
+  LIBRARY DESTINATION ${JACOBIAN_LIBRARIES}
+  ARCHIVE DESTINATION ${JACOBIAN_LIBRARIES}
+  RUNTIME DESTINATION ${JACOBIAN_LIBRARIES}
+)
+
+# lib files
+INSTALL(FILES ${JACOBIAN_LIBRARIES}/libJacobian.a 
+	DESTINATION lib)
+
+# headers
+INSTALL(FILES ${JACOBIAN_INCLUDE_DIRS}/include/Jacobian.h
+  DESTINATION include)
 
 # Create a list of source files
 set(_srcs
-	xsens_imitation_v7.cpp
-	xsens_tool.cpp
-	xsens_tool.h
-	robot.h
-	robot.cpp
-
-	# Jacobian Files
-	Jacobian/Jacobian.h
-	Jacobian/DGM.cpp
-	  Jacobian/DKM.cpp
-	  #Jacobian/DGM_rectified.cpp
-	  #Jacobian/DKM_rectified.cpp
-	  #Jacobian/DGM_rectified2.cpp
-	  #Jacobian/DKM_rectified2.cpp
-	Jacobian/DGM_wrt_RF.cpp
-	Jacobian/DKM_wrt_RF.cpp
+	src/xsens_imitation_v7.cpp
+	src/xsens_tool.cpp
+	src/robot.cpp
+)
+set(_include
+	include/xsens_tool.h
+	include/robot.h
 )
 
+
+############################################################
+#################### Create APPLICATION ####################
+############################################################
+
 # Create an executable
-qi_create_bin(${PROG} ${_srcs} DEPENDS QI)
+qi_create_bin(${PROG} ${_srcs} ${_include} DEPENDS QI qpOASES JACOBIAN)
 
 # Tell CMake that imitation_robot depends on ALCOMMON and
 # ALPROXIES.

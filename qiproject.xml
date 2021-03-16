@@ -6,6 +6,7 @@
   <qibuild name="nao_dynamics_xsens_imitation">
     <!-- Add your project dependencies here-->
     <depends buildtime="true" runtime="true" names="libnaoqi" />
+    <depends buildtime="true" runtime="true" names="libqpoases" />
     
  </qibuild>
 
