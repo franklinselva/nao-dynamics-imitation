@@ -5,7 +5,9 @@
 Requirements  | Version
 ------------- | -------------
 Python  | 2.7 or Python3
-Cmake  | 3
+Cmake  | 3.0
+Eigen (already imported) | 3.9.x
+qpOASES (already imported) | 3.2.0
 Make Generator | Unix Generator
 Xsens | Analyse
 
