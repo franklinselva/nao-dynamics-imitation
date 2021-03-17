@@ -6,7 +6,7 @@
     and from our DKM
  */
 
-#include "xsens_tool.h"
+#include <xsens_tool.h>
 #include <chrono>
 
 
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
         if (init_ID=="MXTP20")
         {
             /**20 bits par packet de joint_buffer**/
-            number_of_data=(n-24)/20; //Pas utilisé
+            number_of_data=(n-24)/20; //Pas utilisï¿½
             vector_joint.clear();
 
             //the vector_joint is filled in the order of joints in the xsens software
@@ -202,8 +202,8 @@ int main(int argc, char *argv[])
 
 
             //Calibration for each joint:
-            float calibration_ShoulderPitch=15; //arm in front of us xsens=calibration... and pepper=0°
-            float calibration_WristYaw=90; //when in position N xsens=80 but pepper must be at 0°
+            float calibration_ShoulderPitch=15; //arm in front of us xsens=calibration... and pepper=0ï¿½
+            float calibration_WristYaw=90; //when in position N xsens=80 but pepper must be at 0ï¿½
             float coef_shoulder=2;
 
 
@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
 
             //next 3 lines added by Nassim
             /*
-                      float pr=5.; // Only for the hands command, we want to set a specific accuracy pr in ° degrees
+                      float pr=5.; // Only for the hands command, we want to set a specific accuracy pr in ï¿½ degrees
                       angles_human[15] = -limit_interior+pr*int((angles_human[15]+limit_interior)/pr); //belong to [a;b]=[-30;40]
                       angles_human[16] = -limit_interior+pr*int((angles_human[16]+limit_interior)/pr);
               */
@@ -263,7 +263,7 @@ int main(int argc, char *argv[])
             //*******************************************************************************************************************************
             //*******************************************************************************************************************************
 
-            //calibration for the shoulder pitch so that it does not go beyond -100° which is not a natural movement
+            //calibration for the shoulder pitch so that it does not go beyond -100ï¿½ which is not a natural movement
             q_limits_min[3]=-100*DEG2RAD;
             q_limits_min[8]=-100*DEG2RAD;
 
@@ -298,7 +298,7 @@ int main(int argc, char *argv[])
             //cout<<"temps ecoule1: "<<elapsed.count()<<endl;
 
             /**32 bits par packet de joint_buffer**/
-            number_of_data=(n-24)/32; //Pas utilisé
+            number_of_data=(n-24)/32; //Pas utilisï¿½
             int torso_Rfoot_Lfoot[] = {4,18,22};
 
             ///go forward pepper
@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
 
             float min_deplacement=0.45;
             float max_deplacement=0.7;
-            //V2 on va vers où on regarde quand on avance! on met un ratio jusqu'à 0.5
+            //V2 on va vers oï¿½ on regarde quand on avance! on met un ratio jusqu'ï¿½ 0.5
 
             if (distancepied>min_deplacement)
             {

@@ -1,5 +1,5 @@
 //// Keyboard hit -- sees if a key is pressed
-#include "xsens_tool.h"
+#include <xsens_tool.h>
 
 using namespace std;
 

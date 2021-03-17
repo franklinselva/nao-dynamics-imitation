@@ -15,10 +15,12 @@ set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
 # This include enables the use of qibuild framework
 find_package(qibuild)
 find_package(qimodule)
+find_package(Qt)
 
 # Make sure the generated header can be found:
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(.)
+include_directories(include)
 
 
 ############################################################
@@ -68,17 +70,6 @@ set(JACOBIAN_INCLUDE_DIRS ${JACOBIAN_PATH}/include)
 qi_create_lib(JACOBIAN ${JACOBIAN_include} ${JACOBIAN_src})
 qi_stage_lib(JACOBIAN)
 
-# add_library(JACOBIAN SHARED ${JACOBIAN_src} ${JACOBIAN_include})
-
-# INSTALL(TARGETS JACOBIAN
-#   LIBRARY DESTINATION ${JACOBIAN_LIBRARIES}
-#   ARCHIVE DESTINATION ${JACOBIAN_LIBRARIES}
-#   RUNTIME DESTINATION ${JACOBIAN_LIBRARIES}
-# )
-
-# # headers
-# INSTALL(FILES ${JACOBIAN_INCLUDE_DIRS}/include/Jacobian.h
-#   DESTINATION include)
 
 ############################################################
 #################### Create APPLICATION ####################

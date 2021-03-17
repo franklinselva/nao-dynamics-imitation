@@ -17,7 +17,7 @@
 #include <qpOASES.hpp>
 
 /// Jacobian libraries
-#include "Jacobian/Jacobian.h>
+#include <Jacobian.h>
 
 /// Include socket
 #include <errno.h>
