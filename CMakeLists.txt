@@ -31,7 +31,6 @@ set(qpOASES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/qpOASES)
 FILE(GLOB qpOASES_include ${qpOASES_PATH}/include/*.hpp ${qpOASES_PATH}/include/qpOASES/)
 FILE(GLOB qpOASES_src ${qpOASES_PATH}/src/*.cpp)
 
-# set(qpOASES_src ${qpOASES}/src/*.cpp)
 set(QPOASES_LIBRARIES ${qpOASES_PATH}/libs)
 set(QPOASES_INCLUDE_DIRS ${qpOASES_PATH}/include)
 
@@ -63,25 +62,27 @@ set(JACOBIAN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/Jacobian)
 FILE(GLOB JACOBIAN_include ${JACOBIAN_PATH}/include/Jacobian.h)
 FILE(GLOB JACOBIAN_src ${JACOBIAN_PATH}/src/*.cpp)
 
-# set(qpOASES_src ${qpOASES}/src/*.cpp)
 set(JACOBIAN_LIBRARIES ${JACOBIAN_PATH}/libs)
 set(JACOBIAN_INCLUDE_DIRS ${JACOBIAN_PATH}/include)
 
-add_library(JACOBIAN SHARED ${JACOBIAN_src} ${JACOBIAN_include})
+qi_create_lib(JACOBIAN ${JACOBIAN_include} ${JACOBIAN_src})
+qi_stage_lib(JACOBIAN)
 
-INSTALL(TARGETS JACOBIAN
-  LIBRARY DESTINATION ${JACOBIAN_LIBRARIES}
-  ARCHIVE DESTINATION ${JACOBIAN_LIBRARIES}
-  RUNTIME DESTINATION ${JACOBIAN_LIBRARIES}
-)
+# add_library(JACOBIAN SHARED ${JACOBIAN_src} ${JACOBIAN_include})
 
-# lib files
-INSTALL(FILES ${JACOBIAN_LIBRARIES}/libJacobian.a 
-	DESTINATION lib)
+# INSTALL(TARGETS JACOBIAN
+#   LIBRARY DESTINATION ${JACOBIAN_LIBRARIES}
+#   ARCHIVE DESTINATION ${JACOBIAN_LIBRARIES}
+#   RUNTIME DESTINATION ${JACOBIAN_LIBRARIES}
+# )
 
-# headers
-INSTALL(FILES ${JACOBIAN_INCLUDE_DIRS}/include/Jacobian.h
-  DESTINATION include)
+# # headers
+# INSTALL(FILES ${JACOBIAN_INCLUDE_DIRS}/include/Jacobian.h
+#   DESTINATION include)
+
+############################################################
+#################### Create APPLICATION ####################
+############################################################
 
 # Create a list of source files
 set(_srcs
@@ -93,11 +94,6 @@ set(_include
 	include/xsens_tool.h
 	include/robot.h
 )
-
-
-############################################################
-#################### Create APPLICATION ####################
-############################################################
 
 # Create an executable
 qi_create_bin(${PROG} ${_srcs} ${_include} DEPENDS QI qpOASES JACOBIAN)
