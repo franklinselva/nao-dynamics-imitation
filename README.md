@@ -7,6 +7,7 @@ Requirements  | Version
 Python  | 2.7 or Python3
 Cmake  | 3.0
 qibuild | 3.14.1
+NAOqi C++ SDK | 2.8.5
 Eigen (already imported) | 3.9.x
 qpOASES (already imported) | 3.2.0
 Make Generator | Unix Generator
