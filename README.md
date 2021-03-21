@@ -44,12 +44,16 @@ git clone <git repo id>
 
 ## Build
 
+In WorkTree directory,
+
 ```
 qibuild configure
 qibuild make
 ```
 
 ## Run
+
+You need to be in ```bin``` folder of your ```build``` directory to run the executable that has been created.
 
 ```
 ./nao_dynamics_imitation_xsens --pip <ROBOTIP> --pport <ROBOTPORT>
