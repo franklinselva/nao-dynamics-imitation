@@ -1,6 +1,7 @@
 #include <robot.h>
 #include <stdio.h>
 
+#define BOOST_SIGNALS_NO_DEPRECATION_WARNING
 //const float DEG2RAD = M_PI/180;
 //const float RAD2DEG= 180/M_PI;
 

@@ -6,6 +6,16 @@
 
 #include "xsens_tool.h"
 
+/// Include robot softbank
+#include <qi/os.hpp>
+#include <alerror/alerror.h>
+#include <alproxies/almotionproxy.h>
+#include <alproxies/almemoryproxy.h>
+#include <alproxies/alrobotpostureproxy.h>
+#include <alproxies/altexttospeechproxy.h>
+#include <alcommon/albroker.h>
+#include <boost/shared_ptr.hpp>
+
 class robot
 {
 public:
@@ -16,7 +26,7 @@ public:
     /// DESTRUCTOR
     ~robot();
 
-    ///FUNTIONS
+    ///FUNCTIONS
 
     void connect_robot(); /// Connect the robot via a Proxy/Broker --> Done in the constructor with dynamic allocations.
 

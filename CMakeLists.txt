@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0.2)
 
 # Define the name of the reference name
 set(PROG nao_dynamics_imitation)
@@ -6,16 +6,15 @@ set(PROG nao_dynamics_imitation)
 # Define the name of the project
 project(${PROG})
 
-set(CMAKE_AUTOMOC ON)
+set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOUIC ON)
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
 
+#Compiling in Release
+set(CMAKE_BUILD_TYPE Release)
 
 # This include enables the use of qibuild framework
-find_package(qibuild)
-find_package(qimodule)
-find_package(Qt)
+find_package(qibuild REQUIRED)
 
 # Make sure the generated header can be found:
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -33,20 +32,12 @@ set(qpOASES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/qpOASES)
 FILE(GLOB qpOASES_include ${qpOASES_PATH}/include/*.hpp ${qpOASES_PATH}/include/qpOASES/)
 FILE(GLOB qpOASES_src ${qpOASES_PATH}/src/*.cpp)
 
-set(QPOASES_LIBRARIES ${qpOASES_PATH}/libs)
+# set(QPOASES_LIBRARIES ${qpOASES_PATH}/libs/libqpOASES.dylib)
 set(QPOASES_INCLUDE_DIRS ${qpOASES_PATH}/include)
 
-add_library(qpOASES SHARED ${qpOASES_src} ${qpOASES_include})
+qi_create_lib(qpOASES SHARED ${qpOASES_src} ${qpOASES_include})
+qi_stage_lib(qpOASES)
 
-INSTALL(TARGETS qpOASES
-  LIBRARY DESTINATION ${QPOASES_LIBRARIES}
-  ARCHIVE DESTINATION ${QPOASES_LIBRARIES}
-  RUNTIME DESTINATION ${QPOASES_LIBRARIES}
-)
-
-# lib files
-INSTALL(FILES ${QPOASES_LIBRARIES}/libqpOASES.a 
-	DESTINATION lib)
 
 # headers
 INSTALL(FILES ${QPOASES_INCLUDE_DIRS}/include/qpOASES.hpp
@@ -64,10 +55,9 @@ set(JACOBIAN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/Jacobian)
 FILE(GLOB JACOBIAN_include ${JACOBIAN_PATH}/include/Jacobian.h)
 FILE(GLOB JACOBIAN_src ${JACOBIAN_PATH}/src/*.cpp)
 
-set(JACOBIAN_LIBRARIES ${JACOBIAN_PATH}/libs)
 set(JACOBIAN_INCLUDE_DIRS ${JACOBIAN_PATH}/include)
 
-qi_create_lib(JACOBIAN ${JACOBIAN_include} ${JACOBIAN_src})
+qi_create_lib(JACOBIAN SHARED ${JACOBIAN_include} ${JACOBIAN_src})
 qi_stage_lib(JACOBIAN)
 
 
@@ -94,7 +84,6 @@ qi_create_bin(${PROG} ${_srcs} ${_include} DEPENDS QI qpOASES JACOBIAN)
 # This will set the libraries to link imitation_robot with,
 # the include paths, and so on
 
-# qi_use_lib(${PROG} ALCOMMON ALPROXIES BOOST )
+qi_use_lib(${PROG} ALCOMMON ALPROXIES BOOST qpOASES JACOBIAN )
 
-#Compiling in Release
-#set(CMAKE_BUILD_TYPE Release)
+

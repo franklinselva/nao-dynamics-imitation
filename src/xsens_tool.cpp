@@ -170,9 +170,9 @@ void joint_buffer::define(char buffer[],int buffer_count)
     }
 
 
-    rotation = {rotation_x,
-        rotation_y,
-        rotation_z};
+    joint_buffer::rotation.push_back(rotation_x);
+    joint_buffer::rotation.push_back(rotation_y);
+    joint_buffer::rotation.push_back(rotation_z); // = std::vector<float>{rotation_x, rotation_y, rotation_z};
 
 }
 
@@ -198,12 +198,14 @@ void euler_pose_buffer::define(char buffer[],int buffer_count)
     rotation_x = bufferToFloat(buffer[buffer_count+16],buffer[buffer_count+17],buffer[buffer_count+18],buffer[buffer_count+19]);
     rotation_y = bufferToFloat(buffer[buffer_count+20],buffer[buffer_count+21],buffer[buffer_count+22],buffer[buffer_count+23]);
     rotation_z = bufferToFloat(buffer[buffer_count+24],buffer[buffer_count+25],buffer[buffer_count+26],buffer[buffer_count+27]);
-    position = {position_x,
-                position_y,
-                position_z};
-    rotation = {rotation_x,
-                rotation_y,
-                rotation_z};
+    
+    euler_pose_buffer::position.push_back(position_x);
+    euler_pose_buffer::position.push_back(position_y);
+    euler_pose_buffer::position.push_back(position_z);
+
+    euler_pose_buffer::rotation.push_back(rotation_x);
+    euler_pose_buffer::rotation.push_back(rotation_y);
+    euler_pose_buffer::rotation.push_back(rotation_z);
 
 //    int rotation_along_x[3][3]; /// Rotation matrix from XSENS (Y-up right handed) pose to Robot's pose (Z-up right handed)
 //            rotation[0][0]=1; rotation[0][1]=0; rotation[0][2]=0;
@@ -215,27 +217,42 @@ void euler_pose_buffer::define(char buffer[],int buffer_count)
 //            rotation[1][0]=0; rotation[1][1]=0; rotation[1][2]=-1;
 //            rotation[2][0]=0; rotation[2][1]=1; rotation[2][2]=0;
 
-    std::vector<int> LArm_chain = {13,14,15};
-    std::vector<int> RArm_chain = {9,10,11};
+    int left_arm_chain[] = {13, 14, 15};
+    int right_arm_chain[] = {9, 10, 11};
+
+    std::vector<int> LArm_chain;
+    std::vector<int> RArm_chain;
+
+    LArm_chain.assign(left_arm_chain, left_arm_chain+3);
+    RArm_chain.assign(right_arm_chain, right_arm_chain+3);
 
     if(id_segment == LArm_chain[1] | id_segment == LArm_chain[2] | id_segment == LArm_chain[3])
     {
-        position = {position_x,
-                -position_z,
-                position_y};
-        rotation = {rotation_x,
-                -position_z,
-                position_y};
+        euler_pose_buffer::position.clear();
+        euler_pose_buffer::rotation.clear();
+
+        euler_pose_buffer::position.push_back(position_x);
+        euler_pose_buffer::position.push_back(-position_z);
+        euler_pose_buffer::position.push_back(position_y);
+
+        euler_pose_buffer::rotation.push_back(rotation_x);
+        euler_pose_buffer::rotation.push_back(-rotation_z);
+        euler_pose_buffer::rotation.push_back(rotation_y);
+
     }
 
     if(id_segment == LArm_chain[1] | id_segment == LArm_chain[2] | id_segment == LArm_chain[3])
     {
-        position = {position_x,
-                position_z,
-                -position_y};
-        rotation = {rotation_x,
-                position_z,
-                -position_y};
+        euler_pose_buffer::position.clear();
+        euler_pose_buffer::rotation.clear();
+
+        euler_pose_buffer::position.push_back(position_x);
+        euler_pose_buffer::position.push_back(position_z);
+        euler_pose_buffer::position.push_back(-position_y);
+
+        euler_pose_buffer::rotation.push_back(rotation_x);
+        euler_pose_buffer::rotation.push_back(rotation_z);
+        euler_pose_buffer::rotation.push_back(-rotation_y);
     }
 }
 
@@ -286,7 +303,7 @@ int init_connection_server(int port)
     sin.sin_port = htons(port);
     sin.sin_family = AF_INET;
 
-    if(bind(sock,(SOCKADDR *) &sin, sizeof sin) == SOCKET_ERROR)
+    if(::bind(sock,(SOCKADDR *) &sin, sizeof sin) == SOCKET_ERROR)
     {
         perror("bind()");
         exit(errno);

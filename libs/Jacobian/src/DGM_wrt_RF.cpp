@@ -152,7 +152,7 @@ Vector3d NAO::GetP_RHand_RF(std::vector<float> &q)
 
 }
 
-Vector3d NAO::GetP_LFoot_RF(std::vector<float> &q)
+Eigen::Vector3d NAO::GetP_LFoot_RF(std::vector<float> &q)
 {
 	/// q[8] -> LHipYawPitch
 	/// q[9] -> LHipRoll
