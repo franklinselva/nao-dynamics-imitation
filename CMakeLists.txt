@@ -6,11 +6,17 @@ set(PROG nao_dynamics_imitation)
 # Define the name of the project
 project(${PROG})
 
+include(CheckCCompilerFlag)
+include(CheckCXXCompilerFlag)
+
+set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;x86_64")
+check_c_compiler_flag("-arch x86_64" x86_64Supported)
+check_cxx_compiler_flag("-arch x86_64" x86_64Supported)
+
 set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-
-#Compiling in Release
+set(CMAKE_OSX_ARCHITECTURES x86_64)
 set(CMAKE_BUILD_TYPE Release)
 
 # This include enables the use of qibuild framework
