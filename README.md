@@ -7,7 +7,7 @@
 | Python                     | 2.7 or Python3 |
 | Cmake                      | 3.0            |
 | qibuild                    | 3.14.1         |
-| NAOqi C++ SDK              | 2.8.5          |
+| NAOqi C++ SDK              | 2.5.7          |
 | Eigen (already imported)   | 3.9.x          |
 | qpOASES (already imported) | 3.2.0          |
 | Make Generator             | Unix Generator |
@@ -60,7 +60,7 @@ qibuild make
 
 ## Run
 
-You need to be in ```bin``` folder of your ```build``` directory to run the executable that has been created.
+You need to be in `bin` folder of your `build` directory to run the executable that has been created.
 
 ```
 ./nao_dynamics_imitation_xsens --pip <ROBOTIP> --pport <ROBOTPORT>

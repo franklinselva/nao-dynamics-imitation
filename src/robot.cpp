@@ -17,7 +17,7 @@ robot::robot() : m_name(0), m_robot_IP(0), m_mode(1), m_moving(false), m_motors_
     m_posture = new AL::ALRobotPostureProxy();
     m_memory = new AL::ALMemoryProxy();
 
-    Nao = new NAO();
+    Nao = new NAO(); //Jacobian Instance Initialization
 
     m_motion->setMoveArmsEnabled(false,false);
 
@@ -1070,14 +1070,14 @@ void robot::wake_up()
     if (!m_motion->robotIsWakeUp())
         m_motion->wakeUp();
     else
-        m_posture->goToPosture("Stand",0.2);
+        m_posture->goToPosture("Stand",0.2F);
 
 }
 
 void robot::stand_zero()
 {
     /// Go to StandZero posture
-    m_posture->goToPosture("StandZero",0.2);
+    m_posture->goToPosture("StandZero",0.2F);
 }
 
 void robot::def_interpreted_robot_angle_wakeup()
@@ -1583,12 +1583,12 @@ void robot::closeFile()
     m_BalanceFile.close();
 }
 
-float robot::getData()
-{
-    float _data;
-    _data = m_memory->getData("Device/SubDeviceList/Platform/Front/Sonar/Sensor/Value");
-    return _data;
-}
+// float robot::getData()
+// {
+//     float _data;
+//     _data = m_memory->getData("Device/SubDeviceList/Platform/Front/Sonar/Sensor/Value");
+//     return _data;
+// }
 
 void robot::scale2()
 {
