@@ -18,7 +18,7 @@ check_cxx_compiler_flag("-arch x86_64" x86_64Supported)
 set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-set(CMAKE_OSX_ARCHITECTURES x86_64)
+set(CMAKE_OSX_ARCHITECTURES x86_64) # Mac Specific Variables
 set(CMAKE_BUILD_TYPE Release)
 
 # This include enables the use of qibuild framework

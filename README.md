@@ -37,7 +37,13 @@ NAO C++ SDK procedure is installed with the same procedure as of,
 
 https://developer.softbankrobotics.com/nao6/naoqi-developer-guide/sdks/c-sdk/c-sdk-installation-guide
 
-> Note: But the python version used here is 3.7 instead of 2.7. To ensure everything is working, the installation is tested in `virtualenv`. It can also be installed systemwide too.
+- The `config.cmake` of NAO SDK has to be changed to
+
+```
+set(CMAKE_CXX_FLAGS "-stdlib=libc++" CACHE INTERNAL "" FORCE)
+set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE INTERNAL "" FORCE)
+set(CMAKE_C_COMPILER /usr/bin/gcc CACHE INTERNAL "" FORCE)
+```
 
 ### 2. CMake Installation
 
@@ -55,21 +61,13 @@ Python3 should be the default python version as in the time of creating the repo
 brew install python
 ```
 
+> Note: But the python version used here is 3.7 instead of 2.7. To ensure everything is working, the installation is tested in `virtualenv`. It can also be installed systemwide too.
+
 ## Worktree Initialization
 
 To initialize the worktree, please run the instruction from belo,
 
 https://developer.softbankrobotics.com/nao6/naoqi-developer-guide/creating-application/creating-new-application-outside-choregraphe-using
-
-## Note - NAOqi C++ SDK
-
-The `config.cmake` file has to be changed to
-
-```
-set(CMAKE_CXX_FLAGS "-stdlib=libc++" CACHE INTERNAL "" FORCE)
-set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE INTERNAL "" FORCE)
-set(CMAKE_C_COMPILER /usr/bin/gcc CACHE INTERNAL "" FORCE)
-```
 
 ## Build
 
