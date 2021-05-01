@@ -9,6 +9,8 @@ project(${PROG})
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
 
+
+# NAOqi SDK is available only on Mach 64 with architecture -x86_64
 set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;x86_64")
 check_c_compiler_flag("-arch x86_64" x86_64Supported)
 check_cxx_compiler_flag("-arch x86_64" x86_64Supported)
@@ -89,6 +91,4 @@ qi_create_bin(${PROG} ${_srcs} ${_include} DEPENDS QI qpOASES JACOBIAN)
 # This will set the libraries to link imitation_robot with,
 # the include paths, and so on
 
-qi_use_lib(${PROG} ALCOMMON ALPROXIES BOOST qpOASES JACOBIAN )
-
-
+qi_use_lib(${PROG} ALCOMMON ALPROXIES BOOST QI qpOASES JACOBIAN )

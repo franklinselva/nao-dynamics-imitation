@@ -10,8 +10,6 @@ float max_rotation_deg=40;
 float speed; // Fraction of maximum speed
 float xsensport;
 
-
-
 #define BUF_SIZE 1024
 #define PORT_SONAR 1234
 #define PORT_XSENS 9763
@@ -145,7 +143,7 @@ int main(int argc, char *argv[])
 
     //connection to the xsens as a server
     SOCKET sock = init_connection_server(PORT_XSENS);
-    SOCKADDR_IN from = { 0 };
+    SOCKADDR_IN from = { 0 }; // Change the IP address of the Xsens Installed Computer (Possibly)
     unsigned int fromsize = sizeof from;
 
 
@@ -212,7 +210,7 @@ int main(int argc, char *argv[])
 
     int wait=0; //parameters that allow an alternate command of move and setAngles
 
-    std::cout << "PRESS ENTRER TO EXIT" << std::endl;
+    std::cout << "PRESS ENTER TO EXIT" << std::endl;
     while(!kbhit())
     //while(true)
     {
