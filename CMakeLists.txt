@@ -6,6 +6,11 @@ set(PROG nao_dynamics_imitation)
 # Define the name of the project
 project(${PROG})
 
+
+############################################################
+#################### FLAGS AND VARIABLES ###################
+############################################################
+
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
 
@@ -21,6 +26,12 @@ set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
 set(CMAKE_OSX_ARCHITECTURES x86_64) # Mac Specific Variables
 set(CMAKE_BUILD_TYPE Release)
 
+# VREP Simulation Specific Variables
+set(VREP_CFLAGS "-DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux")
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VREP_CFLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VREP_CFLAGS} -std=gnu++11")
+
 # This include enables the use of qibuild framework
 find_package(qibuild REQUIRED)
 
@@ -30,10 +41,32 @@ include_directories(.)
 include_directories(include)
 
 ############################################################
-#################### BUILD LIBRARIES #######################
+######################### VREP #############################
 ############################################################
 
-#### qpOASES####
+set(VREP_API_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/vrep)
+
+set(vrep_include
+	${VREP_API_PATH}/include/extApi.h
+  ${VREP_API_PATH}/include/extApiInternal.h
+  ${VREP_API_PATH}/include/extApiPlatform.h
+  ${VREP_API_PATH}/include/v_repConst.h
+  ${VREP_API_PATH}/include/vrep_driver.h
+)
+
+set(vrep_src
+	${VREP_API_PATH}/src/extApi.c
+  ${VREP_API_PATH}/src/extApiPlatform.c
+)
+
+set(VREPAPI_INCLUDE_DIRS ${VREP_API_PATH}/include)
+
+qi_create_lib(vrepAPI SHARED ${vrep_include} ${vrep_src})
+qi_stage_lib(vrepAPI)
+
+############################################################
+####################### qpOASES ############################
+############################################################
 
 set(qpOASES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/qpOASES)
 FILE(GLOB qpOASES_include ${qpOASES_PATH}/include/*.hpp ${qpOASES_PATH}/include/qpOASES/)
@@ -57,7 +90,10 @@ INSTALL(DIRECTORY ${QPOASES_INCLUDE_DIRS}/include/qpOASES
   PATTERN ".svn" EXCLUDE)
 
 
-#### JACOBIAN ####
+############################################################
+####################### JACOBIAN ###########################
+############################################################
+
 set(JACOBIAN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/Jacobian)
 FILE(GLOB JACOBIAN_include ${JACOBIAN_PATH}/include/Jacobian.h)
 FILE(GLOB JACOBIAN_src ${JACOBIAN_PATH}/src/*.cpp)
@@ -83,12 +119,11 @@ set(_include
 	include/robot.h
 )
 
-# Create an executable
+# Imitation Executable
 qi_create_bin(${PROG} ${_srcs} ${_include} DEPENDS QI qpOASES JACOBIAN)
-
-# Tell CMake that imitation_robot depends on ALCOMMON and
-# ALPROXIES.
-# This will set the libraries to link imitation_robot with,
-# the include paths, and so on
-
 qi_use_lib(${PROG} ALCOMMON ALPROXIES BOOST QI qpOASES JACOBIAN )
+
+# Simulation Test Executable
+qi_create_bin(vrep_simulation_test src/simulation_test_2.cpp DEPENDS QI vrepAPI)
+qi_use_lib(vrep_simulation_test ALPROXIES ${ALPROXIES_DEPENDS} ALVISION ${ALVISION_DEPENDS} vrepAPI)
+

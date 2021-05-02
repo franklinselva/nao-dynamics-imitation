@@ -14,10 +14,12 @@ This repository contains the implementation of Dynamic Modelling of NAO robot an
 | qpOASES (already imported) | 3.2.0          |
 | Make Generator             | Unix Generator |
 | Xsens                      | Analyse        |
+| Copellia Simulator         | 4.1.0          |
+| Choreographe Suite         | 2.1.4          |
 
 ## Procedure
 
-- Install CMake, Python and Generator
+- Install CMake, Python, Unix Generator, Copellia Simulator and Choreographe Suite
 - Install NAO C++ SDK
 - Initialize Worktree
 - Configure and Build
@@ -63,6 +65,16 @@ brew install python
 
 > Note: But the python version used here is 3.7 instead of 2.7. To ensure everything is working, the installation is tested in `virtualenv`. It can also be installed systemwide too.
 
+### 4. Copellia Simulator
+
+Install latest version or the preferred version of Copellia simulator from `https://www.coppeliarobotics.com/downloads`.
+
+### 5. Choreographe Suite
+
+In Mac, the installer is not the desirable one. So, the choreographe-suite is installed from the binary version.
+
+If there are any dynamic linker dependency errors, the additional tools listed below can come in handy.
+
 ## Worktree Initialization
 
 To initialize the worktree, please run the instruction from belo,
@@ -78,7 +90,9 @@ qibuild configure --release
 qibuild make
 ```
 
-## Run
+## Execution
+
+### Run in real-time
 
 If you are using your MAC, you need to set the `DYLD_LIBRARY_PATH` to help the executable looking for dynamic shared libraries created during build.
 
@@ -90,6 +104,49 @@ export DYLD_LIBRARY_PATH=/path/to/NAO-worktree/nao_dynamics_imitation/build-nao-
 
 You need to be in `bin` folder of your `build` directory to run the executable that has been created.
 
+To run the imitation in real robot, run
+
 ```
-./nao_dynamics_imitation_xsens --pip <ROBOTIP> --pport <ROBOTPORT>
+./nao_dynamics_imitation --pip <ROBOTIP> --pport <ROBOTPORT>
 ```
+
+### Run in Simulation
+
+To test the simulation in Vrep, follow the procedure below
+
+1. Start CopelliaSim and open the scene `NAO.ttt`.
+2. The default IP and port for CopelliaSim External API is `127.0.0.1` and `19999`.
+3. Now to start the Naoqi server, in `choreographe-suite/bin` and run
+
+```
+./naoqi-bin -p 9559 &
+```
+
+4. The default IP and port for NAOqi server and the simulation robot is `127.0.0.1` and `9559`.
+5. Now everything is setup, in `choreographe-suite`, run `./choreographe` and connect to the simulated robot.
+6. If you are using your MAC, you need to set the `DYLD_LIBRARY_PATH` to help the executable looking for dynamic shared libraries created during build.
+
+For example,
+
+```
+export DYLD_LIBRARY_PATH=/path/to/NAO-worktree/nao_dynamics_imitation/build-nao-config/sdk/lib
+```
+
+7. You need to be in `bin` folder of your `build` directory to run the executable that has been created. Finally, run to test the Copellia simulation.
+
+```
+./vrep_simulation_test
+```
+
+or run the imitation problem in simulation with
+
+```
+./nao_dynamics_imitation_sim --pip <ROBOTIP> --pport <ROBOTPORT>
+```
+
+## Some Important Tools
+
+These are some of the important tools that come in handy during the testing
+
+- install_name_tool
+- otool
