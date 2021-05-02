@@ -2,7 +2,7 @@
 
 This repository contains the implementation of Dynamic Modelling of NAO robot and imitation of the human actor wearing Xsens suit. Note that the work has been tested in NAO v5 H25 robot with Xsens Analyze on MAC OS Big Sur in M1 Macbook Pro.
 
-## Requirements
+# Requirements
 
 | Requirements               | Version        |
 | -------------------------- | -------------- |
@@ -17,15 +17,15 @@ This repository contains the implementation of Dynamic Modelling of NAO robot an
 | Copellia Simulator         | 4.1.0          |
 | Choreographe Suite         | 2.1.4          |
 
-## Procedure
+# Procedure
 
 - Install CMake, Python, Unix Generator, Copellia Simulator and Choreographe Suite
 - Install NAO C++ SDK
 - Initialize Worktree
 - Configure and Build
-- Run
+- Execute and Run
 
-## Installation
+# Installation
 
 Start by cloning the repository,
 
@@ -33,7 +33,7 @@ Start by cloning the repository,
 git clone <git repo id>
 ```
 
-### 1. NAO SDK Installation
+## 1. NAO SDK Installation
 
 NAO C++ SDK procedure is installed with the same procedure as of,
 
@@ -47,7 +47,7 @@ set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE INTERNAL "" FORCE)
 set(CMAKE_C_COMPILER /usr/bin/gcc CACHE INTERNAL "" FORCE)
 ```
 
-### 2. CMake Installation
+## 2. CMake Installation
 
 CMake and Unix Make Generator are installed using `brew` command
 
@@ -55,7 +55,7 @@ CMake and Unix Make Generator are installed using `brew` command
 brew install cmake make
 ```
 
-### 3. Python
+## 3. Python
 
 Python3 should be the default python version as in the time of creating the repository. One can also installed custom python version using `brew` as
 
@@ -65,23 +65,23 @@ brew install python
 
 > Note: But the python version used here is 3.7 instead of 2.7. To ensure everything is working, the installation is tested in `virtualenv`. It can also be installed systemwide too.
 
-### 4. Copellia Simulator
+## 4. Copellia Simulator
 
 Install latest version or the preferred version of Copellia simulator from `https://www.coppeliarobotics.com/downloads`.
 
-### 5. Choreographe Suite
+## 5. Choreographe Suite
 
 In Mac, the installer is not the desirable one. So, the choreographe-suite is installed from the binary version.
 
 If there are any dynamic linker dependency errors, the additional tools listed below can come in handy.
 
-## Worktree Initialization
+# Worktree Initialization
 
 To initialize the worktree, please run the instruction from belo,
 
 https://developer.softbankrobotics.com/nao6/naoqi-developer-guide/creating-application/creating-new-application-outside-choregraphe-using
 
-## Build
+# Build
 
 In WorkTree directory, assuming the `qibuild config` and `qitoolchain` has been properly configured, run
 
@@ -90,9 +90,9 @@ qibuild configure --release
 qibuild make
 ```
 
-## Execution
+# Execution and Run
 
-### Run in real-time
+## Run in real-time
 
 If you are using your MAC, you need to set the `DYLD_LIBRARY_PATH` to help the executable looking for dynamic shared libraries created during build.
 
@@ -110,7 +110,7 @@ To run the imitation in real robot, run
 ./nao_dynamics_imitation --pip <ROBOTIP> --pport <ROBOTPORT>
 ```
 
-### Run in Simulation
+## Run in Simulation
 
 To test the simulation in Vrep, follow the procedure below
 
@@ -144,7 +144,7 @@ or run the imitation problem in simulation with
 ./nao_dynamics_imitation_sim --pip <ROBOTIP> --pport <ROBOTPORT>
 ```
 
-## Some Important Tools
+# Some Important Tools
 
 These are some of the important tools that come in handy during the testing
 
