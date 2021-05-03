@@ -1,9 +1,6 @@
 #include <robot.h>
 #include <stdio.h>
-
-#define BOOST_SIGNALS_NO_DEPRECATION_WARNING
-//const float DEG2RAD = M_PI/180;
-//const float RAD2DEG= 180/M_PI;
+#include <vrep_sim_handler.h>
 
 float threshold_rotation_deg=15 ;   //Sets the minimum angle of the head to trigger Pepper's torso rotation
 float max_rotation_deg=40;
@@ -22,9 +19,9 @@ using namespace Eigen;
 int main(int argc, char *argv[])
 {
 
-    if(argc<5)
+    if(argc<8)
     {
-        cerr << "You must specify: Robot's name (in capital letters), Robot's IP, Robot's speed and its teleoperation mode (only for NAO, otherwise, put 0)." << endl;
+        std::cerr << "[Error] You must specify: Copellia's IP, Copellia's PORT, Robot's IP, Robot's Port, Robot's speed and its teleoperation mode (1 or 2)." << endl;
         exit(2);
     }
 
@@ -51,38 +48,31 @@ int main(int argc, char *argv[])
     sleep(1); /// Let some time for operator preparation.
 
     /// Read the arguments
-    std::string name ;
-    name = argv[1];
-    char ans;
-    int mode;
-    mode = atof(argv[4]);
+    std::string VREP_IP, ROBOT_IP;
+    int VREP_PORT, ROBOT_PORT, mode;
+    VREP_IP = argv[1];
+    VREP_PORT = atof(argv[2]);
+    ROBOT_IP = argv[3];
+    ROBOT_PORT = atof(argv[4]);
+    speed = atof(argv[5]);
+    mode = atof(argv[6]);
 
-    if(name == "NAO")
+    if(mode != 1 && mode != 2)
     {
-        std::cout<< std::endl << "Mode " << mode << " selected." << std::endl;
-        //mode = answer;
-    }
-    else
-        mode=0;
-
-    //int mode = std::stoi(ans);
-    if(name =="NAO" && mode != 1 && mode != 2)
-    {
-        cerr << "You must select mode 1 or mode 2 if you want to teleoperate NAO!" << endl;
+        cerr << "[Error] You must select mode 1 or mode 2 if you want to teleoperate NAO!" << endl;
         exit(2);
     }
 
-    std::string robot_IP ;
-    robot_IP = argv[2];
-    speed = atof(argv[3]); //fraction of speed
-
-    cout<<"connexion " << name <<endl;
-    cout<<"connexion " << robot_IP <<endl;
-
     /// New object of the robot class.
-    robot r(name, robot_IP, mode); /// Connect to "name" robot.
-    //robot r, *p_r=new robot(name, robot_IP);
-
+    VREP_HANDLER sim_handler(VREP_IP, VREP_PORT, ROBOT_IP, ROBOT_PORT);
+    robot r(ROBOT_IP, ROBOT_PORT, mode); 
+    
+    /// Check for simulator handler
+    if (not sim_handler.all_ok)
+    {
+        exit(2);
+    }
+    
     /// Establish all the instrinsics parameters of "name" robot.
     int numberDOF;
     r.def_DOF(); /// Number of degrees of Freedom
@@ -339,8 +329,8 @@ int main(int argc, char *argv[])
             LFoot_y=temp_euler.position_y;
             LFoot_z=temp_euler.position_z;
 
-//            distanceLFoot_torso = sqrt(pow(LFoot_x - torsox, 2) + pow(LFoot_y - torsoy, 2));
-//            distanceRFoot_torso = sqrt(pow(torsox - RFoot_x, 2) + pow(torsoy - RFoot_y, 2));
+            //            distanceLFoot_torso = sqrt(pow(LFoot_x - torsox, 2) + pow(LFoot_y - torsoy, 2));
+            //            distanceRFoot_torso = sqrt(pow(torsox - RFoot_x, 2) + pow(torsoy - RFoot_y, 2));
 
             //Re_Body_segments = getRelativePosition(xsens_euler);
             Abs_Body_segments = getAbsolutePosition(xsens_euler);

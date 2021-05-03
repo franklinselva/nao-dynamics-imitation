@@ -35,14 +35,14 @@ robot::~robot()
 
 }
 
-robot::robot(std::string name, std::string robot_IP, int mode) : m_name(name), m_robot_IP(robot_IP), m_mode(mode), m_moving(false), m_motors_speed(0),
+robot::robot(std::string robot_IP, int robot_port, int mode) : m_robot_IP(robot_IP), m_robot_port(robot_port), m_mode(mode), m_moving(false), m_motors_speed(0),
             m_isBalanced(false), m_velocity_x_y_theta(3,0), m_pos_CoM_wakeup(2,0), m_vel_CoM_wakeup(2,0), m_pos_CoM(2,0), m_vel_CoM(2,0), m_security_XY_CoM(4,0),
             m_q_rectified(26), m_q_balanced(26), m_pos_CoM_mean(2,0), m_q_current(26,0), m_q_desired(26,0)
 {
-    m_motion = new AL::ALMotionProxy(m_robot_IP,9559);
-    m_speech = new AL::ALTextToSpeechProxy(m_robot_IP,9559);
-    m_posture = new AL::ALRobotPostureProxy(m_robot_IP, 9559);
-    m_memory = new AL::ALMemoryProxy(m_robot_IP, 9559);
+    m_motion = new AL::ALMotionProxy(m_robot_IP,m_robot_port);
+    m_speech = new AL::ALTextToSpeechProxy(m_robot_IP,m_robot_port);
+    m_posture = new AL::ALRobotPostureProxy(m_robot_IP, m_robot_port);
+    m_memory = new AL::ALMemoryProxy(m_robot_IP, m_robot_port);
 
     Nao = new NAO();
 

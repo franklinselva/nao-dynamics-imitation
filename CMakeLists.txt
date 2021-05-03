@@ -110,13 +110,25 @@ qi_stage_lib(JACOBIAN)
 
 # Create a list of source files
 set(_srcs
-	src/xsens_imitation_v7.cpp
+	src/xsens_imitation.cpp
 	src/xsens_tool.cpp
 	src/robot.cpp
 )
 set(_include
 	include/xsens_tool.h
 	include/robot.h
+)
+
+set(_sim_srcs
+	src/xsens_imitation_sim.cpp
+	src/xsens_tool.cpp
+  src/vrep_sim_handler.cpp
+	src/robot.cpp
+)
+set(_sim_include
+	include/xsens_tool.h
+	include/robot.h
+  include/vrep_sim_handler.h
 )
 
 # Imitation Executable
@@ -127,3 +139,6 @@ qi_use_lib(${PROG} ALCOMMON ALPROXIES BOOST QI qpOASES JACOBIAN )
 qi_create_bin(vrep_simulation_test src/simulation_test_2.cpp DEPENDS QI vrepAPI)
 qi_use_lib(vrep_simulation_test ALPROXIES ${ALPROXIES_DEPENDS} ALVISION ${ALVISION_DEPENDS} vrepAPI)
 
+# Imitation Simulator Executable
+qi_create_bin(${PROG}_sim ${_sim_srcs} ${_sim_include} DEPENDS QI qpOASES JACOBIAN vrepAPI)
+qi_use_lib(${PROG}_sim ALCOMMON ALPROXIES BOOST QI qpOASES JACOBIAN vrepAPI)

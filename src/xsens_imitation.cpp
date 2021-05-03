@@ -1,18 +1,9 @@
-/*
-    CheckPEPPERmodel
+#include <robot.h>
+#include <stdio.h>
 
-    Move the robot along 3 trajectories, waist, right arm and left arm
-    Then save the position of end effectors from aldebaran frames
-    and from our DKM
- */
-
-#include <xsens_tool.h>
-#include <chrono>
-
-
-const int numberDOF = 17;   //DOF means Degrees Of Freedom
-static const float DEG2RAD = M_PI/180;
-static const float RAD2DEG= 180/M_PI;
+#define BOOST_SIGNALS_NO_DEPRECATION_WARNING
+//const float DEG2RAD = M_PI/180;
+//const float RAD2DEG= 180/M_PI;
 
 float threshold_rotation_deg=15 ;   //Sets the minimum angle of the head to trigger Pepper's torso rotation
 float max_rotation_deg=40;
@@ -23,138 +14,175 @@ float xsensport;
 #define PORT_SONAR 1234
 #define PORT_XSENS 9763
 
-
-
 using namespace std;
+using namespace Eigen;
 
 ///MAIN///
 
 int main(int argc, char *argv[])
 {
 
-    if(argc<4)
+    if(argc<5)
     {
-        cerr << "You must specify: Pepper IP, Robot's speed and Phone_IP, optionnaly you can add udp_off if you don't want to send udp messages else it will be on" << endl;
+        cerr << "You must specify: Robot's name (in capital letters), Robot's IP, Robot's speed and its teleoperation mode (only for NAO, otherwise, put 0)." << endl;
         exit(2);
     }
 
 
-    ///************************************************************************************************
-    ///------------------------------------------------------------------------------------------------
-    ///******************************************INITIALISATION****************************************
-    ///------------------------------------------------------------------------------------------------
-    ///************************************************************************************************
+    ///************************************************************************************************///
+    ///------------------------------------------------------------------------------------------------///
+    ///******************************************INITIALISATION****************************************///
+    ///------------------------------------------------------------------------------------------------///
+    ///************************************************************************************************///
 
 
-    ///************INITIALISATION PEPPER***************
+    ///*********************INITIALISATION ROBOT**************************///
 
-    // Set names for Body
-    AL::ALValue names;
-    names.arraySetSize(17);
+    std::cout << "Prepare yourself" << std::endl;
+    std::cout << "...5..." << std::endl;
+    sleep(1);
+    std::cout << "...4..." << std::endl;
+    sleep(1);
+    std::cout << "...3..." << std::endl;
+    sleep(1);
+    std::cout << "...2..." << std::endl;
+    sleep(1);
+    std::cout << "...1..." << std::endl;
+    sleep(1); /// Let some time for operator preparation.
 
-    // "RLeg" chain
-    names[0] = "KneePitch";
-    names[1] = "HipPitch";
-    names[2] = "HipRoll";
-    // "RArm" chain
-    names[3] = "RShoulderPitch";
-    names[4] = "RShoulderRoll";
-    names[5] = "RElbowYaw";
-    names[6] = "RElbowRoll";
-    names[7] = "RWristYaw";
-    // "LArm" chain
-    names[8] = "LShoulderPitch";
-    names[9] = "LShoulderRoll";
-    names[10] = "LElbowYaw";
-    names[11] = "LElbowRoll";
-    names[12] = "LWristYaw";
-    //"head" chain
-    names[13] = "HeadYaw";
-    names[14] = "HeadPitch";
-    //Hands
-    names[15] = "RHand";
-    names[16] = "LHand";
+    /// Read the arguments
+    std::string robot_IP ;
+    int robot_port, mode;
+    robot_IP = argv[1];
+    robot_port = atof(argv[2]);
+    speed = atof(argv[3]);
+    mode = atof(argv[4]);
 
-    string host ;
-    host= argv[1];
-    speed = atof(argv[2]); //fraction of speed
-
-    //connection pepper
-    /// DEPRECATED  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< A MODIFIER
-    cout<<"connexion pepper"<<endl;
-    AL::ALRobotPostureProxy posture(host, 9559);
-    AL::ALMemoryProxy memory(host, 9559);
-    AL::ALMotionProxy motion(host, 9559);
-    AL::ALTextToSpeechProxy SpeechProxy(host, 9559);
-
-    //set security distances
-    motion.setOrthogonalSecurityDistance(0.2);  //Security distance in front of Pepper 0.2 m
-    motion.setTangentialSecurityDistance(0.05); //Lateral Security distance 5 cm (allow Pepper to pass the door)
-    cout<<"orthogonal security distance: "<<motion.getOrthogonalSecurityDistance()<<endl;
-    cout<<"tangent security distance: "<<motion.getTangentialSecurityDistance()<<endl;
-
-    //enable moving arms when rolling
-    motion.setMoveArmsEnabled(false, false);
-
-    //Wake up if robot isn't
-    if (!motion.robotIsWakeUp())
-        motion.wakeUp();
-    else
-        posture.goToPosture("Stand",0.2);
-
-    // Joint values which will be sent to the robot -- again the "Body" names inconvenience
-    vector<float> angles_human(numberDOF,0);
-    AL::ALValue values;
-    values.arraySetSize(numberDOF);
-
-    // Get joint limits
-    vector<float> q_limits_max(numberDOF,0), q_limits_min(numberDOF,0); // in my model's order
-    for(int i=0; i<numberDOF; i++)
+    if(mode != 1 && mode != 2)
     {
-        AL::ALValue limits = motion.getLimits(names[i]);
-        q_limits_min[i] = limits[0][0];
-        q_limits_max[i] = limits[0][1];
+        cerr << "You must select mode 1 or mode 2 if you want to teleoperate NAO!" << endl;
+        exit(2);
     }
 
+    /// New object of the robot class.
+    robot r(robot_IP, robot_port, mode); /// Connect to "name" robot.
+    //robot r, *p_r=new robot(name, robot_IP);
 
+    /// Establish all the instrinsics parameters of "name" robot.
+    int numberDOF;
+    r.def_DOF(); /// Number of degrees of Freedom
+    numberDOF = r.getDOF();
 
-    ///**************INITILISATION SOCKET*****************
+    AL::ALValue robot_joint_names;
+    robot_joint_names.arraySetSize(numberDOF);
+    r.def_joint_names(); /// Robot's joints names
+    robot_joint_names = r.get_joint_names();
 
-    //connection to the phone as a client
-    const char* ip_phone=argv[3];
-    cout<<ip_phone<<endl;
-    SOCKADDR_IN sin = { 0 };
-    SOCKET sock_sonar=init_connection_client(ip_phone, &sin, PORT_SONAR);
+    int XSENS_segments = 23;
 
+    ///-------------------------------------------------------------------///
+    ///------------------- XSENS JOINT VECTOR NAMES ----------------------///
+    ///-------------------------------------------------------------------///
+    ///********* AL::ALValue joint_xsens_names; **************************///
+    ///********* joint_xsens_names.arraySetSize(XSENS_segments); *********///
+    ///-------------------------------------------------------------------///
+    ///------------------- "UpperBody" chain -----------------------------///
+    ///-------------------------------------------------------------------///
+    ///********* joint_xsens_names[0] = "L5S1"; **************************///
+    ///********* joint_xsens_names[1] = "L4L3"; **************************///
+    ///********* joint_xsens_names[2] = "L1T12"; *************************///
+    ///********* joint_xsens_names[3] = "T9T8"; -> Sternum ***************///
+    ///********* joint_xsens_names[4] = "T1C7"; -> Neck ******************///
+    ///********* joint_xsens_names[5] = "C1Head"; ************************///
+    ///-------------------------------------------------------------------///
+    ///------------------- "RArm" chain ----------------------------------///
+    ///-------------------------------------------------------------------///
+    ///********* joint_xsens_names[6] = "RightC7Shoulder"; ***************///
+    ///********* joint_xsens_names[7] = "RightUpperArm"; *****************///
+    ///********* joint_xsens_names[8] = "RightElbow"; ********************///
+    ///********* joint_xsens_names[9] = "RightWrist"; ********************///
+    ///-------------------------------------------------------------------///
+    ///------------------- "LArm" chain ----------------------------------///
+    ///-------------------------------------------------------------------///
+    ///********* joint_xsens_names[10] = "LeftC7Shoulder"; ***************///
+    ///********* joint_xsens_names[11] = "LeftUpperArm"; *****************///
+    ///********* joint_xsens_names[12] = "LeftElbow"; ********************///
+    ///********* joint_xsens_names[13] = "LeftWrist"; ********************///
+    ///-------------------------------------------------------------------///
+    ///------------------- "RLeg" chain ----------------------------------///
+    ///-------------------------------------------------------------------///
+    ///********* joint_xsens_names[14] = "RightHip"; *********************///
+    ///********* joint_xsens_names[15] = "RightKnee"; ********************///
+    ///********* joint_xsens_names[16] = "RightAnkle"; *******************///
+    ///********* joint_xsens_names[17] = "RightToe"; *********************///
+    ///-------------------------------------------------------------------///
+    ///------------------- "LLeg" chain ----------------------------------///
+    ///-------------------------------------------------------------------///
+    ///********* joint_xsens_names[18] = "LeftHip"; **********************///
+    ///********* joint_xsens_names[19] = "LeftKnee"; *********************///
+    ///********* joint_xsens_names[20] = "LeftAnkle"; ********************///
+    ///********* joint_xsens_names[21] = "LeftToe"; **********************///
+    ///-------------------------------------------------------------------///
+
+    ///*********************INITILISATION SOCKET**************************///
 
     //connection to the xsens as a server
     SOCKET sock = init_connection_server(PORT_XSENS);
-    SOCKADDR_IN from = { 0 };
+    SOCKADDR_IN from = { 0 }; // Change the IP address of the Xsens Installed Computer (Possibly)
     unsigned int fromsize = sizeof from;
 
 
-    //Initialisation of variables
+    ///*********************INITILISATION VARIABLES**************************///
+
     char init_buffer[24];
-    int number_of_data, buffer_count;
-    vector<joint_buffer> vector_joint;
-    vector<euler_buffer> vector_euler;
+    string init_ID;
+    int buffer_count;
+    vector<joint_buffer> xsens_joint;
+    vector<euler_buffer> xsens_euler;
+    vector<joint_buffer> xsens_joint_Npose;
     joint_buffer temp_joint;
     euler_buffer temp_euler;
     bool first=true;
-    float current_orientation, distancepied;
-    float qw, qx, qy, qz;
-    float movex,movetheta,movey,previous_theta,previous_x(0);
-    bool moving=false;
-    char buffer[10000]; //buffer for the
+    bool first_time = true;
+    char buffer[10000]; //buffer to stock the packages of XSENS
     int n=0;
 
+    float FeetDistance ;
+    float distanceRFoot_torso;
+    float distanceLFoot_torso;
 
-    //def of chrono
+    float rotation_tete;
+
+    Eigen::MatrixXd Re_Body_segments(4,23);
+    Eigen::MatrixXd Abs_Body_segments(4,23);
+
+    Eigen::Vector3d LFoot;
+    Eigen::Vector3d RFoot;
+
+    vector<float> joint_limits_max(numberDOF,0), joint_limits_min(numberDOF,0);
+
+    /// Definition of chrono
     auto start_chrono_terminal = std::chrono::steady_clock::now( );
     auto elapsed_chrono_terminal = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start_chrono_terminal );
     auto start_chrono_sonar = std::chrono::steady_clock::now( );
     auto elapsed_chrono_sonar = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start_chrono_terminal );
 
+    /// Set security distances
+    r.set_security_distances();
+
+    /// Set robot's motor speed
+    r.set_speed(speed);
+
+    /// Wake up (if not)
+    r.wake_up();
+
+    /// Definition of the Npose of robot (or WAKE UP pose)
+    r.def_interpreted_robot_angle_wakeup();
+    std::vector<float> interpreted_robot_angle_wakeup(numberDOF,0);
+    interpreted_robot_angle_wakeup = r.get_interpreted_robot_angle_wakeup();
+
+    /// Get joint limits
+    r.def_joint_limits(joint_limits_max,joint_limits_min);
 
 
     ///************************************************************************************************
@@ -164,218 +192,169 @@ int main(int argc, char *argv[])
     ///************************************************************************************************
 
 
+
     int wait=0; //parameters that allow an alternate command of move and setAngles
 
+    std::cout << "PRESS ENTER TO EXIT" << std::endl;
     while(!kbhit())
+    //while(true)
     {
         auto start = std::chrono::steady_clock::now( );
 
+        /// RECEIVING THE BUFFERS FROM XSENS PORT.
         if((n = recvfrom(sock, buffer, sizeof buffer - 1, 0, (SOCKADDR *)&from, &fromsize)) < 0)
         {
             perror("recvfrom()");
             exit(errno);
         }
-        std::cout<<"msg received"<<std::endl;
         buffer[n] = '\0';
 
-        /**24 bits d'initialisation**/
-        for (int i=0; i<24; i++)
+        /// 24 bits package --> INITIALIZATION
+        for (int i=0; i<6; i++)
+        {
             init_buffer[i]=buffer[i];
-        string init_ID;
+        }
         init_ID = init_buffer;
         buffer_count=24;//current byte
 
+        /// ************MXTP20 is a message with: *****************///
+        /// *******************************************************///
+        /// Information about each joint is sent as follows. ***** ///
+        /// 4 bytes point ID of parent segment connection. ********///
+        /// 4 bytes point ID of child segment connection. *********///
+        /// 4 bytes floating point rotation around segment x�axis. ///
+        /// 4 bytes floating point rotation around segment y�axis. ///
+        /// 4 bytes floating point rotation around segment z�axis. ///
+        /// *******************************************************///
+
         if (init_ID=="MXTP20")
         {
-            /**20 bits par packet de joint_buffer**/
-            number_of_data=(n-24)/20; //Pas utilis�
-            vector_joint.clear();
+            std::cout << "MXTP20" << std::endl;
 
-            //the vector_joint is filled in the order of joints in the xsens software
+            /// 20 bits package --> obtain xsens_vector filled with all joint rotations
+            xsens_joint.clear();
+
+            /// The xsens_joint is filled in the order of joints in the xsens software
             while(buffer_count<n)
             {
                 temp_joint.define(buffer,buffer_count);
-                vector_joint.push_back(temp_joint);
+                xsens_joint.push_back(temp_joint);
                 buffer_count+=20;
             }
 
-
-
-            //Calibration for each joint:
-            float calibration_ShoulderPitch=15; //arm in front of us xsens=calibration... and pepper=0�
-            float calibration_WristYaw=90; //when in position N xsens=80 but pepper must be at 0�
-            float coef_shoulder=2;
-
-
-            /// get humanAngles from vector_joint in degree
-
-
-            ///RIGHT
-            angles_human[0] 	= 0;//vector_joint[15]+vector_joint[19];	// LKneePitch
-            //On somme les mouvements de chaque vertebre de xsens
-            ///!!!!!!!!!!!!!!!!!!!!!!!!!!
-            angles_human[1]		= -vector_joint[0].rotation_z-vector_joint[1].rotation_z-vector_joint[2].rotation_z-vector_joint[3].rotation_z-vector_joint[14].rotation_z/2-vector_joint[18].rotation_z/2;	// LHipPitch
-            angles_human[2]		= -vector_joint[0].rotation_x-vector_joint[1].rotation_x-vector_joint[2].rotation_x-vector_joint[3].rotation_x;//+(vector_joint[14].rotation_x-vector_joint[18].rotation_x)/2	// LHipRoll
-
-            angles_human[3]		= 90-vector_joint[7].rotation_z-vector_joint[6].rotation_x-calibration_ShoulderPitch;	// RShoulderPitch
-            if (angles_human[3]<0)
-                angles_human[3]=angles_human[3]*coef_shoulder;
-
-            angles_human[4]		= -1*vector_joint[7].rotation_x+5;	// RShoulderRoll *********** before, it was just -1*
-
-            angles_human[5]      = vector_joint[8].rotation_x+60;	// RElbowYaw *********** before, it was +60
-            angles_human[6]      = vector_joint[8].rotation_z;	// RElbowRoll
-            angles_human[7]      = calibration_WristYaw-vector_joint[8].rotation_y;	// RWristYaw *********** before, it was 120- (make hand touch torso)
-
-
-            ///LEFT
-            angles_human[8]		= 90-vector_joint[11].rotation_z-vector_joint[10].rotation_x-calibration_ShoulderPitch;	// LShoulderPitch
-            if (angles_human[8]<0)
-                angles_human[8]=angles_human[8]*coef_shoulder;
-
-            angles_human[9]		= vector_joint[11].rotation_x-5;	// LShoulderRoll
-
-            angles_human[10]     = -vector_joint[12].rotation_x-60;	// LElbowYaw
-            angles_human[11]     = -vector_joint[12].rotation_z;	// LElbowRoll
-            angles_human[12]     = vector_joint[12].rotation_y-calibration_WristYaw;	// LWristYaw *********** before,
-            angles_human[13]     = vector_joint[5].rotation_y;	// HeadYaw
-            angles_human[14]     = vector_joint[5].rotation_z;	// HeadPitch
-
-
-            //next 3 lines added by Nassim
-            /*
-                      float pr=5.; // Only for the hands command, we want to set a specific accuracy pr in � degrees
-                      angles_human[15] = -limit_interior+pr*int((angles_human[15]+limit_interior)/pr); //belong to [a;b]=[-30;40]
-                      angles_human[16] = -limit_interior+pr*int((angles_human[16]+limit_interior)/pr);
-              */
-
-            ///HANDS
-            int limit_exterior=40;  //limit_exterior and limit_interior are the Xsens angle range for the Hands caption so L and RHand
-            int limit_interior=30;
-            angles_human[15]    = 1-(vector_joint[9].rotation_z+limit_exterior)/(limit_exterior+limit_interior);   //RHand --> angles roughly between -40 and 100 and we want a ratio so we divide by 140
-            angles_human[16]    = 1-(vector_joint[13].rotation_z+limit_exterior)/(limit_exterior+limit_interior);   //LHand
-
-
-
-            //*******************************************************************************************************************************
-            //*******************************************************************************************************************************
-            //**********************************************       TEST        **************************************************************
-            //*******************************************************************************************************************************
-            //*******************************************************************************************************************************
-
-            //calibration for the shoulder pitch so that it does not go beyond -100� which is not a natural movement
-            q_limits_min[3]=-100*DEG2RAD;
-            q_limits_min[8]=-100*DEG2RAD;
-
-            for (int i = 0; i<15; i++)
+            if(first_time)
             {
-                angles_human[i]=round(angles_human[i]*5)/5*DEG2RAD; //we give a precision of 0.5 degrees*********************************
-                if (angles_human[i]>q_limits_max[i])
-                    angles_human[i] = q_limits_max[i];
-                if (angles_human[i]<q_limits_min[i])
-                    angles_human[i] = q_limits_min[i];
-                //put q_human data into an al::value element to be sent to the robot
-                values[i]=angles_human[i];
+                xsens_joint_Npose.clear();
+                xsens_joint_Npose = xsens_joint;
+
+                /// Define the wake up pose (XSENS joints) for the calibration.
+                r.def_interpreted_robot_angle_wakeup_from_xsens_joints(xsens_joint_Npose);
+
+                first_time = false;
             }
 
 
+            /// Transform the XSENS joint vector into a interpreted robot set of angles.
+            r.def_interpreted_robot_angle_from_xsens_joints(xsens_joint);
 
-            for (int i = 15; i<numberDOF; i++)  //we must not multiply the hands by DEG2RAD as it is already a ratio
-            {
-                angles_human[i]=round(angles_human[i]*20)/20; //we give a precision of 0.05*********************************************
-                if (angles_human[i]>q_limits_max[i])
-                    angles_human[i] = q_limits_max[i];
-                if (angles_human[i]<q_limits_min[i])
-                    angles_human[i] = q_limits_min[i];
-                    //put q_human data into an al::value element to be sent to the robot
-                values[i]=angles_human[i];
-            }
+            /// CHECK ANGLES IN LIMITS RANGE AND GET THE NEW ROBOT JOINT CONFIGURATION
+            r.check_joint_limits();
+
+            //r.scale2();
+
+            rotation_tete = xsens_joint[5].rotation_z - xsens_joint_Npose[5].rotation_z;
+
         }
 
-        if (init_ID=="MXTP02")
+        /// ******************MXTP02 is a message with: ************************///
+        /// ********************************************************************///
+        /// Information about each segment is sent as follows. *****************///
+        /// 4 bytes segment ID See 2.5.9 ***************************************///
+        /// 4 bytes x�coordinate of segment position ***************************///
+        /// 4 bytes y�coordinate of segment position ***************************///
+        /// 4 bytes z�coordinate of segment position ***************************///
+        /// 4 bytes q1 rotation � segment rotation quaternion component 1 (re). ///
+        /// 4 bytes q2 rotation � segment rotation quaternion component 1 (i). *///
+        /// 4 bytes q3 rotation � segment rotation quaternion component 1 (j). *///
+        /// 4 bytes q4 rotation � segment rotation quaternion component 1 (k). *///
+        /// ********************************************************************///
+
+        if (init_ID=="MXTP02" && !first)
         {
+            std::cout << "MXTP02" << std::endl;
+
             auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
-            //cout<<"temps ecoule1: "<<elapsed.count()<<endl;
 
-            /**32 bits par packet de joint_buffer**/
-            number_of_data=(n-24)/32; //Pas utilis�
-            int torso_Rfoot_Lfoot[] = {4,18,22};
+            /// 32 bits package --> obtain the absolute XYZ position coordinate.
+            int torso_RHand_LHand_Rfoot_Lfoot[] = {4,10,14,17,21}; /// In the XSENS's model
 
-            ///go forward pepper
-            buffer_count=24+torso_Rfoot_Lfoot[1]*32;
+            xsens_euler.clear();
+
+            while(buffer_count<n)
+            {
+                temp_euler.define(buffer,buffer_count);
+                xsens_euler.push_back(temp_euler);
+                buffer_count+=32;
+            }
+
+            if(first_time)
+            {
+                Eigen::MatrixXd Ab_Body_segments = getAbsolutePosition(xsens_euler);
+
+            }
+
+            buffer_count=24+torso_RHand_LHand_Rfoot_Lfoot[0]*32;
             temp_euler.define(buffer,buffer_count);
-            float piedRx, piedRy;
-            piedRx=temp_euler.position_x;
-            piedRy=temp_euler.position_y;
+            float torsox, torsoy, torsoz, r_torsox, r_torsoy, r_torsoz;
+            torsox=temp_euler.position_x;
+            torsoy=temp_euler.position_y;
+            torsoz=temp_euler.position_z;
 
-            buffer_count=24+torso_Rfoot_Lfoot[2]*32;
+            buffer_count=24+torso_RHand_LHand_Rfoot_Lfoot[3]*32;
             temp_euler.define(buffer,buffer_count);
-            float piedLx, piedLy;
-            piedLx=temp_euler.position_x;
-            piedLy=temp_euler.position_y;
+            float RFoot_x, RFoot_y, RFoot_z;
+            RFoot_x=temp_euler.position_x;
+            RFoot_y=temp_euler.position_y;
+            RFoot_z=temp_euler.position_z;
 
-            distancepied=sqrt(pow(piedRx-piedLx,2)+pow(piedRy-piedLy,2));
-            //cout<<"DISTANCE PIED: "<<distancepied<<endl;
+            buffer_count=24+torso_RHand_LHand_Rfoot_Lfoot[4]*32;
+            temp_euler.define(buffer,buffer_count);
+            float LFoot_x, LFoot_y, LFoot_z;
+            LFoot_x=temp_euler.position_x;
+            LFoot_y=temp_euler.position_y;
+            LFoot_z=temp_euler.position_z;
+
+//            distanceLFoot_torso = sqrt(pow(LFoot_x - torsox, 2) + pow(LFoot_y - torsoy, 2));
+//            distanceRFoot_torso = sqrt(pow(torsox - RFoot_x, 2) + pow(torsoy - RFoot_y, 2));
+
+            //Re_Body_segments = getRelativePosition(xsens_euler);
+            Abs_Body_segments = getAbsolutePosition(xsens_euler);
+
+            RFoot = Abs_Body_segments.block<3,1>(0,17);
+            LFoot = Abs_Body_segments.block<3,1>(0,21);
+
+            r.def_FeetHeight(RFoot_z,LFoot_z);
+
+            distanceLFoot_torso = sqrt(pow(LFoot[0], 2) + pow(LFoot[1], 2));
+            distanceRFoot_torso = sqrt(pow(RFoot[0], 2) + pow(RFoot[1], 2));
+            FeetDistance = sqrt(pow(RFoot[0]-LFoot[0], 2) + pow(LFoot[1]-RFoot[1], 2));
+
+            std::cout << "FeetDistance: " << FeetDistance << std::endl;
+            std::cout << "rotation_tete: " << rotation_tete << std::endl;
 
         }
 
-
-        ///*************************************************
-        ///*************MOVEMENT****************************
-        ///*************************************************
+        ///*************************************************///
+        ///******************MOVEMENT***********************///
+        ///*************************************************///
         if (!first)
         {
-            ///On fait avancer le robot
-            movetheta=0;
-            movex=0;
-
-            float min_deplacement=0.45;
-            float max_deplacement=0.7;
-            //V2 on va vers o� on regarde quand on avance! on met un ratio jusqu'� 0.5
-
-            if (distancepied>min_deplacement)
-            {
-                movex=0.1+round(((distancepied-min_deplacement)/max_deplacement)*min_deplacement*100)/100; //max velocity =0.55 m/s
-                movetheta=round(angles_human[13]*100/(50*DEG2RAD))/100; //precision ratio 0.01 radian ,we devide by 50 deg because its roughly the furthest angle we can achieve with our neck
-                motion.move(movex,0,movetheta);
-                cout<<"ON AVANCE!!!!!!"<<" is moving? "<<motion.moveIsActive()<<" movex= "<<movex<<" movetheta= "<<movetheta<<endl;
-                moving=true;
-            }
-
-            else if (abs(vector_joint[5].rotation_y)>threshold_rotation_deg)
-            {
-                if (vector_joint[5].rotation_y>0)
-                    movetheta=0.2+((vector_joint[5].rotation_y-threshold_rotation_deg)/(max_rotation_deg-threshold_rotation_deg))*1;
-                //motion.move(0,0,0.5);
-                else
-                    movetheta=-0.2+((vector_joint[5].rotation_y+threshold_rotation_deg)/(max_rotation_deg-threshold_rotation_deg))*1;
-                cout<<"movetheta "<< movetheta<<endl;
-                motion.move(0,0,movetheta);
-                cout<<"ON TOURNE!!!!!!"<<" is moving? "<<motion.moveIsActive()<<" movetheta = "<<movetheta<<endl;
-                moving=true;
-            }
-
-            if(abs(vector_joint[5].rotation_y)<threshold_rotation_deg && distancepied<0.45 && moving==true)
-            {
-                movetheta=0;
-                movex=0;
-                motion.move(movex,0,movetheta);
-                cout<<"ON ARRETE TOUT!!!!"<<endl;
-                moving=false;
-            }
-
-            ///On positione les membres
-            // Send results to the robot
-            // angleInterpolationWithSpeed is a blocking call. setAngles Is not
-            motion.setAngles(names, values, speed);
-
-
-
-
+            /// Begin imitation of Body joints
+            cout << "\033[1;34mImitating \033[0m" << endl;
+            r.imitation_bis(FeetDistance, distanceRFoot_torso, distanceLFoot_torso,rotation_tete);
         }
 
         first=false;
-
 
         ///REFRESH TERMINAL DATA
         elapsed_chrono_terminal = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start_chrono_terminal );
@@ -386,46 +365,24 @@ int main(int argc, char *argv[])
             start_chrono_terminal=std::chrono::steady_clock::now( );
         }
 
-        if (argc==4)
-        {
-            ///SEND SONAR DISTANCE TO PHONE
-            elapsed_chrono_sonar = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start_chrono_sonar );
-            if (elapsed_chrono_sonar.count()>20)
-            {
-                data= memory.getData("Device/SubDeviceList/Platform/Front/Sonar/Sensor/Value");
-                char data_cstr[16];
-                sprintf(data_cstr,"%.2f",data);
-                //We send the sonar data to the phone!
-                write_server(sock_sonar, &sin, data_cstr);
-                start_chrono_sonar=std::chrono::steady_clock::now( );
-            }
-        }
-        else
-        {
-            if(strcmp(argv[4],"udp_off")!=0)
-            {
+    } /// end of while() loop.
 
-                ///SEND SONAR DISTANCE TO PHONE
-                elapsed_chrono_sonar = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start_chrono_sonar );
-                if (elapsed_chrono_sonar.count()>20)
-                {
-                    data= memory.getData("Device/SubDeviceList/Platform/Front/Sonar/Sensor/Value");
-                    char data_cstr[16];
-                    sprintf(data_cstr,"%.2f",data);
-                    //We send the sonar data to the phone!
-                    write_server(sock_sonar, &sin, data_cstr);
-                    start_chrono_sonar=std::chrono::steady_clock::now( );
-                }
-
-            }
-        }
+    std::cout << " " << std::endl;
+    std::cout << "------------------------------------" << std::endl;
+    std::cout << "Stoping imitation..." << std::endl;
+    std::cout << "Reaching N-pose..." << std::endl;
+    r.wake_up();
+    std::cout << "N-pose." << endl;
+    std::cout << "Can I go to sleep? (y/n) ";
+    char answer;
+    std::cin >> answer;
+    if(answer == 'y')
+    {
+        std::cout<< std::endl << "Going to sleep..." << std::endl;
+        r.go_to_sleep();
     }
-
-    motion.stopMove();
-    SpeechProxy.say("J'ai fini!");
-    posture.goToPosture("Stand",0.2);
-
     std::cerr << "Motion imitation terminated." << std::endl;
+    r.closeFile();
     closesocket(sock);
     return 0;
 

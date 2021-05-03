@@ -21,7 +21,7 @@ class robot
 public:
     /// CONSTRUCTOR
     robot();
-    robot(std::string name, std::string robot_IP, int mode);
+    robot(std::string robot_IP, int robot_port, int mode);
 
     /// DESTRUCTOR
     ~robot();
@@ -132,8 +132,9 @@ private:
 
     std::vector<joint_buffer> m_xsens_joint_Npose;
 
-    std::string m_name;
+    std::string m_name = "NAO";
     std::string m_robot_IP;
+    int m_robot_port;
     int m_numberDOF;
     std::vector<float> m_interpreted_robot_angle;
     std::vector<float> m_joint_limits_max;
