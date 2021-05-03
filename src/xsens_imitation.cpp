@@ -21,12 +21,12 @@ using namespace Eigen;
 
 int main(int argc, char *argv[])
 {
-
     if(argc<5)
     {
         cerr << "You must specify: Robot's name (in capital letters), Robot's IP, Robot's speed and its teleoperation mode (only for NAO, otherwise, put 0)." << endl;
         exit(2);
     }
+
 
 
     ///************************************************************************************************///
