@@ -20,6 +20,41 @@ dPARAM::~dPARAM()
 {
 }
 
+float dPARAM::getTotalMass() const
+{
+    return TotalMass;
+}
+
+std::vector<float> dPARAM::getMass() const
+{
+    return Mass;
+}
+
+std::vector<Eigen::Vector3d> dPARAM::getCoM() const
+{
+    return CentreOfMass;
+}
+
+std::vector<Eigen::Matrix3f> dPARAM::getInertia() const
+{
+    return InertiaMatrix;
+}
+
+float dPARAM::getMass(uint segment) const
+{
+    return Mass[segment];
+}
+
+Eigen::Vector3d dPARAM::getCoM(uint segment) const
+{
+    return CentreOfMass[segment];
+}
+
+Eigen::Matrix3f dPARAM::getInertia(uint segment) const
+{
+    return InertiaMatrix[segment];
+}
+
 void dPARAM::defMass()
 {
     TotalMass = 5.305350006;
