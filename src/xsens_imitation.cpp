@@ -1,5 +1,6 @@
 #include <robot.h>
 #include <stdio.h>
+#include <balance_control.h>
 
 #define BOOST_SIGNALS_NO_DEPRECATION_WARNING
 //const float DEG2RAD = M_PI/180;
@@ -12,7 +13,7 @@ float xsensport;
 
 #define BUF_SIZE 1024
 #define PORT_SONAR 1234
-#define PORT_XSENS 9763
+#define PORT_XSENS 9764
 
 using namespace std;
 using namespace Eigen;
@@ -21,13 +22,17 @@ using namespace Eigen;
 
 int main(int argc, char *argv[])
 {
-    if(argc<5)
+    if(argc<7)
     {
-        cerr << "You must specify: Robot's name (in capital letters), Robot's IP, Robot's speed and its teleoperation mode (only for NAO, otherwise, put 0)." << endl;
+        std::cout << "[Error] You must specify: \n"
+                << "Xsens IP, \n"
+                << "Xsens port, \n"
+                << "Robot's IP, \n"
+                << "Robot's Port, \n"
+                << "Robot's speed, \n"
+                << "Teleoperation mode (1 or 2 for NAO, 0 otherwise)." << endl;
         exit(2);
     }
-
-
 
     ///************************************************************************************************///
     ///------------------------------------------------------------------------------------------------///
@@ -51,12 +56,14 @@ int main(int argc, char *argv[])
     sleep(1); /// Let some time for operator preparation.
 
     /// Read the arguments
-    std::string robot_IP ;
-    int robot_port, mode;
-    robot_IP = argv[1];
-    robot_port = atof(argv[2]);
-    speed = atof(argv[3]);
-    mode = atof(argv[4]);
+    std::string robot_IP, xsens_IP ;
+    int xsens_port, robot_port, mode;
+    xsens_IP = argv[1];
+    xsens_port = atof(argv[2]);
+    robot_IP = argv[3];
+    robot_port = atof(argv[4]);
+    speed = atof(argv[5]);
+    mode = atof(argv[6]);
 
     if(mode != 1 && mode != 2)
     {
@@ -66,6 +73,7 @@ int main(int argc, char *argv[])
 
     /// New object of the robot class.
     robot r(robot_IP, robot_port, mode); /// Connect to "name" robot.
+    balanceControl bControl;
     //robot r, *p_r=new robot(name, robot_IP);
 
     /// Establish all the instrinsics parameters of "name" robot.
@@ -127,7 +135,7 @@ int main(int argc, char *argv[])
     ///*********************INITILISATION SOCKET**************************///
 
     //connection to the xsens as a server
-    SOCKET sock = init_connection_server(PORT_XSENS);
+    SOCKET sock = init_connection_server(xsens_IP, xsens_port);
     SOCKADDR_IN from = { 0 }; // Change the IP address of the Xsens Installed Computer (Possibly)
     unsigned int fromsize = sizeof from;
 
@@ -351,7 +359,7 @@ int main(int argc, char *argv[])
         {
             /// Begin imitation of Body joints
             cout << "\033[1;34mImitating \033[0m" << endl;
-            r.imitation_bis(FeetDistance, distanceRFoot_torso, distanceLFoot_torso,rotation_tete);
+            bControl.imitation_bis(FeetDistance, distanceRFoot_torso, distanceLFoot_torso,rotation_tete);
         }
 
         first=false;

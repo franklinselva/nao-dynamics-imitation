@@ -1,10 +1,11 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
+
 /// Jacobian libraries
 #include <Jacobian.h>
-
 #include "xsens_tool.h"
+
 
 /// Include robot softbank
 #include <qi/os.hpp>
@@ -88,13 +89,7 @@ public:
 
     void interprete_velocity(); ///Check velocity and moove if (movex!=0)or(movetheta!=0) go to stand if both are null and m_moving is true.
 
-    void check_balance_and_move(); ///Check if the robot is balanced then proceed to moove without falling
-
-    void imitation_bis(float feetdistance, float distancepiedR, float distancepiedL, float angletete);
-
     /// Return true if the next robot's configuration is balanced
-    void balance();
-    void not_balanced();
     void def_CoM_limits();
     void def_FeetHeight(float RFoot_z, float LFoot_z);
     void GetCoM();
@@ -103,8 +98,6 @@ public:
     void scale(Eigen::MatrixXd Body_segments);
     void scale2();
 
-    /// Double Support
-    void DS();
 
     /// HQP
     Eigen::VectorXd HQP_solver(Eigen::MatrixXd J, Eigen::VectorXd dx, Eigen::VectorXd q_c);
@@ -115,9 +108,7 @@ public:
     float getData();
     void terminate();
 
-private:
-
-    ///Parameters
+protected:
 
     //MATH
     const float DEG2RAD = M_PI/180;
@@ -130,30 +121,29 @@ private:
     const float ROBOT_COM_THRESHOLD_X = 50; /// MAYBE plus or minus 50 (mm) // 37.5
     const float ROBOT_COM_THRESHOLD_Y = 75;
 
-    std::vector<joint_buffer> m_xsens_joint_Npose;
-
-    std::string m_name = "NAO";
-    std::string m_robot_IP;
-    int m_robot_port;
     int m_numberDOF;
-    std::vector<float> m_interpreted_robot_angle;
-    std::vector<float> m_joint_limits_max;
-    std::vector<float> m_joint_limits_min;
-    std::vector<float> m_interpreted_robot_angle_wakeup;
-    std::vector<float> m_velocity_x_y_theta;
-    bool m_moving;
-    Eigen::Vector2d m_FeetHeight;
 
-    int m_mode;
+    ///connect to SOFTBANK ROBOTICS robots.
+    AL::ALMotionProxy *m_motion;
+    AL::ALTextToSpeechProxy *m_speech;
+    AL::ALRobotPostureProxy *m_posture;
+    AL::ALMemoryProxy *m_memory;
 
-    /// End effectors
-    Eigen::Vector3d m_RHand_d;
-    Eigen::Vector3d m_LHand_d;
-    Eigen::Vector3d m_RFoot_d;
-    Eigen::Vector3d m_LFoot_d;
+    std::ofstream m_BalanceFile;
 
-    /// Is the robot imitating?
-    bool m_imitate;
+    Eigen::MatrixXd m_JacobianEndEff;
+    Eigen::MatrixXd m_JacobianXY_CoM;
+    Eigen::MatrixXd m_JacobianXY_CoM_RF;
+    Eigen::VectorXd m_X_current;
+    Eigen::VectorXd m_X_desired;
+    Eigen::Vector2d m_XY_CoM_current;
+    Eigen::Vector2d m_XY_CoM_desired;
+    Eigen::VectorXd m_X_Npose;
+    Eigen::Vector2d m_X_CoM_Npose;
+
+    Eigen::VectorXd m_q_rectified;
+    Eigen::VectorXd m_q_balanced;
+    Eigen::MatrixXd m_q_results_byStepsFinal;
 
     /// Keep track of the Center of Mass position. EQUILIBRUM
     bool m_isBalanced;
@@ -173,34 +163,42 @@ private:
 
     float m_motors_speed;
 
-    ///connect to SOFTBANK ROBOTICS robots.
-    AL::ALMotionProxy *m_motion;
-    AL::ALTextToSpeechProxy *m_speech;
-    AL::ALRobotPostureProxy *m_posture;
-    AL::ALMemoryProxy *m_memory;
+    std::vector<float> m_interpreted_robot_angle;
+    std::vector<float> m_joint_limits_max;
+    std::vector<float> m_joint_limits_min;
+    std::vector<float> m_interpreted_robot_angle_wakeup;
+    std::vector<float> m_velocity_x_y_theta;
+    bool m_moving;
+    Eigen::Vector2d m_FeetHeight;
 
+    int m_mode;
+
+    /// End effectors
+    Eigen::Vector3d m_RHand_d;
+    Eigen::Vector3d m_LHand_d;
+    Eigen::Vector3d m_RFoot_d;
+    Eigen::Vector3d m_LFoot_d;
+
+    std::vector<joint_buffer> m_xsens_joint_Npose;
+
+    /// ROBOTS
+    NAO *Nao;
 
     AL::ALValue m_robot_joint_names;
     AL::ALValue m_robot_joint_values;
 
-    std::ofstream m_BalanceFile;
+    /// Is the robot imitating?
+    bool m_imitate;
 
-    Eigen::MatrixXd m_JacobianEndEff;
-    Eigen::MatrixXd m_JacobianXY_CoM;
-    Eigen::MatrixXd m_JacobianXY_CoM_RF;
-    Eigen::VectorXd m_X_current;
-    Eigen::VectorXd m_X_desired;
-    Eigen::Vector2d m_XY_CoM_current;
-    Eigen::Vector2d m_XY_CoM_desired;
-    Eigen::VectorXd m_X_Npose;
-    Eigen::Vector2d m_X_CoM_Npose;
+private:
 
-    Eigen::VectorXd m_q_rectified;
-    Eigen::VectorXd m_q_balanced;
-    Eigen::MatrixXd m_q_results_byStepsFinal;
+    ///Parameters
+    std::string m_name = "NAO";
+    std::string m_robot_IP;
+    int m_robot_port;
 
-    /// ROBOTS
-    NAO *Nao;
 };
+
+#include <balance_control.h>
 
 #endif

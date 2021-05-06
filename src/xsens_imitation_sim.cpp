@@ -1,4 +1,5 @@
 #include <robot.h>
+#include <balance_control.h>
 #include <stdio.h>
 #include <vrep_sim_handler.h>
 
@@ -9,7 +10,7 @@ float xsensport;
 
 #define BUF_SIZE 1024
 #define PORT_SONAR 1234
-#define PORT_XSENS 9763
+#define PORT_XSENS 9764
 
 using namespace std;
 using namespace Eigen;
@@ -19,9 +20,17 @@ using namespace Eigen;
 int main(int argc, char *argv[])
 {
 
-    if(argc<8)
+    if(argc<9)
     {
-        std::cerr << "[Error] You must specify: Copellia's IP, Copellia's PORT, Robot's IP, Robot's Port, Robot's speed and its teleoperation mode (1 or 2)." << endl;
+        std::cout << "[Error] You must specify: \n"
+                << "Xsens IP, \n"
+                << "Xsens port, \n"
+                << "Copellia's IP, \n"
+                << "Copellia's PORT, \n"
+                << "Robot's IP, \n"
+                << "Robot's Port, \n"
+                << "Robot's speed, \n"
+                << "Teleoperation mode (1 or 2)." << endl;
         exit(2);
     }
 
@@ -48,14 +57,16 @@ int main(int argc, char *argv[])
     sleep(1); /// Let some time for operator preparation.
 
     /// Read the arguments
-    std::string VREP_IP, ROBOT_IP;
-    int VREP_PORT, ROBOT_PORT, mode;
-    VREP_IP = argv[1];
-    VREP_PORT = atof(argv[2]);
-    ROBOT_IP = argv[3];
-    ROBOT_PORT = atof(argv[4]);
-    speed = atof(argv[5]);
-    mode = atof(argv[6]);
+    std::string VREP_IP, ROBOT_IP, XSENS_IP;
+    int VREP_PORT, ROBOT_PORT, XSENS_PORT, mode;
+    XSENS_IP = argv[1];
+    XSENS_IP = atof(argv[2]);
+    VREP_IP = argv[3];
+    VREP_PORT = atof(argv[4]);
+    ROBOT_IP = argv[5];
+    ROBOT_PORT = atof(argv[6]);
+    speed = atof(argv[7]);
+    mode = atof(argv[8]);
 
     if(mode != 1 && mode != 2)
     {
@@ -66,6 +77,7 @@ int main(int argc, char *argv[])
     /// New object of the robot class.
     VREP_HANDLER sim_handler(VREP_IP, VREP_PORT, ROBOT_IP, ROBOT_PORT);
     robot r(ROBOT_IP, ROBOT_PORT, mode); 
+    balanceControl bControl;
     
     /// Check for simulator handler
     if (not sim_handler.all_ok)
@@ -132,7 +144,7 @@ int main(int argc, char *argv[])
     ///*********************INITILISATION SOCKET**************************///
 
     //connection to the xsens as a server
-    SOCKET sock = init_connection_server(PORT_XSENS);
+    SOCKET sock = init_connection_server(XSENS_IP, XSENS_PORT);
     SOCKADDR_IN from = { 0 }; // Change the IP address of the Xsens Installed Computer (Possibly)
     unsigned int fromsize = sizeof from;
 
@@ -356,7 +368,7 @@ int main(int argc, char *argv[])
         {
             /// Begin imitation of Body joints
             cout << "\033[1;34mImitating \033[0m" << endl;
-            r.imitation_bis(FeetDistance, distanceRFoot_torso, distanceLFoot_torso,rotation_tete);
+            bControl.imitation_bis(FeetDistance, distanceRFoot_torso, distanceLFoot_torso,rotation_tete);
         }
 
         first=false;
