@@ -1,0 +1,33 @@
+#!/bin/bash
+
+
+echo "############################################################
+#################### NAO ROBOT IMITATION ###################
+############################################################"
+
+if [ "$1" == "SIMULATION" ]
+then
+echo "STARTING SIMULATION MODEL";
+
+export DYLD_LIBRARY_PATH=$(pwd)/build-pepper-config/sdk/lib;
+echo "Loaded Dynamic Models";
+
+# .$(pwd)/../../choreographe-suite/bin/naoqi-bin -p 9009 &
+# echo "Started Naoqi framework and server for simulated robot";
+echo "*************************"
+
+./build-pepper-config/sdk/bin/nao_dynamics_imitation_sim 192.168.1.212 9764 127.0.0.1 19999 127.0.0.1 9009 0.3 2
+
+elif [ "$1" = "REAL" ]
+then
+echo "STARTING REAL ROBOT"
+
+export DYLD_LIBRARY_PATH=$(pwd)/build-pepper-config/sdk/lib
+echo "Loaded Dynamic Models"
+echo "*************************"
+
+./build-pepper-config/sdk/bin/nao_dynamics_imitation 192.168.1.212 9764 198.168.1.73 9559 0.3 2
+
+else
+echo "Provide Argumentt (SIMULATION/REAL)!"
+fi
