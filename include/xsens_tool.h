@@ -104,7 +104,7 @@ Eigen::MatrixXd getRelativePosition(std::vector<euler_buffer> xsens_euler);
 ///TOUT POUR LES PACKETS UDP
 
 int init_connection_client(const char *address, SOCKADDR_IN *sin, int port);
-int init_connection_server(int port);
+int init_connection_server(const std::string address, int port);
 void write_server(SOCKET sock, SOCKADDR_IN *sin, const char *buffer);
 void end_connection(int sock);
 

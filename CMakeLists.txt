@@ -114,23 +114,27 @@ set(_srcs
 	src/dynamics_param.cpp
 	src/xsens_tool.cpp
 	src/robot.cpp
+	src/balance_control.cpp
 )
 set(_include
 	include/xsens_tool.h
 	include/dynamics_param.h
 	include/robot.h
+	include/balance_control.h
 )
 
 set(_sim_srcs
+	src/balance_control.cpp
 	src/xsens_imitation_sim.cpp
 	src/xsens_tool.cpp
   src/vrep_sim_handler.cpp
 	src/robot.cpp
 )
 set(_sim_include
+	include/balance_control.h
 	include/xsens_tool.h
 	include/robot.h
-  include/vrep_sim_handler.h
+	include/vrep_sim_handler.h
 )
 
 # Imitation Executable
