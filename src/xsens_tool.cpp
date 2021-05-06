@@ -288,7 +288,7 @@ int init_connection_client(const char *address, SOCKADDR_IN *sin, int port)
 }
 
 //client (receive message from xsens)
-int init_connection_server(int port)
+int init_connection_server(const std::string address, int port)
 {
     SOCKET sock = socket(AF_INET, SOCK_DGRAM, 0);
     SOCKADDR_IN sin = { 0 };
@@ -299,7 +299,7 @@ int init_connection_server(int port)
         exit(errno);
     }
 
-    sin.sin_addr.s_addr = htonl(INADDR_ANY);
+    sin.sin_addr.s_addr =  inet_addr(address.c_str()); //htonl(INADDR_ANY);
     sin.sin_port = htons(port);
     sin.sin_family = AF_INET;
 
