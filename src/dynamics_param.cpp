@@ -1,10 +1,16 @@
-#include <dynamics_param.h>
-
 /**
+ * @file dynamics_param.cpp
+ * @author Selvakumar H S (franklinselva10@gmail.com)
  * @brief This file holds the dynamic parameters of NAO robot v5 H25. 
  * The parameters are acquired from http://doc.aldebaran.com/2-1/family/robots/masses_robot.html#robot-masses
+ * @version 0.1
+ * @date 2021-05-07
+ * 
+ * @copyright Copyright (c) 2021
  * 
  */
+
+#include <dynamics_param.h>
 
 dPARAM::dPARAM()
 {
