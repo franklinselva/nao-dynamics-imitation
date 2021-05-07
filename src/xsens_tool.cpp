@@ -290,6 +290,7 @@ int init_connection_client(const char *address, SOCKADDR_IN *sin, int port)
 //client (receive message from xsens)
 int init_connection_server(const std::string address, int port)
 {
+    cout<<"[INFO] Initializing connection as server to Xsens UDP Protocol"<<endl;
     SOCKET sock = socket(AF_INET, SOCK_DGRAM, 0);
     SOCKADDR_IN sin = { 0 };
 
@@ -308,7 +309,7 @@ int init_connection_server(const std::string address, int port)
         perror("bind()");
         exit(errno);
     }
-    cout<<"bind"<<endl;
+    cout<<"[INFO] Connected to Xsens Network Streaming Protocol"<<endl;
     return sock;
 }
 

@@ -21,6 +21,7 @@ check_c_compiler_flag("-arch x86_64" x86_64Supported)
 check_cxx_compiler_flag("-arch x86_64" x86_64Supported)
 
 set (CMAKE_CXX_STANDARD 11)
+list(APPEND CMAKE_PREFIX_PATH "/Users/franklinselva/Documents/Masters/THESIS/code/NAO-worktree/pepper-sdk-2.5.7.1/share/cmake")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
 set(CMAKE_OSX_ARCHITECTURES x86_64) # Mac Specific Variables
@@ -115,12 +116,14 @@ set(_srcs
 	src/xsens_tool.cpp
 	src/robot.cpp
 	src/balance_control.cpp
+	src/zmp_control.cpp
 )
 set(_include
 	include/xsens_tool.h
 	include/dynamics_param.h
 	include/robot.h
 	include/balance_control.h
+	include/zmp_control.h
 )
 
 set(_sim_srcs
