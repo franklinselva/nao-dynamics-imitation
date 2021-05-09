@@ -518,7 +518,7 @@ void robot::update_velocity(float feetdistance, float distancepiedR, float dista
 
     if (feetdistance > max_deplacement) // TEST
         m_imitate = false;
-    std::cout << "\n Imitation is disabled due since feet distance is greater than max deplacement" << std::endl;
+    std::cout << "\n [WARN] Imitation is disabled due since feet distance is greater than max deplacement" << std::endl;
     robot::stand_zero();
 
     if (m_name == "NAO" && m_mode == 1)

@@ -34,9 +34,6 @@ void balanceControl::balance()
 
     m_q_desired = m_robot_joint_values;
 
-    /// Get the Jacobian for ΔX_CoM = JacobianXY_CoM_RFoot*Δq
-    //JacobianXY_CoM_current = Nao->GetJacobianXY_CoM_RF_rectified(m_q_current);
-
     std::cout << "Current joint configuration: " << std::endl
               << m_q_current << std::endl;
     std::cout << "Desired joint configuration: " << std::endl
@@ -51,15 +48,15 @@ void balanceControl::balance()
     XYZ_CoM_T_current = Nao->GetXYZ_CoM(m_q_current);
     XYZ_CoM_RF_current = Nao->GetXYZ_CoM_RF(m_q_current);
 
-    std::cout << "CoMd wrt Torso (Parallel to floor frame): " << std::endl
-              << XYZ_CoM_T_desired.transpose() << std::endl;
-    std::cout << "CoMc wrt Torso (Parallel to floor frame): " << std::endl
-              << XYZ_CoM_T_current.transpose() << std::endl;
+    // std::cout << "CoMd wrt Torso (Parallel to floor frame): " << std::endl
+    //           << XYZ_CoM_T_desired.transpose() << std::endl;
+    // std::cout << "CoMc wrt Torso (Parallel to floor frame): " << std::endl
+    //           << XYZ_CoM_T_current.transpose() << std::endl;
 
-    std::cout << "CoMd wrt RFoot (Parallel to floor frame): " << std::endl
-              << XYZ_CoM_RF_desired.transpose() << std::endl;
-    std::cout << "CoMc wrt RFoot (Parallel to floor frame): " << std::endl
-              << XYZ_CoM_RF_current.transpose() << std::endl;
+    // std::cout << "CoMd wrt RFoot (Parallel to floor frame): " << std::endl
+    //           << XYZ_CoM_RF_desired.transpose() << std::endl;
+    // std::cout << "CoMc wrt RFoot (Parallel to floor frame): " << std::endl
+    //           << XYZ_CoM_RF_current.transpose() << std::endl;
 
     /// m_pos_CoM is based on a RFOOT frame.
     m_pos_CoM[0] = XYZ_CoM_RF_desired(0); // - m_pos_CoM_wakeup[0];
@@ -1047,14 +1044,14 @@ void balanceControl::check_balance_and_move()
 }
 
 /**
- * @brief Starts the imitation of the human actor based on the mode selected (1/2)
+ * @brief Starts the imitation of the human actor based on the mode selected (1/2); Note that static balance control is implemented with this function
  * 
  * @param feetdistance The euclidean distance betweem the two feet
  * @param distancepiedR The euclidean distance from right foot to torso projection
  * @param distancepiedL The euclidean distance from left foot to torso projection
  * @param rotation_tete Rotation difference along z axis from Xsens Analyze
  */
-void balanceControl::imitation_bis(float feetdistance, float distancepiedR, float distancepiedL, float rotation_tete)
+void balanceControl::begin_imitation(float feetdistance, float distancepiedR, float distancepiedL, float rotation_tete)
 {
     ///update m_velocity if feet are far or head is turned
     update_velocity(feetdistance, distancepiedR, distancepiedL, rotation_tete);

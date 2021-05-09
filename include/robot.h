@@ -1,11 +1,9 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-
 /// Jacobian libraries
 #include <Jacobian.h>
 #include "xsens_tool.h"
-
 
 /// Include robot softbank
 #include <qi/os.hpp>
@@ -35,9 +33,9 @@ public:
 
     void def_joint_names(); /// Define robot's joints names
 
-    void wake_up(); /// Turn on the robot
+    void wake_up();     /// Turn on the robot
     void go_to_sleep(); /// Turn off the robot
-    void stand_zero(); /// Go to StandZero posture.
+    void stand_zero();  /// Go to StandZero posture.
 
     void def_interpreted_robot_angle_wakeup(); /// Define and stock the wake_up joint configuration
 
@@ -45,7 +43,7 @@ public:
     void def_interpreted_robot_angle_wakeup_from_xsens_joints(std::vector<joint_buffer> xsens_joint_Npose);
 
     /// Define and stock the interpreted robot angles (INPUT: xsens' packages)
-    void def_interpreted_robot_angle_from_xsens_joints( std::vector<joint_buffer> xsens_joint);
+    void def_interpreted_robot_angle_from_xsens_joints(std::vector<joint_buffer> xsens_joint);
 
     void def_joint_limits(std::vector<float> joint_limits_max, std::vector<float> joint_limits_min); /// Define robot's joint limits
 
@@ -64,7 +62,6 @@ public:
     std::vector<float> get_interpreted_robot_angle_wakeup() const; /// Get the wake up / N-pose vector joint configuration from the robot.
 
     void getHeight(float RFoot, float LFoot); /// Get the height of the feet of the human.
-
 
     ///SETTER
 
@@ -98,7 +95,6 @@ public:
     void scale(Eigen::MatrixXd Body_segments);
     void scale2();
 
-
     /// HQP
     Eigen::VectorXd HQP_solver(Eigen::MatrixXd J, Eigen::VectorXd dx, Eigen::VectorXd q_c);
     Eigen::VectorXd HQP_solver2(Eigen::MatrixXd J, Eigen::VectorXd dx, Eigen::VectorXd q_d);
@@ -109,14 +105,13 @@ public:
     void terminate();
 
 protected:
-
     //MATH
-    const float DEG2RAD = M_PI/180;
-    const float RAD2DEG= 180/M_PI;
+    const float DEG2RAD = M_PI / 180;
+    const float RAD2DEG = 180 / M_PI;
 
     //Robot
     const float ROBOT_COM_X = -11.5; //At wake up
-    const float ROBOT_COM_Y = 77.5; // At wake up
+    const float ROBOT_COM_Y = 77.5;  // At wake up
 
     const float ROBOT_COM_THRESHOLD_X = 50; /// MAYBE plus or minus 50 (mm) // 37.5
     const float ROBOT_COM_THRESHOLD_Y = 75;
@@ -148,6 +143,7 @@ protected:
     /// Keep track of the Center of Mass position. EQUILIBRUM
     bool m_isBalanced;
     bool m_isRectified;
+    bool m_withinSP;
     bool m_isDS;
     bool m_isRS;
     bool m_isLS;
@@ -191,12 +187,10 @@ protected:
     bool m_imitate;
 
 private:
-
     ///Parameters
     std::string m_name = "NAO";
     std::string m_robot_IP;
     int m_robot_port;
-
 };
 
 #include <balance_control.h>

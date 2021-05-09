@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
     ///*********************INITIALISATION ROBOT**************************///
 
-    std::cout << "Prepare yourself" << std::endl;
+    std::cout << "Prepare yourself at NPose" << std::endl;
     std::cout << "...5..." << std::endl;
     sleep(1);
     std::cout << "...4..." << std::endl;
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
         {
             /// Begin imitation of Body joints
             cout << "\033[1;34mImitating \033[0m" << endl;
-            bControl.imitation_bis(FeetDistance, distanceRFoot_torso, distanceLFoot_torso, rotation_tete);
+            bControl.begin_imitation(FeetDistance, distanceRFoot_torso, distanceLFoot_torso, rotation_tete);
         }
 
         first = false;
