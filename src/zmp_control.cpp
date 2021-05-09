@@ -1,8 +1,8 @@
 /**
  * @file zmp_control.cpp
  * @author Selvakumar H S (franklinselva10@gmail.com)
- * @brief Implementation of ZMP Control based on the references from "Kajita et al. 2003; 
- * Biped walking pattern generation by using preview control of zero-moment point"
+ * @brief Implementation of ZMP Control based on the references from "Jiménez et al. 2013; 
+ * Robust feedback control of ZMP-based gait for the humanoid robot Nao"
  * @version 0.1
  * @date 2021-05-07
  * 
@@ -14,28 +14,31 @@
 #define INF 10000
 
 /**
- * @brief get ZMP position based on the current CoM
+ * @brief get ZMP position based on the current CoM;
+ * ! Note that the ZMP is assumed to be only 2D here.
  * The model is assumed to be 3D-LIPM as referenced in Kajita. et. al. 2003 
+ * Balance Control Analysis of Humanoid Robot based on ZMP Feedback Control
  * 
  * @return Eigen::Vector3f the position of ZMP
  */
-Eigen::Vector3f ZMPControl::getZMP()
+Eigen::Vector2d ZMPControl::getZMP()
 {
     //Get current CoM from the robot state
     ZMPControl::pCoM = Nao->GetXYZ_CoM(robot::m_q_current);
 
-    ZMPControl::aCoM = g * (pCoM - pZMP) / pCoM[2];
+    ZMPControl::aCoM[0] = g * (pCoM[0] - pZMP[0]) / pCoM[2];
+    ZMPControl::aCoM[1] = g * (pCoM[1] - pZMP[1]) / pCoM[2];
 
     ZMPControl::pZMP[0] = pCoM[0] - pCoM[2] * aCoM[0] / ZMPControl::g;
     ZMPControl::pZMP[1] = pCoM[1] - pCoM[2] * aCoM[1] / ZMPControl::g;
-    ZMPControl::pZMP[2] = 0;
+    // ZMPControl::pZMP[2] = 0;
 
     return ZMPControl::pZMP;
 }
 
 /**
- * @brief Checks for the ZMP within the support polygon. Note that this function is approximately
- * the same as the check_balance_and_save() function in balanceControl class. 
+ * @brief Checks for the ZMP within the support polygon. 
+ * ? Note that this function is approximately the same as the check_balance_and_save() function in balanceControl class. 
  * Reference taken for point within polygon from https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/PROJ2/InsidePoly.html
  * 
  * @return true if the ZMP is within the support polygon
@@ -110,6 +113,9 @@ void ZMPControl::balance()
 {
 }
 
+void ZMPControl::unbalanced()
+{
+}
 /**
  * @brief Check for dynamic robot balance based on mode(1/2);
  * Focuses on single and double support for mode 2;
@@ -119,9 +125,14 @@ void ZMPControl::balance()
 void ZMPControl::check_balance_and_move()
 {
     ZMPControl::checkSupportPhase();
+    ZMPControl::withinSP();
+
     if (robot::m_mode == 2 && (robot::m_isDS || robot::m_isLS || robot::m_isRS))
     {
-        ZMPControl::balance();
+        if (robot::m_withinSP)
+            ZMPControl::balance();
+        else
+            ZMPControl::unbalanced();
     }
     else if (robot::m_mode == 1)
     {
@@ -133,7 +144,7 @@ void ZMPControl::check_balance_and_move()
 
 /**
  * @brief Starts the imitation of the human actor based on the mode selected (1/2); 
- * Note that dynamci balance control is implemented with this function.
+ * ! Note that dynamic balance control is implemented with this function.
  * 
  * @param feetdistance The euclidean distance betweem the two feet
  * @param distancepiedR The euclidean distance from right foot to torso projection
