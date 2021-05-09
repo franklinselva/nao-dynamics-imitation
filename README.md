@@ -107,7 +107,7 @@ You need to be in `bin` folder of your `build` directory to run the executable t
 To run the imitation in real robot, run
 
 ```
-./nao_dynamics_imitation --pip <ROBOTIP> --pport <ROBOTPORT>
+./nao_dynamics_imitation XSENS_IP XSENS_PORT ROBOT_IP ROBOT_PORT ROBOT_SPEED MODE
 ```
 
 ## Run in Simulation
@@ -141,7 +141,7 @@ export DYLD_LIBRARY_PATH=/path/to/NAO-worktree/nao_dynamics_imitation/build-nao-
 or run the imitation problem in simulation with
 
 ```
-./nao_dynamics_imitation_sim --pip <ROBOTIP> --pport <ROBOTPORT>
+./nao_dynamics_imitation_sim XSENS_IP XSENS_PORT VREP_IP VREP_PORT ROBOT_IP ROBOT_PORT ROBOT_SPEED MODE
 ```
 
 # Some Important Tools
