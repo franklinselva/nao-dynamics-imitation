@@ -1,4 +1,4 @@
-\documentclass{thesisreport}
+\documentclass{report}
 
 
 \begin{document}
@@ -7,31 +7,78 @@
  
   \section*{Abstract}
    
- Do not forget to check each reference while importing in your Bibtex file.
- Especially, IEEExplore export may lead to ill-formatted conference name like \emph{Robotics and Automation, 
- IEEE International Conference on}.
+  Humanoid robots are made as mirror to the humans. Consequently, the humanoid motion is also expected to be real as 
+  human and it is natural to use human motion as an input to generate humanoid motion. This process is called motion 
+  imitation and there are several challenges posed due to kinematics and dynamics of the robot over the past decades. 
+  Although the work on the kinematic challenges is actively improving and notably better than dynamics, it allows the 
+  robot only to move and imitate slow actions. For the fast paced motions, \textit{momentum} gets build up and needs 
+  dynamics to be taken into account. Due to the differences in redundancy between humanoid robots and humans, real-time 
+  imitation in humanoid robots while keeping balance and support changes is still an unsolved problem that need to be 
+  addressed.
+
+  ~
+  
+  During this research, imitation based on dynamics with task optimisation will be implemented on humanoid robot 
+  \textit{NAO}, from Aldebaran Robotics. The imitation will be carried out online using marker-based motion capture
+   system from \textit{Xsens}, specifically \textit{Xsens MVN} system.
+  
+  ~
+  
+  Initially the captured motion will be preprocessed for its representation in operational space and then will be 
+  scaled to the robot's dimensions. From this scaled motion, the desired poses are taken and joint spaces in 
+  \textit{NAO} and human actor will be mapped using the scaling function directly. The scaling constraints and the 
+  joint angle limits are taken into account for this process. Body Segment Parameter(BSP) Estimation is carried out 
+  on the scaled frames and the approximated \textit{mass and Centre of Mass (CoM)} are calculated based on the 
+  principles of Modified Hanavan Model. The balance equations and the CoM trajectory are taken as the optimisation 
+  problem for the motion imitation. Finally the work will be presented as non-differential optimisation problem 
+  considering dynamics equations of motion and will be validated real-time on the humanoid robot.
  
  
  \newpage
  
  \section*{Acknowledgements}
  
+ I would first like to thank my thesis advisor Dr Sophie Sakka for her motivation and opportunity for the thesis topic.
+  I would like forward my thanks to Prof. Olivier Kermorgant for his continuous motivation and help in informing 
+  students about thesis positions without which I would not have found the position. 
+
+~
+
+I would also like to thank Prof. Ina Taralova for her indispensable advice regarding the rules and practices involved 
+in the organisation of this report , which I have tried to implement to the best of my abilities.
+
+~
+
+Finally, I must express my very profound gratitude to my parents and my friends for providing me with unfailing 
+support and continuous encouragement throughout my years of study and through the process of researching and writing 
+this report. This accomplishment would not have been possible without them.
  \newpage
  
  
- \section*{Notations}
- 
+\section*{Notations}
+    \begin{tabular}{p{3cm}p{10cm}}
+    CoM & Centre of Mass
+    \end{tabular}
+
+\newpage
+
+\section*{Abbreviations}
+
+\begin{tabular}{p{3cm}p{10cm}}
+CoM & Centre of Mass \\
+ZMP & Zero Moment Point \\
+
+\end{tabular}
+
  \newpage
  
-  \section*{Abbreviations}
- 
- \newpage
+ \tableofcontents
  
  \listoffigures
  
 \listoftables
  
- \tableofcontents
+
  
  
  \chapter*{Introduction}
@@ -52,25 +99,13 @@
   a^2 + b^2 = c^2
  \end{equation}The demonstration is in Appendix \ref{sec:prooftheorem}.
  
- \begin{figure}[h]\centering
-  \includegraphics[width=.5\linewidth]{triangle1}
-  \caption{A triangle with letters} \label{triangle}
- \end{figure}
- 
- 
 
-
- 
  
  \chapter{Experiments}
  
  When trying to draw a rectangled triangle, my program comes up with Figure \ref{triangle2} that is neither rectangled nor a triangle.
  
-  \begin{figure}[h]\centering
-  \includegraphics[width=.5\linewidth]{triangle2}
-  \caption{Triangle drawn by my program. Note the 4th side.} \label{triangle2}
- \end{figure}
- 
+
 Unless there is a bug in my program, which is unlikely, this research indicates that the whole theory on triangles having 3 sides has been wrong for years, maybe decades.
  
  
@@ -94,7 +129,7 @@ Unless there is a bug in my program, which is unlikely, this research indicates 
  
  \addcontentsline{toc}{chapter}{Bibliography}
  
- \bibliography{../biblio}
+ \bibliography{biblio}
  
  
  
