@@ -8,31 +8,27 @@
   \section*{Abstract}
    
   Humanoid robots are made as mirror to the humans. Consequently, the humanoid motion is also expected to be real as 
-  human and it is natural to use human motion as an input to generate humanoid motion. This process is called motion 
-  imitation and there are several challenges posed due to kinematics and dynamics of the robot over the past decades. 
-  Although the work on the kinematic challenges is actively improving and notably better than dynamics, it allows the 
-  robot only to move and imitate slow actions. For the fast paced motions, \textit{momentum} gets build up and needs 
-  dynamics to be taken into account. Due to the differences in redundancy between humanoid robots and humans, real-time 
-  imitation in humanoid robots while keeping balance and support changes is still an unsolved problem that need to be 
-  addressed.
+  human and it is natural to use human motion as an input to generate humanoid motion like a child learning from recogniting
+  an action and imitating. This process in robots is called motion imitation and there are several challenges posed 
+  due to kinematics and dynamics of the robot over the past decades. Although the work on the kinematic challenges is 
+  actively improving and notably better than dynamics, it allows the robot only to move and imitate slow actions. 
+  For the fast paced motions, \textit{momentum} gets build up and needs dynamics to be taken into account. Due to the 
+  differences in redundancy between humanoid robots and humans, real-time imitation in humanoid robots while keeping 
+  balance and support changes is still an interesting problem that need to be addressed.
 
   ~
   
-  During this research, imitation based on dynamics with task optimisation will be implemented on humanoid robot 
-  \textit{NAO}, from Aldebaran Robotics. The imitation will be carried out online using marker-based motion capture
-   system from \textit{Xsens}, specifically \textit{Xsens MVN} system.
+  On this research, motion retargetting or the motion imitation based on dynamic balance and support with dynamic filtering 
+  is planned to be implemented on humanoid robot \textit{NAO v5}, from Aldebaran Robotics. The imitation will be carried out 
+  online using marker-based motion capture suit from \textit{Xsens}, specifically \textit{Xsens MVN Analyze} system.
   
   ~
   
-  Initially the captured motion will be preprocessed for its representation in operational space and then will be 
-  scaled to the robot's dimensions. From this scaled motion, the desired poses are taken and joint spaces in 
-  \textit{NAO} and human actor will be mapped using the scaling function directly. The scaling constraints and the 
-  joint angle limits are taken into account for this process. Body Segment Parameter(BSP) Estimation is carried out 
-  on the scaled frames and the approximated \textit{mass and Centre of Mass (CoM)} are calculated based on the 
-  principles of Modified Hanavan Model. The balance equations and the CoM trajectory are taken as the optimisation 
-  problem for the motion imitation. Finally the work will be presented as non-differential optimisation problem 
-  considering dynamics equations of motion and will be validated real-time on the humanoid robot.
- 
+  The captured motion from the inertial suit will be preprocessed for its representation in operational space and will be 
+  scaled to the robot's dimensions. From this scaled motion, for this thesis, a set of actions are taken and will be addressed
+  for the balance problem in \textit{NAO} robot. The joint, CoM and the ZMP data of the human actor will be mapped to the robot
+  using the scaling function directly. To ensure the stability and to keep up the speed with the human actor, an additional 
+  dynamic filter and multi-inverted pendulum based posture control will be implemented. 
  
  \newpage
  
