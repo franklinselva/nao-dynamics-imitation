@@ -1,4 +1,4 @@
-\documentclass{report}
+\documentclass{thesisreport}
 
 
 \begin{document}
@@ -73,40 +73,24 @@ ZMP & Zero Moment Point \\
  \newpage
  
  \tableofcontents
- 
+
  \listoffigures
  
 \listoftables
  
 
  
- 
- \chapter*{Introduction}
- \addcontentsline{toc}{chapter}{Introduction}	 % non-numbered chapters do not appear in table of contents by default
- 
- 
- \chapter{State of the art}
- 
- \section{First topic}
- 
- \section{Second topic}
+ \include{introduction.tex}
+ \include{state_of_the_art.tex}
+
+
  
  \chapter{Actual work}
   
  
- When dealing with rectangled triangles (see Figure \ref{triangle}) I sometimes used this theorem from \cite{pythm001}:
- \begin{equation}\label{theo}
-  a^2 + b^2 = c^2
- \end{equation}The demonstration is in Appendix \ref{sec:prooftheorem}.
- 
 
  
  \chapter{Experiments}
- 
- When trying to draw a rectangled triangle, my program comes up with Figure \ref{triangle2} that is neither rectangled nor a triangle.
- 
-
-Unless there is a bug in my program, which is unlikely, this research indicates that the whole theory on triangles having 3 sides has been wrong for years, maybe decades.
  
  
  \chapter*{Conclusion}
@@ -119,13 +103,7 @@ Unless there is a bug in my program, which is unlikely, this research indicates 
  % switch to A-B-C chaptering
  \appendix	
  
- \chapter{Proof of theorem \ref{theo}}
- \label{sec:prooftheorem}
- 
- 
- \begin{proof}
-\eqref{theo} was already demonstrated in \cite{euclides300}.
-\end{proof}
+ \chapter{Proof of theorem}
  
  \addcontentsline{toc}{chapter}{Bibliography}
  
