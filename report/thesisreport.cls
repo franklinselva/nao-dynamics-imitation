@@ -16,10 +16,11 @@
 \usepackage{enumitem}
 \usepackage[explicit]{titlesec}
 \usepackage{etoolbox}
-
+\usepackage{setspace}
 
  \bibliographystyle{IEEEtran}
  
+ \doublespacing
 
 \makeatletter
 \patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}

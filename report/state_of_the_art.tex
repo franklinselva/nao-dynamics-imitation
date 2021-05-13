@@ -22,7 +22,7 @@ configuration. For instance, consider a hand moving from it's current pose to an
 goal pose considering the presence of obstacles and consumption of time and energy. Currently, there are many applications in 
 industrial robots and mobile robots where the robot motion is planned within both structured and non-structured environment. 
 
-~
+ 
 
 Even though, motion planning and its researches are progressing majorly within past decades, the recent approaches are combined
 with artificial intelligence, advantages of computer technology and mathematics. The main approaches can be found in books such as 
@@ -82,7 +82,7 @@ problems, geometric models are replaced with kinematic models, dynamic models or
 multiple contacts and dynamic balance of the system are considered. For instance, motion primitives that have been predefined by a human expert based on prior
 knowledge can be used to guide the planner \cite{zhang2014motion}. 
 
-~
+ 
 
 In case of humanoid walking, the planner can be generated using deterministic approaches with dynamic alterations of the foot transition model considering
 the smooth transition of the trajectories for posture transitions. For these cases, sampling-based algorithms are considered to improve the degree of completeness.
@@ -123,15 +123,146 @@ that may be of interest. In robotics, there exists four subdomains of kinematics
      that produce a pose variation $\dot{x}$ of the end effector as $$\dot{q} = J^{-1} \dot{x}$$ and it can be solved iteratively.
 \end{itemize}
 
-\subsubsection{Kinematics Approach in humanoid robots}
+\subsubsection{Kinematic Control of Redundant robots}
 
+In general, the kinematic control involves a reference planner or trajectories $q_{ref}(t)$ in $\mathit{SE(3)}$ for which the robot joint trajectory $q(t)$ is evaluated against attaining
+the objective. Consider a task $i$ in a robot with $n$ DoF, then the Jacobian is of size $m \times n$ and the robot is redundant when $(n > m)$ \cite{nakamura1990advanced}. The joint variations $\dot{q}$ can be represented
+if
+
+\begin{itemize}
+    \item $(n > m)$. For task $i$, there exists a degree of redundancy $n-m$ for which the joint variation based on lease square method can be given by $$\dot{q} = J_i^+\dot{x_i} + (I_n - J_i^+J_i)z_i$$
+    where $J_i^+ = J_i^T(J_iJ_i^T)^{-1}$ is the pseudo inverse of $J_i$, $I_n$ is the identity matrix of size $n$ and $z_i$ is an $n$-dimensional arbitrary vector. The first term in the above equation
+    is to minimize the norm solution while the second term is to find all possible solutions. 
+
+    \item $(n = m)$. The degree of redundancy is $0$ and the joint variation can be defined as $$\dot{q} = J^{-1} \dot{x}$$ Note that the Jacobian here is a non-singular matrix.
+    \item $(n < m)$. There doesn't exist any redundancy and no solution is found in this case.
+\end{itemize}
+
+For multiple tasks, the probability of finding a suitable solution decreases as the preceding tasks influence the current task, in other words, consider two tasks 1 and 2 for a redundant robot. There 
+exist a solution for two tasks $x_1 = f_1(q)$ and $x_2 = f_2(q)$ with task priority for $x_1$ and $x_2$ respectively. First the variation $q$ that solves the task according to the priority is 
+determined from the differential equations by,
+
+\begin{equation}
+    \delta x_1 = J_1\delta q 
+    \label{task1}
+\end{equation}
+\begin{equation}
+    \delta x_2 = J_2\delta q 
+    \label{task2}
+\end{equation}
+
+Then the joint variation $\delta q$ for task $1$ has infinitely many solutions and is given by
+
+\begin{equation}
+        \dot{q} = J_i^+\dot{x_i} + (I_n - J_i^+J_i)z_i 
+        \label{jvariation}
+\end{equation}
+
+Solving \ref{jvariation} and \ref{task2} for $z_1$ arbitrary vector,
+
+\begin{equation}
+    z_1 = \hat{J_2^+}(\delta x_2 - J_2J_1^+ \delta x_1) + (I_n - \hat{J_2^+}\hat{J_2})z_2
+\end{equation}
+
+where $\hat{J_2} = J_2(I_n + J_1^+J_1)$ and $_2$ is an $n$-dimensional arbitrary vector. Then the solution of joint variation for the two priority tasks can be given by 
+
+\begin{equation}
+    \delta q = J^+_1 \delta x_1 + \hat{J_2^+}(\delta x_2 - J_2J_1^+ \delta x_1) + (I_n - J^+_1J_1)(I_n - \hat{J_2^+}\hat{J_2})z_2
+\end{equation}
+
+\subsubsection{Generalized form of Task Priority}
+
+
+
+\subsubsection{Kinematic Control in humanoid robots}
+
+Humanoid robots as a rigid body representation, from a kinematic point of view present a tree-like structure that includes multiple connected chains, and a high number of DoF. This results in 
+higher degree of redundancy with respect to most tasks, in which case the robot is said to be under-constrained. Therefore, methods developed for generic redundant robots are usually applied in humanoid robotics
+with some adaptations or additions. Due to the complexity of the kinematic configuration, closed-form solutions for the IK problem are usually very complex, but recently some classical methods 
+have been used and modified, to obtain closed equations for specific humanoid robots which are treated as a composition of several kinematic chains. However, methods based on 
+instantaneous IK, which compute an increment in q, are usually preferred. This linearization of the problem offers an infinite number of feasible solutions for humanoid robots: there exist different
+joint updates that achieve the same task. This leads to the possibility of performing different tasks at the same time, and the IK control must be capable of properly handling them.
+
+ 
+
+Methods based on task-prioritization solve these problems and have become the preferred techniques in IK control. They can even be considered as the current “state of the art” in humanoid 
+robotics control due to their relatively low computational cost, their straightforward implementation, and the maturity of the approach. Several works with different humanoid platforms use this 
+methodology to solve the redundant IK problem at the velocity level using only equality constraints \cite{gienger2005task,yoshida2006task,mansard2007task}. For imposing inequality constraints 
+to the control framework at any hierarchical level, a sequence of optimal resolutions for each priority level has been proposed in \cite{kanoun2009prioritizing}, a more efficient computation based on orthogonal 
+decompositions can be found in \cite{escande2013planning} and a smooth interchange between priority of consecutive prioritized tasks is introduced in \cite{jarquin2013real}.
 
 \subsection{Dynamics Approach}
+
+Dynamics is the study of the relation between the robot motion and the generalized forces that act on the robot generating that motion. This relation considers parameters such as lengths, 
+masses and inertia of the elements composing the robot.
+
+
+
+\subsubsection{Basic Concepts}
+
+In the dynamic model, the motion is represented through joint variables acceleration $\ddot{q}$, or operational points acceleration $\ddot{x}$. For rotational joints, the generalized forces are equivalent to 
+the joint torques, and for prismatic joints they are the joint forces. There are two main problems in dynamics:
+
+\begin{itemize}
+    \item \textbf{Forward Dynamics:} It expresses the motion of the robot as a function of the generalized forces applied to it.
+    \item \textbf{Inverse Dynamics:} It expresses the generalized forces acting on a robot as a function of the robot motion.
+\end{itemize}
+
+There exist two main formulations to compute the robot dynamic model: the Lagrange approach, and the Newton-Euler approach. The Lagrange approach's main advantage is the clear separation 
+of each component of the model; but in general, it is computationally expensive.
+The Newton-Euler approach does not provide a clear separation of the terms but due to its recursivity a lower computation time can be obtained. Thus, it is 
+the preferred implementation for computer calculations. The most used algorithms for this approach can be found in \cite{featherstone2000robot,featherstone2014rigid}. The Lagrange method and 
+Newton Euler's method are detailed in the chapter \ref{chapter-3} under section \ref{dynamic-consideration}.
+
+
+The introduction of centroidal momentum and centroidal dynamics based on the Centre of Mass (CoM) of a system is particularly a import concept since the humanoids build large momenta(so far only
+angular momentum is larger and linear momentum on legger humanoids are not upto the mark). The dynamic model of a robot can be expressed in two ways depending on the spaces that are used to describe the motion and the control input. The two approaches are: the joint space formulation, and the operational space 
+(or task space) formulation. The joint space formulation is the classical approach and uses the joint space acceleration to specify the motion, and the generalized forces acting on the actuated joints 
+to describe the control. The operational space formulation represents the motion directly using the task space acceleration, which needs a reformulation of the forces as task space generalized 
+forces.
+
+\subsubsection{Dynamic Control in Humanoid Robots}
+
+For a humanoid robot, classical dynamic control techniques are not sufficient since coordination of the motion is required, environmental forces need to be considered, and balance has to be kept at all 
+time. For the robot balance, a stability criterion such as keeping the CoM or the ZMP inside the support polygon must be enforced. For planar surfaces, the constraint on the 
+ZMP implies a control of the contact forces. Thus, the interaction with the environment is always present since the feet are in contact with the ground and additional contacts of other parts of the robot 
+body might also be necessary. These contacts generate an effect on the joints generalized forces, which cannot be controlled using only kinematic methods but with dynamic approaches. The dynamic control 
+ensures the physical feasibility of the motion and allows for faster movements without losing balance.
+
+The Operational Space Inverse Dynamics (OSID) is a more specific framework for controlling the whole-body of humanoid robots considering contacts and a set of different constraints. This approach
+proposed in \cite{khatib2004whole,sentis2005control} is based on a two stage mapping to obtain consistent contact forces and is equivalent to successive projections onto the nullspaces of the previous tasks. Therefore, 
+new tasks can be added without dynamically interfering with higher priority tasks. Other methods use the OSID within frameworks that 
+involve some type of optimization to find the local solution. The most popular approaches use Quadratic Programming (QP), which allows for the specification of both equality and inequality constraints.
+The latter type of constraints is fundamental in humanoid robotics to directly model unilateral contacts, and it is also important to properly specify some particular tasks. Although the previous approaches exploit the full robot dynamics, 
+the angular momentum is not explicitly controlled within these frameworks. Nevertheless, it has been shown that the angular momentum 
+is a natural and important part of human motion, specially when performing complex and fast movements \cite{popovic2004angular}. 
+
 \subsection{Optimal Control}
 
-\section{Approaches in Humanoid Balance Control}
-\subsection{Linear Inverse Pendulum Approach}
+Optimal control, also known in robotics as trajectory optimization or trajectory filtering, consists in finding a trajectory and its associated control law (policy) that satisfies some predefined 
+optimality criterion. In general mathematical terms, it concerns the properties of control functions which, when inserted into a differential equation, give solutions that minimize a cost or measure
+ of performance. But it also concerns optimization problems with dynamic constraints which might be functional differential equations, difference equations, partial differential equations or equations 
+ with another form. This section is summarized from the literature work \cite{ramosponce} which provides a brief overview of optimal control in humanoid robots.
 
+
+\subsubsection{Optimal Control in Humanoid Robots}
+
+In robotics, optimal control can be used to find the trajectories from an initial posture to a final desired posture, specified as a whole or as a set of sub-objectives, satisfying certain constraints.
+Very fast and powerful movements can be generated with optimal control, which can comprehend the problems of inverse kinematics or inverse dynamics and can therefore pro- duce better movements. The 
+problem with IK and OSID alone is their inability to properly handle the CoM accelerations, thus overrestricting the motion. A solution typically relies on a dedicated submodel, like a linearized 
+inverted pendulum \cite{kajita2003biped} to capture the future of the system, but this ad-hoc resolution increases the control architecture complexity. Thus, using these schemes the future states of the system
+can be somehow predicted, but dedicated submodels would need to be developed for each case. However, optimal control is the most suitable approach that allows to take into account all the constraints
+at the same time. In fact, optimal control can automatically generate the proper trajectory for the CoM in order to achieve fast movements: it acts as a classical pattern generator used for walking
+schemes, but additionally incorporating whole-body motion. A serious challenge to optimization-based approaches in robotics is that the timescales of the dynamics are faster than in other applications 
+and need a faster response. Currently, the main problem is the computational time, due to the high number of DoF, that forbids its use in real-time applications.
+
+The main drawback of optimal control is the curse of dimensionality, which is particularly important for humanoid robots whose state space is so large that no control scheme can explore all of it in advance and 
+prepare suitable responses for every situation. It would be desirable to obtain optimal control in real time; however, currently there is no approach that can achieve this: the solutions are very time consuming 
+and generic solvers tend to get stuck into local minima or they even return trivial solutions. The problem of finding the proper formulation and resolution of optimal control is still an open issue in robotics.
+
+\section{Approaches in Humanoid Balance Control}
+
+\subsection{Linear Inverse Pendulum Approach}
 
 Consider a simple inverted pendulum model as in figure [\ref{ipm}] with mass $m$ and link length $l_1$, the kinematics and dynamics for the model can be represented as,
 
