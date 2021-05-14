@@ -212,8 +212,60 @@ There exist two main formulations to compute the robot dynamic model: the Lagran
 of each component of the model; but in general, it is computationally expensive.
 The Newton-Euler approach does not provide a clear separation of the terms but due to its recursivity a lower computation time can be obtained. Thus, it is 
 the preferred implementation for computer calculations. The most used algorithms for this approach can be found in \cite{featherstone2000robot,featherstone2014rigid}. The Lagrange method and 
-Newton Euler's method are detailed in the chapter \ref{chapter-3} under section \ref{dynamic-consideration}.
+Newton Euler's method are detailed below %in the chapter \ref{chapter-3} under section \ref{dynamic-consideration}.
 
+\begin{enumerate}
+    \item \textbf{Lagrange Formulation}
+    
+    The Lagrange formulation descibes the behavious of a dynamic system in terms of work and energy stored in the system. The Lagrange equations are written in the form:
+
+    \begin{equation}
+        \tau = \frac{d}{dt}(\frac{\partial L}{\partial \dot{q}})^T - (\frac{\partial L}{\partial q})^T
+        \label{langrange}
+    \end{equation}
+
+    where $\tau$ is the generalized forces on the system, $q$ is the joint vector, $\dot{q}$ represent the joint velocities and $L=K - U$ is the Lagrangian
+    function with K as kinetic energy and U as potential energy respectively.
+
+    The kinetic energy $K$ for body $i$ is expressed in the form,
+
+    \begin{equation}
+        K_i = \frac{1}{2} \int v^T_{m_i}v_{m_i}dm 
+        \label{kinetic-energy}
+    \end{equation}
+
+    where $v_{m_i} = v_i + \omega_i \times \vec{r_{m_i}}$ is the velocity of point $m_i$ on the body $i$ which can be expressed as a function of twist, $\xi = [v_i^T, \omega_i^T]$
+
+    The potential energy $U$ for body $i$ is defined as,
+
+    \begin{equation}
+        U_i = -m_i\mathbf{g}^T\vec{r_{CoM_i}}
+    \end{equation}
+    
+    where $\mathbf{g}$ is the gravity vector and $\vec{r_{CoM_i}}$ is the distance vector to CoM of body $i$. The equation \ref{langrange} can be put in a matrix form as 
+
+    \begin{equation}
+        \tau = M(q).\ddot{q} + c(q, \dot{q})
+        \label{eq: inverse-dynamic-model}
+    \end{equation}
+
+    where $M(q)$ is the generalized robot inertia matrix and $c(q, \dot{q})$ is the vector of Coriolis, centrifugal and gravity effects. This model is called as inverse dynamic model.
+
+    \item \textbf{Newton Euler Formulation}
+    
+    Newton Euler (NE) equations allow computation of the sum of external forces $\sum f_j$ and moments $\sum m_{CoM_i}$ (including the gravity effects) is represented as
+
+    \begin{align}
+        \begin{split}
+            \sum f_i &= m_i\dot{v_{CoM_i}} \\
+            \sum m_{CoM_i} &= \mathbf{I}_{CoM_i}\dot{\omega_i} + \omega_i \times (I_{CoM_i}.\omega_i)
+        \end{split}
+    \end{align}
+
+    where $\dot{v_{CoM_i}}$ is the acceleration of the CoM of body $i$; $\dot{\omega_i}$ is the angular acceleration of the body $i$ and $\mathbf{I_{CoM_i}}$ is the inertia matrix of body $i$.
+    These equations are usually recursive algorithms \cite{featherstone2014rigid,featherstone2000robot} which make the computation less expensive when a computer involves.
+
+\end{enumerate}
 
 The introduction of centroidal momentum and centroidal dynamics based on the Centre of Mass (CoM) of a system is particularly a import concept since the humanoids build large momenta(so far only
 angular momentum is larger and linear momentum on legger humanoids are not upto the mark). The dynamic model of a robot can be expressed in two ways depending on the spaces that are used to describe the motion and the control input. The two approaches are: the joint space formulation, and the operational space 
@@ -261,6 +313,19 @@ prepare suitable responses for every situation. It would be desirable to obtain 
 and generic solvers tend to get stuck into local minima or they even return trivial solutions. The problem of finding the proper formulation and resolution of optimal control is still an open issue in robotics.
 
 \section{Approaches in Humanoid Balance Control}
+
+
+There has been various control strategies that has been implemented on the humanoid robot for various tasks but, the balance control strategies are the dominant task when it comes to legged humanoids. 
+The balance strategies are mostly based on the centroidal momentum and centroidal dynamics for the complex structured humanoids. These single point mass systems are less computational expensive considering
+point approximation method of Centre of Mass (CoM). Note that the concepts of CoM and ZMP will be discussed later in chapter \ref{chapter-3}. The balance control approaches based on single point masses will be discussed in this section among which the most common methods are
+
+\begin{enumerate}
+    \item Linear Inverted Pendulum Model
+    \item Double Inverted Pendulum Model
+    \item Cart Table Model
+    \item Spherical Inverted Pendulum Model (Simple and Double)
+\end{enumerate}
+
 
 \subsection{Linear Inverse Pendulum Approach}
 

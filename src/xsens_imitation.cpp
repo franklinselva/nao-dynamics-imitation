@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
     /// New object of the robot class.
     robot r(robot_IP, robot_port, mode); /// Connect to "name" robot.
-    balanceControl bControl;
+    // balanceControl bControl;
 
     int numberDOF;
     r.def_DOF();
@@ -137,15 +137,17 @@ int main(int argc, char *argv[])
 
     ///****************************************** MAIN LOOP *******************************************
 
-    int wait = 0; //parameters that allow an alternate command of move and setAngles
+    // int wait = 0; //parameters that allow an alternate command of move and setAngles
 
     std::cout << "PRESS ENTER TO EXIT" << std::endl;
     while (!kbhit())
     //while(true)
     {
+
         auto start = std::chrono::steady_clock::now();
 
         /// RECEIVING THE BUFFERS FROM XSENS PORT.
+
         if ((n = recvfrom(sock, buffer, sizeof buffer - 1, 0, (SOCKADDR *)&from, &fromsize)) < 0)
         {
             perror("recvfrom()");
@@ -156,6 +158,8 @@ int main(int argc, char *argv[])
         /// 24 bits package --> INITIALIZATION
         for (int i = 0; i < 6; i++)
         {
+            cout << "Hi" << endl;
+
             init_buffer[i] = buffer[i];
         }
         init_ID = init_buffer;
@@ -188,6 +192,7 @@ int main(int argc, char *argv[])
 
             if (first_time)
             {
+                cout<<"Acquired data from Xsens"<<std::endl;
                 xsens_joint_Npose.clear();
                 xsens_joint_Npose = xsens_joint;
 
@@ -225,7 +230,7 @@ int main(int argc, char *argv[])
         {
             std::cout << "MXTP02" << std::endl;
 
-            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+            // auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
 
             /// 32 bits package --> obtain the absolute XYZ position coordinate.
             int torso_RHand_LHand_Rfoot_Lfoot[] = {4, 10, 14, 17, 21}; /// In the XSENS's model
@@ -246,7 +251,7 @@ int main(int argc, char *argv[])
 
             buffer_count = 24 + torso_RHand_LHand_Rfoot_Lfoot[0] * 32;
             temp_euler.define(buffer, buffer_count);
-            float torsox, torsoy, torsoz, r_torsox, r_torsoy, r_torsoz;
+            float torsox, torsoy, torsoz; //r_torsox, r_torsoy, r_torsoz;
             torsox = temp_euler.position_x;
             torsoy = temp_euler.position_y;
             torsoz = temp_euler.position_z;
@@ -291,14 +296,13 @@ int main(int argc, char *argv[])
         {
             /// Begin imitation of Body joints
             cout << "\033[1;34mImitating \033[0m" << endl;
-            bControl.begin_imitation(FeetDistance, distanceRFoot_torso, distanceLFoot_torso, rotation_tete);
+            // bControl.begin_imitation(FeetDistance, distanceRFoot_torso, distanceLFoot_torso, rotation_tete);
         }
 
         first = false;
 
         ///REFRESH TERMINAL DATA
         elapsed_chrono_terminal = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_chrono_terminal);
-        float data;
         if (elapsed_chrono_terminal.count() > 2000)
         {
             //cout<<"distance pied: "<<distancepied<<" | moveIsActive: "<<motion.moveIsActive() <<" | movex= "<<movex<<" | movetheta = "<<movetheta<<" | data: "<<data<<endl;

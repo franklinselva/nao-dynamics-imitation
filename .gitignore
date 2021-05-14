@@ -1,0 +1,5 @@
+CMakeLists.txt.user
+build/
+build-config/
+build-nao-config/
+build-pepper-config/

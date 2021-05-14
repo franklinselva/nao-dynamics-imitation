@@ -3,18 +3,6 @@
 using namespace std;
 using namespace Eigen;
 
-balanceControl::balanceControl()
-{
-    /**
-     * @brief Initializes the balanceCotrol object for Imitation problem
-     * 
-     */
-}
-
-balanceControl::~balanceControl()
-{
-}
-
 /**
  * @brief Checks whether the robot is balanced or not.
  * Stores the value in robot.h data member: 'm_balanced"

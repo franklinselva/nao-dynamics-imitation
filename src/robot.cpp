@@ -60,6 +60,7 @@ robot::robot(std::string robot_IP, int robot_port, int mode) : m_robot_IP(robot_
     if (m_name == "PEPPER")
     {
         std::cout << "PEPPER ROBOT is not supported with this application..." << std::endl;
+        exit(2);
     }
 }
 

@@ -112,18 +112,18 @@ qi_stage_lib(JACOBIAN)
 # Create a list of source files
 set(_srcs
 	src/xsens_imitation.cpp
-	src/dynamics_param.cpp
+	# src/dynamics_param.cpp
 	src/xsens_tool.cpp
 	src/robot.cpp
 	src/balance_control.cpp
-	src/zmp_control.cpp
+	# src/zmp_control.cpp
 )
 set(_include
 	include/xsens_tool.h
-	include/dynamics_param.h
+	# include/dynamics_param.h
 	include/robot.h
 	include/balance_control.h
-	include/zmp_control.h
+	# include/zmp_control.h
 )
 
 set(_sim_srcs

@@ -7,12 +7,10 @@
  * @brief Holds the implementation of balance control and imitation of the nao robot using CoM based static balance
  * 
  */
+
 class balanceControl : public robot
 {
 public:
-    balanceControl();
-    ~balanceControl();
-
     void balance();
     void not_balanced();
     void DS();

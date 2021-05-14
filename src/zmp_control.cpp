@@ -1,8 +1,8 @@
 /**
  * @file zmp_control.cpp
  * @author Selvakumar H S (franklinselva10@gmail.com)
- * @brief Implementation of ZMP Control based on the references from "Jiménez et al. 2013; 
- * Robust feedback control of ZMP-based gait for the humanoid robot Nao"
+ * @brief Implementation of ZMP Control based on the references from "D. Gucci et al. 2018; 
+ * Robust Real-time Whole-Body Motion Retargeting from Human to Humanoid"
  * @version 0.1
  * @date 2021-05-07
  * 
@@ -38,7 +38,7 @@ Eigen::Vector2d ZMPControl::getZMP()
 
 /**
  * @brief Checks for the ZMP within the support polygon. 
- * ? Note that this function is approximately the same as the check_balance_and_save() function in balanceControl class. 
+ * ! Note that this function is approximately the same as the check_balance_and_save() function in balanceControl class. 
  * Reference taken for point within polygon from https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/PROJ2/InsidePoly.html
  * 
  * @return true if the ZMP is within the support polygon

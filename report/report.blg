@@ -1,0 +1,65 @@
+This is BibTeX, Version 0.99d (TeX Live 2021)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: report.aux
+The style file: IEEEtran.bst
+A level-1 auxiliary file: thesisfront.aux
+A level-1 auxiliary file: introduction.aux
+A level-1 auxiliary file: state_of_the_art.aux
+A level-1 auxiliary file: dynamcis_based_imitation.aux
+A level-1 auxiliary file: implementation.aux
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: biblio.bib
+-- IEEEtran.bst version 1.13 (2008/09/30) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty booktitle in evolution
+Warning--empty year in alma991010593879705596
+Warning--empty booktitle in LaValle2006PlanningA
+
+Done.
+You've used 27 entries,
+            4039 wiz_defined-function locations,
+            990 strings with 13503 characters,
+and the built_in function-call counts, 23211 in all, are:
+= -- 1807
+> -- 574
+< -- 220
++ -- 323
+- -- 93
+* -- 1122
+:= -- 3292
+add.period$ -- 64
+call.type$ -- 27
+change.case$ -- 25
+chr.to.int$ -- 546
+cite$ -- 30
+duplicate$ -- 1587
+empty$ -- 1946
+format.name$ -- 114
+if$ -- 5437
+int.to.chr$ -- 0
+int.to.str$ -- 27
+missing$ -- 268
+newline$ -- 112
+num.names$ -- 29
+pop$ -- 650
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 1793
+stack$ -- 0
+substring$ -- 1282
+swap$ -- 1345
+text.length$ -- 38
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 27
+warning$ -- 3
+while$ -- 108
+width$ -- 29
+write$ -- 285
+(There were 3 warnings)
