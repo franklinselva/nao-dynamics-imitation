@@ -20,7 +20,7 @@
 
  \bibliographystyle{IEEEtran}
  
- \doublespacing
+ \onehalfspacing
 
 \makeatletter
 \patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}

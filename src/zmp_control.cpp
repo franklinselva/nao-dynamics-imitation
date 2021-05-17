@@ -19,7 +19,7 @@
  * The model is assumed to be 3D-LIPM as referenced in Kajita. et. al. 2003 
  * Balance Control Analysis of Humanoid Robot based on ZMP Feedback Control
  * 
- * @return Eigen::Vector3f the position of ZMP
+ * @return Eigen::Vector2d the position of ZMP in 2D
  */
 Eigen::Vector2d ZMPControl::getZMP()
 {

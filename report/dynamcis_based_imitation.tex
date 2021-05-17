@@ -1,26 +1,232 @@
 \chapter{Dynamics Based Whole Body Imitation}
 \label{chapter-3}
 
+Whole body motion imitation of a humanoid robot is a challenging problem due to the kinematic and dynamic complexity of the robot. Humanoids are highly
+redundant but loses a higher number degrees of freedom compared to human actor. Mapping the actions and poses performed by human actor is kinematically 
+achieved \cite{sakka:hal-01054887,mukherjee2015inverse} even though the motion mapped here are slow paced and non-complex actions. Though the high paced
+actions are achieved and imitated on computer graphics \cite{brown2013control}, the problem on humanoid robots are completely different domain. To perform face paced actions, 
+dynamics parameters of the robot model need to be taken into account for which only a few solutions are proposed \cite{ramosponce, gucci:hal-01895145}. 
+As an additional contribution to the problem, this chapter explains a few concepts and methods to improve the imitation pace using acceleration control 
+keeping the dynamic balance of the robot.
+
 \section{Dynamic Considerations}
 \label{dynamic-consideration}
-\subsection{Rigid body constraints}
-\subsection{Multi body constraints}
+
+The dynamic model of the robot states the relation between the generalized torques $\tau$ and acceleration $\ddot{q}$ of the robot given its dynamic 
+parameters like Mass and Inertia. Since the humanoids are not attached to the environment, the feet and other humanoid parts like hand (even though 
+an assumption is made that only feet are in contact with the environment for this work) impose additional constraints that needed to be taken cared
+for keeping the motion intact and balance at all the time. Thus the representation of the robot must include these constraints in addition to the 
+balance constraints for which the control strategy must satisfy at all cost. The dynamic model of the humanoid robot (focused towards NAO robot) 
+is discussed in this section.
+
+\subsection{Rigid body dynamics}
+
+The Newton-Euler's equations for a rigid body $\mathcal{B}_j$ that are related to linear momentum $p_j$ and angular momentum $\omega_j$ is formulated as follows.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.175]{images/humanoid-rigid-bodies.png}\hfill
-    \caption{A rigid-body representation of humanoid robot}\hfill
-    \label{humanoid-rigid-body}
+    \includegraphics[scale=0.4]{images/rigid-body.png}\hfill
+    \caption{Schematic of a rigid body}\hfill
+    \label{fig: rigid-body}
 \end{figure}
 
-\subsection{ZMP}
+From equations \ref{eq: NE}, the sum of forces and sum of moments at CoM are given by,
+
+\begin{align}
+    \begin{split}
+        \sum f_j &= \frac{d}{dt}|_{\mathcal{F}_j}p_j 
+                = m_j\dot{v_{CoM_j}} \\
+        \sum m_j &= \frac{d}{dt}|_{\mathcal{F}_j} (\mathbf{I}_{CoM_j} \omega_j) 
+                =\mathbf{I}_{CoM_j}\dot{\omega_j} + \omega_j \times (I_{CoM_j}.\omega_j)
+    \end{split}
+\end{align}
+
+where $\dot{v_{CoM_j}}$ is the acceleration of the CoM of body $j$; $\dot{\omega_j}$ is the angular acceleration of the body $j$ and 
+$\mathbf{I_{CoM_j}}$ is the inertia matrix of body $j$. The NE equations can also be expressed at the origin $\mathcal{O}$ to the body 
+$\mathcal{B}_j$ can be expressed as proposed in \cite{khalil2004modeling} as
+
+
+\begin{align}
+    \begin{split}
+        \sum f_j &= m_j\dot{v_j} + \dot{\omega_j} \times ms_j + \omega_j \times (\omega_j \times ms_j)\\
+        \sum m_j &= \mathbf{I}_{\mathcal{O}}\dot{\omega_j} + \omega_j \times (I_{\mathcal{O}}.\omega_j) + ms_j \times \dot{v_j}
+    \end{split}
+    \label{eq: NE-rigid-origin}
+\end{align}
+
+where $ms_j = m_j.r_{\mathcal{O}CoM_i}$ is the vector of first moment of inertia and $\mathbf{I}_{\mathcal{O}}$ is the inertia matrix at origin $\mathcal{O}$.
+Using the screw notation, equation \ref{eq: NE-rigid-origin} can be rewritten as,
+
+
+\begin{align}
+    \sum w_j = \begin{bmatrix}
+        \sum f_j \\
+        \sum m_j
+    \end{bmatrix} &= 
+    \begin{bmatrix}
+        m_j\mathcal{I}_3 & \hat{ms_j}^T \\
+        \hat{ms_j}^T & I_{\mathbf{O}}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \dot{v_j} \\
+        \dot{\omega_J}
+    \end{bmatrix} +
+    \begin{bmatrix}
+        \omega_j \times (\omega_j \times (\omega_J \times ms_j)) \\
+        \omega_j \times (I_{\mathcal{O}}\omega_j)
+    \end{bmatrix} &= M_j\dot{q} + c_j
+    \label{eq: ddm}
+\end{align}
+
+where $\mathcal{I}_3$ is the identity matrix of size $3$, $M_j$ is the generalized inertial matrix of body $\mathcal{B}_j$ and $c_j$ is the vector of Coriolis and centrifugal effects.
+$\sum w_j$ (alias $\varGamma$) is the wrench representation which holds the sum of forces and moments and the equation \ref{eq: ddm} represent the direct dynamic model for a system.
+Then the inverse dynamic model can be given by,
+
+\begin{equation}
+    \dot{q} = M_j^{-1}(\varGamma - c_j)
+\end{equation}
+
+\subsection{Multi body dynamics}
+
+For modelling multi-body dynamics or tree-structured systems in this case, recursive NE algorithm is the most efficient problem than the recursive Lagrangian equations \cite{khalilunified}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{images/multi-rigid-body.png}\hfill
+    \caption{Rigid-body representation of tree structured model}\hfill
+    \label{fig: tree-rigid-body}
+\end{figure}
+
+The recursive algorithm for multi-body system adapted from equation \ref{eq: NE-rigid-origin} is given by \cite{khalilunified}
+
+\begin{align}
+    \begin{split}
+        \sum f_i &= f_i - \sum_r f_r + m_i\mathbf{g} - f_e \\
+        \sum m_i &= m_i - \sum_r (R_km_k + r_k \times f_k) + ms_i \times \mathbf{g} - m_e 
+    \end{split}
+\end{align}
+
+where $r_k = r_{\mathcal{O}k}$ is the distance vector from origin to force points on body $\mathcal{B}_i$; $ms_i \times \mathbf{g} = r_{\mathcal{O}CoM} \times m_i\mathbf{g}$
+$f_r$ and $m_r$ are the reaction forces and moments respectively exerted by the body $\mathcal{B}_r$ on the body $\mathcal{B}_i$ at point $\mathcal{O}_r$;
+$f_e$ and $m_e$ represent the forces and moments exerted on the environment by body $\mathcal{B}_i$. These values are assumed to be known.
+
 \subsection{Dynamic Model of humanoid robot}
-\subsection{Simplified dynamic model using LIPM}
+\subsection{Centroidal dynamics of humanoid robot}
+
+\subsection{Zero Moment Point (ZMP)}
+
+The zero moment point (ZMP) of the legged system can be defined as a point where the reaction force at the contact 
+of the foot with the ground doesn't produce any horizontal moment i.e., the point where the total of horizontal inertia and
+gravity forces equals zero. ZMP is useful in defining the stability criterion of the legged system using the support polygon of 
+the foot. A support polygon is a region of perpendicular projection of the balancing end-effectors (legs) that carry the robot's weight.
+A ZMP is a projection of the CoM onto the support polygon and it should lie within the region. Any attempt for the ZMP 
+outside the support polygon to an extent will result in robot fall. Having these considerations, the ZMP of a biped system
+can be given by,
+
+\begin{equation}
+    \begin{split}
+        P_{ZMP} = P_{CoM} - \ddot{P}_{CoM}(\frac{z_{CoM} - z_{ZMP}}{g + \ddot{z}_{CoM}})
+    \end{split}
+\end{equation}
+
+where $g = -9.81 m/s^2$ is the gravity acceleration. Fixing these points onto a specific position on the floor is 
+over-constraining and leaves less free DOF for the other tasks. However, this precise control over the point positioning is advantageous
+for choosing safer positions far from the foot’s edges and for avoiding points too far from the ankle which would require too much torque
+to hold the whole body \cite{louisepouble}.
+
 
 \section{Control Approach}
+
+Proposing a control approach for a humanoid robot imitating the human actor differs from standard humanoid control approaches since 
+feedback from both human and humanoid robot needs to be taken into account. This section explains the concepts and the approach 
+carried out for humanoid control for motion imitation using Stack of Tasks (SoT).
+
 \subsection{Balance Control}
-\subsubsection{CoM tracking and scaling}
-\subsubsection{ZMP tracking and scaling}
+
+\subsubsection{CoM Retargetting}
+
+To track the Centre of Mass (CoM) of the human actor, an implementation from \cite{penco:hal-01895145} is adapted to track the normalized offset on
+human's CoM relative to the support feet. For this case, a projection on 2D plane is considered. The human CoM $P_{CoM}, H$ can be 
+expressed using modified Hanavan Model approximation. The normalized offset $\mathbf{o}$ between 0 and 1 can be computed as follows.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{images/human-com-track.png}\hfill
+    \caption{Representation of offset projection of human actor \cite{penco:hal-01895145}}\hfill
+    \label{fig: human-com-offset}
+\end{figure}
+
+\begin{equation}
+    \mathbf{o} = \frac{(P_{CoM, H}) - P_{LFoot, H})(P_{RFoot, H} - P_{LFoot, H})}{||P_{RFoot, H} - P_{LFoot, H}||^2}
+    \label{eq: human-com-offset}
+\end{equation}
+
+where $P_{CoM, H}$ represent the position of CoM projection of human actor. on the horizontal plane; $P_{LFoot, H}$ and $P_{RFoot, H}$ are the position of 
+the left and right foot of the human actor respectively. The normalized offset $\mathbf{o}$ has an value of 0.5 during double support and has 0 or 1 
+during single support. The robot CoM projection then is calculated as,
+
+\begin{equation}
+    P_{CoM, R} = P_{LFoot, R} + \mathbf{o}(P_{RFoot, R} - P_{LFoot, R})
+    \label{eq: robot-com-1}
+\end{equation}
+
+To retarget also changes of the human CoM that are not on the line connecting the two feet, we first measure the maximum backward and forward CoM displacement
+ of the human and of the robot over their support polygon (with the origin lying on the feet line), i.e $\delta_{CoM_{back}, H}, \delta_{CoM_{forw}, H}, \delta_{CoM_{back}, R}$ and 
+$\delta_{CoM_{forw}, R}$ respectively. Then the retargetting the human CoM displacement $\vartriangle_{CoM, H}$ within the range such that $-\delta_{CoM_{back}, H} \leq 
+ \vartriangle_{CoM, H} \leq \delta_{CoM_{forw}, H}$ can be computed as ,
+
+ \begin{equation}
+     \mathbf{o'} = \frac{(\vartriangle_{CoM, H} - (-\delta_{CoM_{back}, H}))}{(\delta_{CoM_{forw}, H} - (-\delta_{CoM_{back}, H}))}
+ \end{equation}
+
+ for which the robot CoM displacement is
+
+ \begin{equation}
+     \vartriangle_{CoM, R} = \mathbf{o'}(\delta_{CoM_{forw}, R} + \delta_{CoM_{back}, R}) - \delta_{CoM_{back}, R}
+ \end{equation}
+
+This displacement is then used in the orthogonal direction of the line connecting the two feet of the robot.
+
+\subsubsection{Floating base Control}
+
+To control the height of the floating base of the robot,, the pelvis point of the human actor is considered. The deviation of the pelvis point of the human is given by,
+
+\begin{equation}
+    \vartriangle_{base_{t, H}} = base_{t,H} - base_{0, H} 
+\end{equation}
+
+where $t$ is the timestep such that $t \geq 0$. Then the correction for robot base is given by,
+
+\begin{equation}
+    \vartriangle_{base_{t, H}} = \frac{h_{base, R}}{h_{base, H}} \vartriangle_{base_{t, R}}
+\end{equation}
+
+
+where $\alpha =  \frac{h_{base, R}}{h_{base, H}} $ is the ratio of height of the floating base of the robot and of the pelvis of the human,
+at N-pose. Then the height of the robot base at each timestep can be calculated by,
+
+
+\begin{equation}
+    base_{t, R} = base_{0,R} + \vartriangle_{base_{t, R}}
+\end{equation}
+
+
+The change of orientation of the floating base is also calculated in a similar way, by computing the roll, pitch and yaw from the quaternion information given by the motion capture system.
+
+\subsubsection{ZMP Retargetting}
+
+During whole body teleoperation of humanoid robots, disastrous crashes may occur if the desired CoM trajectories recorded from the human do not ensure the balance of the controlled robot when retargeted.
+
+To this scope, we propose a QP-based “preprocessor” that adjusts in real-time the desired commanded CoM to satisfy constraints that represent a condition for dynamic balance. In order to achieve a stable CoM trajectory we employ the linear inverted pendulum model (LIPM) in combination with the Zero Moment Point (ZMP) criterion.
+The ZMP is represented with a point on the ground plane where the tipping moments, generated by the gravity and the inertial forces, are equal to zero. A humanoid robot keeps its balance if the ZMP is contained inside the support polygon of the robot.
+
+Through the LIPM model it is possible to establish a simple relation between the ZMP and the CoM dynamics:
+
+\begin{equation}
+    \ddot{p}_{CoM} = \frac{g}{h}(p_{CoM} - p_{ZMP})
+    \label{eq: zmp-control}
+\end{equation}
 
 \subsection{Posture Control}
 \subsubsection{Multi-Double Inverted Pendulum Model (M-DIP)}
