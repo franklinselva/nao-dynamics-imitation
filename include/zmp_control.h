@@ -22,7 +22,7 @@
  * 
  * 
  */
-class ZMPControl : public dPARAM, balanceControl
+class ZMPControl : public dPARAM, robot
 {
     /**
      * @brief This class calculates the ZMP and check for its position within the support polygon.
@@ -30,6 +30,7 @@ class ZMPControl : public dPARAM, balanceControl
      */
 public:
     ZMPControl();
+    ZMPControl(std::string robot_IP, int robot_port, int mode);
     ~ZMPControl();
 
     Eigen::Vector2d getZMP();
@@ -38,6 +39,7 @@ public:
     void check_balance_and_move();
     void balance();
     void unbalanced();
+    void DS();
 
     void begin_imitation(float feetdistance, float distancepiedR, float distancepiedL, float dRotation);
 
