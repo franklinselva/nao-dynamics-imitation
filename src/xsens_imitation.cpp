@@ -66,8 +66,9 @@ int main(int argc, char *argv[])
     }
 
     /// New object of the robot class.
-    robot r(robot_IP, robot_port, mode); /// Connect to "name" robot.
-    // balanceControl bControl;
+    balanceControl r(robot_IP, robot_port, mode);
+
+    // robot r(robot_IP, robot_port, mode); /// Connect to "name" robot.
 
     int numberDOF;
     r.def_DOF();
@@ -83,7 +84,7 @@ int main(int argc, char *argv[])
     //connection to the xsens as a server
     SOCKET sock = init_connection_server(xsens_IP, xsens_port);
     SOCKADDR_IN from = {0};
-    unsigned int fromsize = sizeof from;
+    socklen_t fromsize = sizeof from;
 
     ///*********************INITILISATION VARIABLES**************************///
 
@@ -97,7 +98,7 @@ int main(int argc, char *argv[])
     euler_buffer temp_euler;
     bool first = true;
     bool first_time = true;
-    char buffer[10000]; //buffer to stock the packages of XSENS
+    char buffer[1500]; //buffer to stock the packages of XSENS Initially 10000
     int n = 0;
 
     float FeetDistance;
@@ -148,18 +149,43 @@ int main(int argc, char *argv[])
 
         /// RECEIVING THE BUFFERS FROM XSENS PORT.
 
-        if ((n = recvfrom(sock, buffer, sizeof buffer - 1, 0, (SOCKADDR *)&from, &fromsize)) < 0)
+        if (first)
         {
-            perror("recvfrom()");
+            std::cout << "[INFO] Receiving first message from Xsens Network Streamer" << std::endl;
+        }
+
+        n = recvfrom(sock, buffer, sizeof buffer - 1, 0, (SOCKADDR *)&from, &fromsize);
+        if (n == -1)
+        {
+            perror("[Error] Unable to receive data from Xsens");
             exit(errno);
         }
+        else if (n == sizeof(buffer))
+        {
+            perror("[Error] Datagram too large for buffer");
+            exit(errno);
+        }
+        else
+        {
+            if (first)
+                std::cout << "[INFO] Received data from Xsens Network Streamer. Processing!" << std::endl;
+        }
+
+        // if ((n = recv(sock, buffer, sizeof buffer - 1, 0)) < 0) // (SOCKADDR *)&from, &fromsize)) < 0)
+        // {
+        //     perror("[Error] Unable to receive data from Xsens");
+        //     exit(errno);
+        // }
+
+        // if (first)
+        // {
+        //     std::cout << "[INFO] Received data from Xsens Network Streamer. Processing!" << std::endl;
+        // }
         buffer[n] = '\0';
 
         /// 24 bits package --> INITIALIZATION
         for (int i = 0; i < 6; i++)
         {
-            cout << "Hi" << endl;
-
             init_buffer[i] = buffer[i];
         }
         init_ID = init_buffer;
@@ -192,7 +218,7 @@ int main(int argc, char *argv[])
 
             if (first_time)
             {
-                cout<<"Acquired data from Xsens"<<std::endl;
+                cout << "Acquired data from Xsens" << std::endl;
                 xsens_joint_Npose.clear();
                 xsens_joint_Npose = xsens_joint;
 
@@ -296,7 +322,7 @@ int main(int argc, char *argv[])
         {
             /// Begin imitation of Body joints
             cout << "\033[1;34mImitating \033[0m" << endl;
-            // bControl.begin_imitation(FeetDistance, distanceRFoot_torso, distanceLFoot_torso, rotation_tete);
+            r.begin_imitation(FeetDistance, distanceRFoot_torso, distanceLFoot_torso, rotation_tete);
         }
 
         first = false;

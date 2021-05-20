@@ -96,6 +96,7 @@ bool ZMPControl::withinSP()
 /**
  * @brief Checks for left, right or double support and stores the value in: m_isDS, m_isLS, m_isRS
  * 
+ * 
  */
 void ZMPControl::checkSupportPhase()
 {
@@ -122,11 +123,13 @@ void ZMPControl::checkSupportPhase()
     }
 }
 
+/**
+ * @brief This function checks the balance of the robot and pushes the joint velocity variation
+ * ! Note that this function is approximately the same as the balance() function in balanceControl class. 
+ * Returns none
+ */
 void ZMPControl::balance()
 {
-    std::cout << "\033[1;32m CHECKING BALANCE... \033[0m" << std::endl;
-    std::cout << std::endl;
-
     std::vector<float> interpreted_robot_angle_wakeup(m_numberDOF, 0);
     std::vector<float> robot_joint_values(m_numberDOF, 0);
 
@@ -135,11 +138,6 @@ void ZMPControl::balance()
     float max_error_CoM = 1;
 
     m_q_desired = m_robot_joint_values;
-
-    std::cout << "Current joint configuration: " << std::endl
-              << m_q_current << std::endl;
-    std::cout << "Desired joint configuration: " << std::endl
-              << m_q_desired << std::endl;
 
     Eigen::Vector3d XYZ_CoM_T_desired, XYZ_CoM_RF_desired;
     Eigen::Vector3d XYZ_CoM_T_current, XYZ_CoM_RF_current;
@@ -150,25 +148,11 @@ void ZMPControl::balance()
     XYZ_CoM_T_current = Nao->GetXYZ_CoM(m_q_current);
     XYZ_CoM_RF_current = Nao->GetXYZ_CoM_RF(m_q_current);
 
-    // std::cout << "CoMd wrt Torso (Parallel to floor frame): " << std::endl
-    //           << XYZ_CoM_T_desired.transpose() << std::endl;
-    // std::cout << "CoMc wrt Torso (Parallel to floor frame): " << std::endl
-    //           << XYZ_CoM_T_current.transpose() << std::endl;
-
-    // std::cout << "CoMd wrt RFoot (Parallel to floor frame): " << std::endl
-    //           << XYZ_CoM_RF_desired.transpose() << std::endl;
-    // std::cout << "CoMc wrt RFoot (Parallel to floor frame): " << std::endl
-    //           << XYZ_CoM_RF_current.transpose() << std::endl;
-
     /// m_pos_CoM is based on a RFOOT frame.
     m_pos_CoM[0] = XYZ_CoM_RF_desired(0); // - m_pos_CoM_wakeup[0];
     m_pos_CoM[1] = XYZ_CoM_RF_desired(1); // - m_pos_CoM_wakeup[1];
 
     def_CoM_limits();
-
-    //std::cout << "Desired CoM position: " << m_pos_CoM_mean << std::endl;
-    std::cout << "Desired CoM position wrt RFoot: " << XYZ_CoM_RF_desired.transpose() << std::endl;
-    std::cout << "Current CoM position wrt RFoot: " << XYZ_CoM_RF_current.transpose() << std::endl;
 
     std::vector<float> q_CoM = m_motion->getCOM("Body", 2, true);
     std::vector<float> q_RF = m_motion->getPosition("RLeg", 2, true);
@@ -206,13 +190,8 @@ void ZMPControl::balance()
         if (m_isBalanced)
         {
 
-            std::cout << "m_q_balanced: " << std::endl
-                      << m_q_balanced.transpose() << std::endl;
             for (int i = 0; i < m_numberDOF; i++)
                 m_robot_joint_values[i] = m_q_balanced[i];
-            std::cout << std::endl
-                      << "Configuration send to the robot: " << std::endl
-                      << m_robot_joint_values << std::endl;
 
             m_robot_joint_values[8] = m_robot_joint_values[14]; /// LHipYawPitch = RHipYawPitch
 
@@ -227,28 +206,21 @@ void ZMPControl::balance()
                 }
                 else if (q_desired[i] > m_joint_limits_max[i])
                 {
-                    std::cout << "Joint " << i << " is over its limits." << std::endl;
                     m_robot_joint_values[i] = m_joint_limits_max[i];
                     m_isBalanced = false;
                 }
                 else if (q_desired[i] < m_joint_limits_min[i])
                 {
-                    std::cout << "Joint " << i << " is under its limits." << std::endl;
                     m_robot_joint_values[i] = m_joint_limits_min[i];
                     m_isBalanced = false;
                 }
             }
             if (m_isBalanced)
             {
-                std::cout << "angleInterpolation" << std::endl;
-                m_motion->angleInterpolationWithSpeed(m_robot_joint_names, m_robot_joint_values, m_motors_speed);
+                m_motion->angleInterpolationWithSpeed(m_robot_joint_names, m_robot_joint_values, m_motors_speed); //Angle Interpolation with speed
                 //m_motion->setAngles(m_robot_joint_names, m_robot_joint_values, m_motors_speed);
                 m_q_current = m_robot_joint_values;
             }
-            std::cout << std::endl
-                      << "Robot's rectified configuration: " << std::endl
-                      << m_robot_joint_values << std::endl;
-
             m_isBalanced = false;
         }
     }
@@ -259,20 +231,10 @@ void ZMPControl::balance()
 
         DS();
 
-        std::cout << "\033[1;32m Sending data to robot \033[0m" << std::endl;
-
-        //m_isBalanced = true;
-
         if (m_isRectified)
         {
-
-            std::cout << "m_q_rectified: " << std::endl
-                      << m_q_rectified.transpose() << std::endl;
             for (int i = 0; i < m_numberDOF; i++)
                 m_robot_joint_values[i] = m_q_rectified[i];
-            std::cout << std::endl
-                      << "Configuration send to the robot: " << std::endl
-                      << m_robot_joint_values << std::endl;
 
             m_robot_joint_values[8] = m_robot_joint_values[14]; /// LHipYawPitch = RHipYawPitch
 
@@ -301,20 +263,20 @@ void ZMPControl::balance()
             }
             if (m_isRectified)
             {
-                std::cout << "angleInterpolation" << std::endl;
-                m_motion->angleInterpolationWithSpeed(m_robot_joint_names, m_robot_joint_values, m_motors_speed);
+                m_motion->angleInterpolationWithSpeed(m_robot_joint_names, m_robot_joint_values, m_motors_speed); //Angle Interpolation with speed
                 //m_motion->setAngles(m_robot_joint_names, m_robot_joint_values, m_motors_speed);
                 m_q_current = m_robot_joint_values;
             }
-            std::cout << std::endl
-                      << "Robot's rectified configuration: " << std::endl
-                      << m_robot_joint_values << std::endl;
-
             m_isRectified = false;
         }
     }
 }
 
+/**
+ * @brief This functions is called and is rectified when the robot reaches a unbalanced state.
+ * ! Note that this function is approximately the same as the non_balanced() function in balanceControl class. 
+ * 
+ */
 void ZMPControl::unbalanced()
 {
     std::cout << "\033[1;31m NOT BALANCED \033[0m" << std::endl;
@@ -331,7 +293,6 @@ void ZMPControl::unbalanced()
     Eigen::VectorXd ZAngleDiff(m_numberDOF), ZLimits(m_numberDOF);
 
     Eigen::Vector2d dCoM;
-    //Eigen::VectorXd dX(12);
     Eigen::VectorXd dX(6);
 
     Eigen::VectorXd q_limits_mean(m_numberDOF), q_limits_delta(m_numberDOF);
@@ -471,6 +432,7 @@ void ZMPControl::unbalanced()
                   << fabs(dX(4)) << std::endl;
         std::cout << "|X_LF_desired_z - X_LF_current_z| = " << std::endl
                   << fabs(dX(5)) << std::endl;
+
         // End effectors
         bool EndEffectorsOK = true;
         VectorXd dXAbs = dX.cwiseAbs();

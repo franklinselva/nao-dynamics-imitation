@@ -8,6 +8,17 @@ using namespace Eigen;
  * Stores the value in robot.h data member: 'm_balanced"
  * 
  */
+
+balanceControl::balanceControl() : robot()
+{
+    std::cout << "[INFO] Initialized Robot Object" << std::endl;
+}
+
+balanceControl::balanceControl(std::string robot_IP, int robot_port, int mode) : robot(robot_IP, robot_port, mode)
+{
+    std::cout << "[INFO] Initialized Robot Object" << std::endl;
+}
+
 void balanceControl::balance()
 {
     std::cout << "\033[1;32m CHECKING BALANCE... \033[0m" << std::endl;

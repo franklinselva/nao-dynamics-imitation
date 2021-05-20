@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     /// New object of the robot class.
     VREP_HANDLER sim_handler(VREP_IP, VREP_PORT, ROBOT_IP, ROBOT_PORT);
     robot r(ROBOT_IP, ROBOT_PORT, mode);
-    balanceControl bControl;
+    balanceControl bControl(ROBOT_IP, ROBOT_PORT, mode);
 
     /// Check for simulator handler
     if (not sim_handler.all_ok)
