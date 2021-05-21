@@ -234,8 +234,6 @@ void handle_udp_msg(int fd, int argc, char *argv[])
                         switch (segment_id)
                         {
                         case 1:
-                            //pelvis.header.stamp.sec = time_stamp_sec;
-                            //pelvis.header.stamp.nsec = time_stamp_nsec;
                             pelvis.frame_id = "pelvis";
                             pelvis.position->push_back(x);
                             pelvis.position->push_back(y);
@@ -420,10 +418,6 @@ void handle_udp_msg(int fd, int argc, char *argv[])
         }
         round++;
         printf("round = %d\n", round);
-        //if (round == 2)
-        //break;
-        //parse_data(buf, &index, &parse_bytes);
-        //memset(buf, 0, BUFF_LEN);
     }
     free(buf);
 }
@@ -435,10 +429,6 @@ void handle_udp_msg(int fd, int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-    //ros::init(argc, argv, "xsens_data_publisher"); //name of the node
-    //ros::NodeHandle n;
-    //ros::Publisher data_publisher = n.advertise<sensor_msgs::JointState>("position_data", 50);
-
     int server_fd, ret;
     struct sockaddr_in ser_addr;
 
