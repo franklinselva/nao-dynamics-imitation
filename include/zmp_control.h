@@ -40,6 +40,7 @@ public:
     void balance();
     void unbalanced();
     void DS();
+    Eigen::Vector3f CoMRetargetting(Eigen::Vector3f lFootHuman, Eigen::Vector3f rFootHuman, Eigen::Vector3f CoMHuman);
 
     void begin_imitation(float feetdistance, float distancepiedR, float distancepiedL, float dRotation);
 

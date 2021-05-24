@@ -1,15 +1,23 @@
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <vector>
-#include <string>
+#include <iostream>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+#include <thread>
+#include <chrono>
+#include <stdexcept>
+#include <memory>
 
 #define SERVER_PORT 9763
 #define BUFF_LEN 1024
+
+#define VERBOSE false
 
 #define PI 3.141592
 
@@ -85,13 +93,7 @@ void parse_header(Header *header, char *buf, int *time_stamp_sec, int *time_stam
         sec = (int)float_time_code;
         nanosec = (int)((float_time_code - sec) * 1000);
         to_stamp_sec = sec + min * 60;
-        /* wrong logic!!
-	   nanosec = (int)((float_time_code - a)*1000); 
-	   float_time_code = (float)a;
-	   float_time_code /= 100;
-	   min = (int)float_time_code;
-	   sec = (int)((float_time_code - min)*100);
-	   to_stamp_sec = sec + min*60; */
+
         //**convert to time stamp**
         *time_stamp_sec = sec;
         *time_stamp_nsec = nanosec;
@@ -117,14 +119,16 @@ void parse_header(Header *header, char *buf, int *time_stamp_sec, int *time_stam
     }
     header->character_ID = buf[17];
     memcpy(header->reserved_for_future_use, buf + 18, 7);
-    /* printf("ID_String = %s\n", header->ID_String);
-    printf("sample_counter = %d\n", header->sample_counter);   //endian conversion
-    printf("datagram_counter = %d\n", header->datagram_counter);  
-    printf("number_of_items = %d\n", header->number_of_items);
-    printf("time_code = %d\n", (int)header->time_code);
-    printf("time = %d:%d:%d.%d\n", hour, min, sec, nanosec);
-    printf("time stamp for rosmsg: %d.%d\n", *stamp_sec, *stamp_nsec);
-    printf("character_ID = %d\n", header->character_ID); */
+    if (VERBOSE)
+    {
+        printf("ID_String = %s\n", header->ID_String);
+        printf("sample_counter = %d\n", header->sample_counter); //endian conversion
+        printf("datagram_counter = %d\n", header->datagram_counter);
+        printf("number_of_items = %d\n", header->number_of_items);
+        printf("time_code = %d\n", (int)header->time_code);
+        printf("time = %d:%d:%d.%d\n", hour, min, sec, nanosec);
+        printf("character_ID = %d\n", header->character_ID);
+    }
 }
 
 float parse_coordinates(float coordinate, int count, char *buf)
@@ -152,6 +156,12 @@ void convertFromYupToZup(float *x, float *y, float *z)
     *z = y1;
 }
 
+/**
+ * @brief Convert the provided float from radians to degree
+ * 
+ * @param rad float - Value in radians
+ * @return float - Value in degree
+ */
 float convertFromRadToDeg(float rad)
 {
     float deg = rad * 180 / PI;
@@ -192,7 +202,14 @@ void parse_body(char *buf, int *segment_id, float *x, float *y, float *z)
     //*k = q4_r;
 }
 
-void handle_udp_msg(int fd, int argc, char *argv[])
+/**
+ * @brief This function allows you to visualize the xsens data in terms of graph
+ * 
+ * @param fd  int - Socket file descriptor
+ * @param argc 
+ * @param argv 
+ */
+void visualize_xsens_data(int fd, int argc, char *argv[])
 {
     char *buf = (char *)malloc(1024);
     int read_bytes = 0;
@@ -451,7 +468,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    handle_udp_msg(server_fd, argc, argv);
+    visualize_xsens_data(server_fd, argc, argv);
 
     close(server_fd);
 }

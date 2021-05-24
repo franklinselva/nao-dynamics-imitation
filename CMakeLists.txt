@@ -151,3 +151,7 @@ qi_use_lib(vrep_simulation_test ALPROXIES ${ALPROXIES_DEPENDS} ALVISION ${ALVISI
 # Imitation Simulator Executable
 qi_create_bin(${PROG}_sim ${_sim_srcs} ${_sim_include} DEPENDS QI qpOASES JACOBIAN vrepAPI)
 qi_use_lib(${PROG}_sim ALCOMMON ALPROXIES BOOST QI qpOASES JACOBIAN vrepAPI)
+
+
+# Utils
+qi_create_bin(xsens_data_plot src/utils/xsens_data_plot.cpp DEPENDS ROOT)

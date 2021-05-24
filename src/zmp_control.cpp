@@ -1201,3 +1201,17 @@ bool ZMPControl::doIntersect(Eigen::Vector2d p1, Eigen::Vector2d q1, Eigen::Vect
 
     return false; // Doesn't fall in any of the above cases
 }
+
+/**
+ * @brief This function returns the expected CoM projection of the robot on the 2D horizontal plane
+ * The approach is baed on the paper "Gucci. et al. 2018, Robust Real-time Whole-Body Motion 
+ * Retargeting from Human to Humanoid"
+ * 
+ * @param lFootHuman Eigen::Vector3f - The position of the left foot of the human actor from Xsens
+ * @param rFootHuman Eigen::Vector3f - The position of the right foot of the human actor from Xsens
+ * @return Eigen::Vector3f The expected CoM projection of the robot on the 2D horizontal plane
+ */
+Eigen::Vector3f ZMPControl::CoMRetargetting(Eigen::Vector3f lFootHuman, Eigen::Vector3f rFootHuman, Eigen::Vector3f CoMHuman)
+{
+    float o = (CoMHuman - lFootHuman).dot(rFootHuman - lFootHuman) / (rFootHuman - lFootHuman).norm();
+}

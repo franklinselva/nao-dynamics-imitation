@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 
         /// RECEIVING THE BUFFERS FROM XSENS PORT.
 
-        if (first)
+        if (first_time)
         {
             std::cout << "[INFO] Receiving first message from Xsens Network Streamer" << std::endl;
         }
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            if (first)
+            if (first_time)
                 std::cout << "[INFO] Received data from Xsens Network Streamer. Processing!" << std::endl;
         }
 
@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
 
             if (first_time)
             {
-                cout << "Acquired data from Xsens" << std::endl;
+                cout << "[INFO] Acquired data from Xsens" << std::endl;
                 xsens_joint_Npose.clear();
                 xsens_joint_Npose = xsens_joint;
 
