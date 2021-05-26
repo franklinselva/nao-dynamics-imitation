@@ -8,6 +8,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <errno.h>
+#include <sys/time.h>
+#include <netdb.h>
+#include <arpa/inet.h>
 
 #include <thread>
 #include <chrono>
@@ -224,13 +228,15 @@ void visualize_xsens_data(int fd, int argc, char *argv[])
     Header header;
     int round = 0;
 
+    std::cout << "[INFO] Starting to receive data from Xsens!" << std::endl;
+
     while (1)
     {
         memset(buf, 0, BUFF_LEN);
         count = recvfrom(fd, buf + read_bytes, BUFF_LEN, 0, (struct sockaddr *)&client_addr, &len);
         if (count == -1)
         {
-            printf("receieve data fail!\n");
+            printf("[ERROR] Receieve data fail!\n");
             return;
         }
         read_bytes += count;
@@ -448,24 +454,25 @@ int main(int argc, char *argv[])
 {
     int server_fd, ret;
     struct sockaddr_in ser_addr;
+    const std::string SERVER_IP = argv[1];
 
     server_fd = socket(AF_INET, SOCK_DGRAM, 0); //AF_INET: IPV4; SOCK_DGRAM: UDP
     if (server_fd < 0)
     {
-        printf("create socket fail!\n");
+        printf("[ERROR] Create socket fail!\n");
         return -1;
     }
 
     memset(&ser_addr, 0, sizeof(ser_addr));
     ser_addr.sin_family = AF_INET;
-    ser_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    ser_addr.sin_addr.s_addr = inet_addr(SERVER_IP.c_str());
     ser_addr.sin_port = htons(SERVER_PORT);
 
     ret = bind(server_fd, (struct sockaddr *)&ser_addr, sizeof(ser_addr));
     if (ret < 0)
     {
-        printf("socket bind fail!\n");
-        return -1;
+        perror("[Error] Binding port to Socket Initialization failed!");
+        exit(EXIT_FAILURE);
     }
 
     visualize_xsens_data(server_fd, argc, argv);
