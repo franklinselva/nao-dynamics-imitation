@@ -133,7 +133,7 @@ const int _image_size = 640 * 480 * 3;
 int main(int argc, char *argv[])
 {
 	string vrep_ip = "127.0.0.1", nao_ip = "127.0.0.1";
-	int vrep_port = 19999, nao_port = 9559;
+	int vrep_port = 19999, nao_port = 9669;
 	if(argc == 1)
 		cout << "Usage : naoqi_vrep_bridge vrep_ip vrep_port naoqi_ip naoqi_port" << endl;
 	if(argc > 1)
