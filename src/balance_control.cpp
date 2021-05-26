@@ -11,12 +11,12 @@ using namespace Eigen;
 
 balanceControl::balanceControl() : robot()
 {
-    std::cout << "[INFO] Initialized Robot Object" << std::endl;
+    std::cout << "\033[INFO] Initialized Robot Object\033" << std::endl;
 }
 
 balanceControl::balanceControl(std::string robot_IP, int robot_port, int mode) : robot(robot_IP, robot_port, mode)
 {
-    std::cout << "[INFO] Initialized Robot Object" << std::endl;
+    std::cout << "\033[INFO] Initialized Robot Object\033" << std::endl;
 }
 
 void balanceControl::balance()

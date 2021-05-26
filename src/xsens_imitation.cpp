@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     r.set_speed(speed);
 
     /// Wake up (if not)
-    std::cout << " [INFO] Starting from NPose..." << std::endl;
+    std::cout << " \033[1;34m[INFO] Starting from NPose...\033[0m" << std::endl;
     r.wake_up();
 
     /// Definition of the Npose of robot (or WAKE UP pose)
@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
 
         if (first_time)
         {
-            std::cout << "[INFO] Receiving first message from Xsens Network Streamer" << std::endl;
+            std::cout << "\033[1;34m[INFO] Receiving first message from Xsens Network Streamer\033[0m" << std::endl;
         }
 
         n = recvfrom(sock, buffer, sizeof buffer - 1, 0, (SOCKADDR *)&from, &fromsize);
@@ -168,19 +168,9 @@ int main(int argc, char *argv[])
         else
         {
             if (first_time)
-                std::cout << "[INFO] Received data from Xsens Network Streamer. Processing!" << std::endl;
+                std::cout << "\033[1;34m[INFO] Received data from Xsens Network Streamer. Processing!\033[0m" << std::endl;
         }
 
-        // if ((n = recv(sock, buffer, sizeof buffer - 1, 0)) < 0) // (SOCKADDR *)&from, &fromsize)) < 0)
-        // {
-        //     perror("[Error] Unable to receive data from Xsens");
-        //     exit(errno);
-        // }
-
-        // if (first)
-        // {
-        //     std::cout << "[INFO] Received data from Xsens Network Streamer. Processing!" << std::endl;
-        // }
         buffer[n] = '\0';
 
         /// 24 bits package --> INITIALIZATION
@@ -218,7 +208,7 @@ int main(int argc, char *argv[])
 
             if (first_time)
             {
-                cout << "[INFO] Acquired data from Xsens" << std::endl;
+                cout << "\033[1;34m[INFO] Acquired data from Xsens. Processing \033[0m" << std::endl;
                 xsens_joint_Npose.clear();
                 xsens_joint_Npose = xsens_joint;
 
@@ -321,7 +311,7 @@ int main(int argc, char *argv[])
         if (!first)
         {
             /// Begin imitation of Body joints
-            cout << "\033[1;34mImitating \033[0m" << endl;
+            cout << "\033[1;34m[1;34mImitating \033[0m" << endl;
             r.begin_imitation(FeetDistance, distanceRFoot_torso, distanceLFoot_torso, rotation_tete);
         }
 
