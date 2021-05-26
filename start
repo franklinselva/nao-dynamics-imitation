@@ -17,7 +17,7 @@ echo "Loaded Dynamic Models";
 # echo "Started Naoqi framework and server for simulated robot";
 echo "*************************"
 
-./build-pepper-config/sdk/bin/nao_dynamics_imitation_sim 192.168.1.212 9764 127.0.0.1 19999 127.0.0.1 9009 0.3 2
+./build-pepper-config/sdk/bin/nao_dynamics_imitation_sim 0.0.0.0 9763 127.0.0.1 19999 127.0.0.1 9669 0.3 2
 
 elif [ "$1" = "REAL" ]
 then
@@ -27,8 +27,16 @@ export DYLD_LIBRARY_PATH=$(pwd)/build-pepper-config/sdk/lib
 echo "Loaded Dynamic Models"
 echo "*************************"
 
-./build-pepper-config/sdk/bin/nao_dynamics_imitation 0.0.0.0 9765 192.168.1.73 9559 0.3 2
+./build-pepper-config/sdk/bin/nao_dynamics_imitation 0.0.0.0 9763 192.168.1.73 9559 0.3 1
+
+
+elif [ "$1" = "DATA" ]
+then
+echo "STARTING XSENS DATA FLOW AND CONNECTION TEST"
+export DYLD_LIBRARY_PATH=$(pwd)/build-pepper-config/sdk/lib
+
+./build-pepper-config/sdk/bin/xsens_data_plot 0.0.0.0
 
 else
-echo "Provide Argumentt (SIMULATION/REAL)!"
+echo "Provide Argument (SIMULATION/REAL/DATA)!"
 fi
