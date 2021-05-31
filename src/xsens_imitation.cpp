@@ -12,12 +12,28 @@
 #include <robot.h>
 #include <stdio.h>
 #include <balance_control.h>
+#include <signal.h>
 
 #define PORT_XSENS 9764;
 #define XSENS_segments = 23;
 
 using namespace std;
 using namespace Eigen;
+
+SOCKET sock;
+
+/**
+ * @brief Keyboard Interrupt for closing socket connection with Xsens
+ * 
+ * @param signum Catching keyboard interrupt with Ctrl+C
+ */
+void signal_callback_handler(int signum)
+{
+    std::cout << "[INFO] Closing Connection for Xsens" << std::endl;
+    close(sock);
+    // Terminate program
+    exit(signum);
+}
 
 int main(int argc, char *argv[])
 {
@@ -82,9 +98,11 @@ int main(int argc, char *argv[])
     ///*********************INITILISATION SOCKET**************************///
 
     //connection to the xsens as a server
-    SOCKET sock = init_connection_server(xsens_IP, xsens_port);
+    sock = init_connection_server(xsens_IP, xsens_port);
     SOCKADDR_IN from = {0};
     socklen_t fromsize = sizeof from;
+    //Catch Keyboard Interrupt for closing the socket
+    signal(SIGINT, signal_callback_handler);
 
     ///*********************INITILISATION VARIABLES**************************///
 
@@ -98,7 +116,7 @@ int main(int argc, char *argv[])
     euler_buffer temp_euler;
     bool first = true;
     bool first_time = true;
-    char buffer[1500]; //buffer to stock the packages of XSENS Initially 10000
+    char buffer[10000]; //buffer to stock the packages of XSENS Initially 10000
     int n = 0;
 
     float FeetDistance;
@@ -165,11 +183,8 @@ int main(int argc, char *argv[])
             perror("[Error] Datagram too large for buffer");
             exit(errno);
         }
-        else
-        {
-            if (first_time)
-                std::cout << "\033[1;34m[INFO] Received data from Xsens Network Streamer. Processing!\033[0m" << std::endl;
-        }
+        else if (first_time)
+            std::cout << "\033[1;34m[INFO] Received data from Xsens Network Streamer. Processing!\033[0m" << std::endl;
 
         buffer[n] = '\0';
 
@@ -193,7 +208,7 @@ int main(int argc, char *argv[])
 
         if (init_ID == "MXTP20")
         {
-            std::cout << "MXTP20" << std::endl;
+            std::cout << "\033[1;34m[INFO] Started receiveing data from ID: \033[0m" << init_ID << std::endl;
 
             /// 20 bits package --> obtain xsens_vector filled with all joint rotations
             xsens_joint.clear();
@@ -241,10 +256,11 @@ int main(int argc, char *argv[])
         /// 4 bytes q3 rotation � segment rotation quaternion component 1 (j). *///
         /// 4 bytes q4 rotation � segment rotation quaternion component 1 (k). *///
         /// ********************************************************************///
+        std::cout << "INTI ID: " << init_ID << std::endl;
 
         if (init_ID == "MXTP02" && !first)
         {
-            std::cout << "MXTP02" << std::endl;
+            std::cout << "\033[1;34m[INFO] Started receiveing data from ID: \033[0m" << init_ID << std::endl;
 
             // auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
 
@@ -311,7 +327,7 @@ int main(int argc, char *argv[])
         if (!first)
         {
             /// Begin imitation of Body joints
-            cout << "\033[1;34m[1;34mImitating \033[0m" << endl;
+            cout << "\033[1;34m[INFO] Starting Imitation... \033[0m" << endl;
             r.begin_imitation(FeetDistance, distanceRFoot_torso, distanceLFoot_torso, rotation_tete);
         }
 
