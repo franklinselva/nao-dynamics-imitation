@@ -17,13 +17,18 @@
 #include <chrono>
 #include <stdexcept>
 #include <memory>
+#include <signal.h>
 
 #define SERVER_PORT 9763
 #define BUFF_LEN 1024
 
-#define VERBOSE false
+#define VERBOSE true
 
 #define PI 3.141592
+
+bool first = true;
+int server_fd, ret;
+struct sockaddr_in ser_addr;
 
 typedef struct header
 {
@@ -123,7 +128,7 @@ void parse_header(Header *header, char *buf, int *time_stamp_sec, int *time_stam
     }
     header->character_ID = buf[17];
     memcpy(header->reserved_for_future_use, buf + 18, 7);
-    if (VERBOSE)
+    if (VERBOSE || first)
     {
         printf("ID_String = %s\n", header->ID_String);
         printf("sample_counter = %d\n", header->sample_counter); //endian conversion
@@ -132,6 +137,7 @@ void parse_header(Header *header, char *buf, int *time_stamp_sec, int *time_stam
         printf("time_code = %d\n", (int)header->time_code);
         printf("time = %d:%d:%d.%d\n", hour, min, sec, nanosec);
         printf("character_ID = %d\n", header->character_ID);
+        first = false;
     }
 }
 
@@ -449,11 +455,16 @@ void visualize_xsens_data(int fd, int argc, char *argv[])
   server:
   socket-->bind-->recvfrom-->sendto-->close
 */
+void signal_callback_handler(int signum)
+{
+    std::cout << "[INFO] Closing Connection!" << std::endl;
+    close(server_fd);
+    // Terminate program
+    exit(signum);
+}
 
 int main(int argc, char *argv[])
 {
-    int server_fd, ret;
-    struct sockaddr_in ser_addr;
     const std::string SERVER_IP = argv[1];
 
     server_fd = socket(AF_INET, SOCK_DGRAM, 0); //AF_INET: IPV4; SOCK_DGRAM: UDP
@@ -462,6 +473,9 @@ int main(int argc, char *argv[])
         printf("[ERROR] Create socket fail!\n");
         return -1;
     }
+
+    //Catch Keyboard Interrupt
+    signal(SIGINT, signal_callback_handler);
 
     memset(&ser_addr, 0, sizeof(ser_addr));
     ser_addr.sin_family = AF_INET;
