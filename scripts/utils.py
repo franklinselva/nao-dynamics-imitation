@@ -22,6 +22,15 @@ class segment:
     ID = int()
 
 
+class joint:
+    """Holds the joint information for the human body
+    """
+
+    NAME = ""
+    CONNECTOR1 = ""
+    CONNECTOR2 = ""
+
+
 def print_segment(segment):
     print(logger.OKCYAN + "Segment Name: \t {}".format(segment.NAME) + logger.ENDC)
     print(logger.OKCYAN + "Segment ID: \t {}".format(segment.ID) + logger.ENDC)

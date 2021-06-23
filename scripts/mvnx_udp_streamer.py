@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import os
 
 from utils import logger, print_segment
+from utils import joint as joint_holder
 from utils import segment as segment_holder
 
 dirpath = os.path.abspath("../")
@@ -211,8 +212,18 @@ class MVNX:
 
     def parse_sensors(self):
         self.sensors = self.root[2][2]
+        self.sensors_information = []
         for sensor in self.sensors:
-            self.sensors_data.append(sensor.attrib['label'])
+            self.sensors_information.append(sensor.attrib['label'])
+
+        if self.verbose:
+            if self.sensors_information == []:
+                print(logger.FAIL +
+                      "[ERR.] Unable to parse sensor information" + logger.ENDC)
+            else:
+                print(logger.OKGREEN +
+                      "[INFO] Successfully parsed sensor information" + logger.ENDC)
+
         return self.sensors_information
 
     def parse_segments(self):
@@ -266,9 +277,24 @@ class MVNX:
 
     def parse_joints(self):
         self.joints = self.root[2][3]
+        self.joints_information = []
+
         for joint in self.joints:
-            self.joints.append(joint.attrib['label'])
-        return self.joints
+            joint_data = joint_holder()
+            joint_data.NAME = joint.attrib['label']
+            joint_data.CONNECTOR1 = joint[0].text.split('/')
+            joint_data.CONNECTOR2 = joint[1].text.split('/')
+
+            self.joints_information.append(joint_data)
+        if self.verbose:
+            if self.joints_information == []:
+                print(logger.FAIL +
+                      "[ERR.] Unable to parse joint information" + logger.ENDC)
+            else:
+                print(logger.OKGREEN +
+                      "[INFO] Successfully parsed joint information" + logger.ENDC)
+
+        return self.joints_information
 
     def parse_all(self):
         self.parse_subject()
