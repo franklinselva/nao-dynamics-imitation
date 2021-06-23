@@ -2,7 +2,7 @@ import numpy as np
 import xml.etree.ElementTree as ET
 import os
 
-from utils import logger, print_segment
+from utils import logger, print_segment, print_joint
 from utils import joint as joint_holder
 from utils import segment as segment_holder
 
@@ -293,6 +293,9 @@ class MVNX:
             else:
                 print(logger.OKGREEN +
                       "[INFO] Successfully parsed joint information" + logger.ENDC)
+
+        # for joint in self.joints_information:
+        #     print_joint(joint)
 
         return self.joints_information
 

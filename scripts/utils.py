@@ -36,3 +36,11 @@ def print_segment(segment):
     print(logger.OKCYAN + "Segment ID: \t {}".format(segment.ID) + logger.ENDC)
     print(logger.OKCYAN +
           "Connecting Joints: \t {}".format(segment.cJOINTS) + logger.ENDC)
+
+
+def print_joint(joint):
+    print(logger.OKCYAN + "Joint name: \t{}".format(joint.NAME) + logger.ENDC)
+    print(logger.OKCYAN +
+          "Joint Connector 1: \t{}".format(joint.CONNECTOR1) + logger.ENDC)
+    print(logger.OKCYAN +
+          "Joint Connector 2: \t{}".format(joint.CONNECTOR2) + logger.ENDC)
