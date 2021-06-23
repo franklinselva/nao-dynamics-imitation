@@ -457,7 +457,25 @@ where $F_{x1}$,$F_{x2}$,$F_{x3}$ and $F_{y1}$,$F_{y2}$,$F_{y3}$ represent the re
 \end{equation}
 
 \subsection{Cart Table Model}
+
+
 \subsection{Spherical Inverse Pendulum Approach}
+
+\subsection{Static Balace Control}
+
+During the walking gait, at any time, the projection of the centre of mass if the robot is within the support
+polygon \cite{katic2003survey}. This allowed the static walker to maintain balance if stopped at any timestep.
+However, this resulted in the slower walking speeds and larger translation of the centre of mass from one foot to
+other. The effect of the inertial forces acting on the robot segments are not taken into account except for the 
+gravitaional forces.
+
+\subsection{ Dynamics Balance Control}
+
+During dynamic balance, the centre of mass is allowed outside the support polygon to an extent but there might be 
+parts where the robot might fall \cite{katic2003survey}. The velocity and acceleration of each link of the robot
+model is taken into account resulting in comparitively faster motion maintaining the postural stability. Most of the
+modern robots are using dynamic control for its efficiency and versatile gait structure compared to static control.
+
 
 \section{Approaches in Posture Control and Motion Retargetting}
 \subsection{Mansard's work}
