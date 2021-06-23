@@ -1,7 +1,21 @@
 import numpy as np
 import xml.etree.ElementTree as ET
-import argparse
-import warnings
+import os
+
+dirpath = os.path.abspath("../")
+
+
+class logger:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 
 class MVNX:
     """
@@ -11,21 +25,24 @@ class MVNX:
 
     Can also be used as a command line tool.
     """
-    def __init__(self, path, orientation=None, position=None, velocity=None, \
-                       acceleration=None, angularVelocity=None, angularAcceleration=None, \
-                       footContacts=None, sensorFreeAcceleration=None, sensorMagneticField=None, \
-                       sensorOrientation=None, jointAngle=None, jointAngleXZY=None, jointAngleErgo=None, \
-                       centerOfMass=None, mapping=None, sensors=None, segments=None, joints=None, \
-                       root=None, mvn=None, comment=None, subject=None, version=None, build=None, label=None, \
-                       frameRate=None, segmentCount=None, recordingDate=None, configuration=None, userScenario=None, \
-                       securityCode=None, modality=None, time=None, index=None, timecode=None, ms=None):
-        if orientation is None:                       
+
+    def __init__(self, path=None, orientation=None, position=None, velocity=None,
+                 acceleration=None, angularVelocity=None, angularAcceleration=None,
+                 footContacts=None, sensorFreeAcceleration=None, sensorMagneticField=None,
+                 sensorOrientation=None, jointAngle=None, jointAngleXZY=None, jointAngleErgo=None,
+                 centerOfMass=None, mapping=None, sensors=None, segments=None, joints=None,
+                 root=None, mvn=None, comment=None, subject=None, version=None, build=None, label=None,
+                 frameRate=None, segmentCount=None, recordingDate=None, configuration=None, userScenario=None,
+                 securityCode=None, modality=None, time=None, index=None, timecode=None, ms=None):
+
+        self.verbose = True
+        if orientation is None:
             self.orientation = []
         if position is None:
             self.position = []
         if velocity is None:
             self.velocity = []
-        if acceleration is None:    
+        if acceleration is None:
             self.acceleration = []
         if angularVelocity is None:
             self.angularVelocity = []
@@ -60,11 +77,11 @@ class MVNX:
                             "acceleration": 3,
                             "angularVelocity": 4,
                             "angularAcceleration": 5,
-                            "footContacts": 6, 
+                            "footContacts": 6,
                             "sensorFreeAcceleration": 7,
                             "sensorMagneticField": 8,
                             "sensorOrientation": 9,
-                            "jointAngle": 10, 
+                            "jointAngle": 10,
                             "jointAngleXZY": 11,
                             "jointAngleErgo": 12,
                             "centerOfMass": 13}
@@ -75,7 +92,7 @@ class MVNX:
         if index is None:
             self.index = []
         else:
-            self.index = index 
+            self.index = index
         if timecode is None:
             self.timecode = []
         else:
@@ -97,16 +114,19 @@ class MVNX:
         self.userScenario = userScenario
         self.securityCode = securityCode
         self.modality = modality
+
         if path is None:
-            print('Please supply a path')
-        self.path = path
+            print('Path is been provided. Taking default path')
+            self.path = os.path.join(dirpath, "recordings/mvnx/all_test.mvnx")
+        else:
+            self.path = path
+
         if root is None:
             self.parse_mvnx(self.path)
             self.parse_all()
         else:
             self.root = root
-             
-      
+
     def parse_mvnx(self, path):
         """
         Take a path to an MVNX file and parse it
@@ -130,10 +150,28 @@ class MVNX:
         # self.userScenario = self.root[2].attrib['userScenario']
         self.securityCode = self.root[3].attrib['code']
         return self.root
-    
-    
-    def parse_modality(self, modality):
 
+    def parse_subject(self):
+        if self.root is None:
+            self.root = self.parse_mvnx(self.path)
+
+        self.subject = self.root[2]
+        self.subject_name = self.subject.attrib['label']
+        self.frameRate = self.subject.attrib['frameRate']
+        self.segmentCount = self.subject.attrib['segmentCount']
+        self.configuration = self.subject.attrib['configuration']
+
+        if self.verbose == True:
+            print(logger.OKGREEN +
+                  "[INFO] label: \t{}".format(self.subject_name) + logger.ENDC)
+            print(logger.OKGREEN +
+                  "[INFO] Frame rate: \t{}".format(self.frameRate) + logger.ENDC)
+            print(logger.OKGREEN +
+                  "[INFO] No. of segments: \t{}".format(self.segmentCount) + logger.ENDC)
+            print(logger.OKGREEN +
+                  "[INFO] Body Configuration: \t{}".format(self.configuration) + logger.ENDC)
+
+    def parse_modality(self, modality):
         """[With a given XML Tree, parse out the salient modalities within each frame]
 
         Args:
@@ -146,7 +184,7 @@ class MVNX:
         frames = self.root[2][3]
         for frame in frames[3:]:
             for child in frame[self.mapping[modality]:self.mapping[modality]+1]:
-                holding_list.append(child.text.split(' '))           
+                holding_list.append(child.text.split(' '))
         holding_list = np.array(holding_list)
         return holding_list.astype(float)
 
@@ -155,19 +193,19 @@ class MVNX:
         for frame in frames:
             self.time.append(frame.attrib['time'])
         return self.time
-    
+
     def parse_index(self):
         frames = self.root[2][6][3:]
         for frame in frames:
             self.index.append(frame.attrib['index'])
         return self.index
-    
+
     def parse_timecode(self):
         frames = self.root[2][6][3:]
         for frame in frames:
             self.timecode.append(frame.attrib['tc'])
         return self.timecode
-    
+
     def parse_ms(self):
         frames = self.root[2][6][3:]
         for frame in frames:
@@ -183,20 +221,22 @@ class MVNX:
         for sensor in self.root[2][2]:
             self.sensors.append(sensor.attrib['label'])
         return self.sensors
-    
+
     def parse_segments(self):
         for segment in self.root[2][1]:
             self.segments[segment.attrib['id']] = segment.attrib['label']
         return self.segments
-    
+
     def parse_joints(self):
         for joint in self.root[2][2]:
             self.joints.append(joint.attrib['label'])
         return self.joints
 
     def parse_all(self):
+        self.parse_subject()
         for key in self.mapping.keys():
             setattr(self, key, self.parse_modality(key))
+
         self.parse_time()
         self.parse_joints()
         self.parse_segments()
@@ -204,21 +244,10 @@ class MVNX:
         # self.parse_timecode()
         # self.parse_ms()
 
+
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--file", help="the MVNX file to parse", default="../recordings/dynamics/mvnx/right_arm_up.mvnx")
-    parser.add_argument("-m", "--modality", help="the modality to parse", default="jointAngle")
-    args = parser.parse_args()
-    if (args.file == None and args.modality == None):
-        parser.print_help()
-    else:
-        if args.file:
-            print(f'{args.file} selected - parsing MVNX')
-        mvnx = MVNX(args.file)
-        if args.modality:
-            print(mvnx.parse_modality(args.modality))
-        else:
-            warnings.warn('No modality selected')
+    mvnx = MVNX()
+
 
 if __name__ == "__main__":
     main()
