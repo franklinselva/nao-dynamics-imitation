@@ -2,19 +2,10 @@ import numpy as np
 import xml.etree.ElementTree as ET
 import os
 
+from utils import logger, print_segment
+from utils import segment as segment_holder
+
 dirpath = os.path.abspath("../")
-
-
-class logger:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
 
 class MVNX:
@@ -142,13 +133,14 @@ class MVNX:
         self.version = self.root[0].attrib['version']
         self.build = self.root[0].attrib['build']
         self.comment = self.root[1].text
-        self.label = self.root[2].attrib['label']
-        self.frameRate = self.root[2].attrib['frameRate']
-        self.segmentCount = self.root[2].attrib['segmentCount']
-        self.recordingDate = self.root[2].attrib['recDate']
-        # self.configuration = self.root[2].attrib['configuration']
-        # self.userScenario = self.root[2].attrib['userScenario']
         self.securityCode = self.root[3].attrib['code']
+
+        if self.verbose:
+            print(logger.OKBLUE + "[INFO] MVNX version: \t{}".
+                  format(self.version) + logger.ENDC)
+            print(logger.OKBLUE + "[INFO] MVNX build: \t{}".
+                  format(self.build) + logger.ENDC)
+
         return self.root
 
     def parse_subject(self):
@@ -218,29 +210,76 @@ class MVNX:
             return self.parse_modality(arg)
 
     def parse_sensors(self):
-        for sensor in self.root[2][2]:
-            self.sensors.append(sensor.attrib['label'])
-        return self.sensors
+        self.sensors = self.root[2][2]
+        for sensor in self.sensors:
+            self.sensors_data.append(sensor.attrib['label'])
+        return self.sensors_information
 
     def parse_segments(self):
-        for segment in self.root[2][1]:
-            self.segments[segment.attrib['id']] = segment.attrib['label']
-        return self.segments
+        """Parse segment information and frane offset from the mvnx file
+
+        Returns:
+            segment_information (list): Returns the list of custom class segment for the current file
+        """
+
+        self.segments = self.root[2][1]
+        self.segments_information = []
+
+        for segment in self.segments:
+            segment_data = segment_holder()
+            segment_data.NAME = segment.attrib['label']
+            segment_data.ID = segment.attrib['id']
+
+            # Parse individual connecting joints and points
+            joints, positions = [], []
+            for c_joint in segment[0]:
+                joint = c_joint.attrib['label']
+
+                # Only consider connecting joints and not anatomy joints
+                if joint[0] == 'p':
+                    continue
+
+                position = c_joint[0].text.split()
+                for i in range(len(position)):
+                    position[i] = float(position[i])
+
+                joints.append(joint)
+                positions.append(position)
+
+            segment_data.cJOINTS = joints
+            segment_data.posJOINTS = positions
+
+            self.segments_information.append(segment_data)
+
+        if self.verbose:
+            if self.segments_information == []:
+                print(logger.FAIL +
+                      "[ERR.] Unable to parse segment information" + logger.ENDC)
+            else:
+                print(logger.OKGREEN +
+                      "[INFO] Successfully parsed segment information" + logger.ENDC)
+
+        # for seg in self.segments_information:
+        #     print_segment(seg)
+
+        return self.segments, self.segments_information
 
     def parse_joints(self):
-        for joint in self.root[2][2]:
+        self.joints = self.root[2][3]
+        for joint in self.joints:
             self.joints.append(joint.attrib['label'])
         return self.joints
 
     def parse_all(self):
         self.parse_subject()
+        self.parse_segments()
+        self.parse_sensors()
+        self.parse_joints()
         for key in self.mapping.keys():
             setattr(self, key, self.parse_modality(key))
 
         self.parse_time()
-        self.parse_joints()
-        self.parse_segments()
-        self.parse_sensors()
+
         # self.parse_timecode()
         # self.parse_ms()
 
