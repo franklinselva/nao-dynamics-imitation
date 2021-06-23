@@ -187,6 +187,8 @@ int main(int argc, char *argv[])
             std::cout << "\033[1;34m[INFO] Received data from Xsens Network Streamer. Processing!\033[0m" << std::endl;
 
         buffer[n] = '\0';
+        std::cout << buffer << "\n"
+                  << sizeof(buffer) << std::endl;
 
         /// 24 bits package --> INITIALIZATION
         for (int i = 0; i < 6; i++)
@@ -194,6 +196,7 @@ int main(int argc, char *argv[])
             init_buffer[i] = buffer[i];
         }
         init_ID = init_buffer;
+        std::cout << "Buffer: " << buffer << std::endl;
         buffer_count = 24; //current byte
 
         /// ************MXTP20 is a message with: *****************///
@@ -206,9 +209,9 @@ int main(int argc, char *argv[])
         /// 4 bytes floating point rotation around segment z�axis. ///
         /// *******************************************************///
 
-        if (init_ID == "MXTP20")
+        if (init_ID == "MXTP20" || buffer == "MXTP20")
         {
-            std::cout << "\033[1;34m[INFO] Started receiveing data from ID: \033[0m" << init_ID << std::endl;
+            std::cout << "\033[1;34m[INFO] Started receiving data from ID: \033[0m" << init_ID << std::endl;
 
             /// 20 bits package --> obtain xsens_vector filled with all joint rotations
             xsens_joint.clear();
@@ -256,11 +259,11 @@ int main(int argc, char *argv[])
         /// 4 bytes q3 rotation � segment rotation quaternion component 1 (j). *///
         /// 4 bytes q4 rotation � segment rotation quaternion component 1 (k). *///
         /// ********************************************************************///
-        std::cout << "INTI ID: " << init_ID << std::endl;
+        // std::cout << "INIT ID: " << init_ID << std::endl;
 
-        if (init_ID == "MXTP02" && !first)
+        if (init_ID == "MXTP02" && !first || buffer == "MXTP02")
         {
-            std::cout << "\033[1;34m[INFO] Started receiveing data from ID: \033[0m" << init_ID << std::endl;
+            std::cout << "\033[1;34m[INFO] Started receiving data from ID: \033[0m" << init_ID << std::endl;
 
             // auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
 

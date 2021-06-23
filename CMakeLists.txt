@@ -40,6 +40,7 @@ find_package(qibuild REQUIRED)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(.)
 include_directories(include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/root/include)
 
 ############################################################
 ######################### VREP #############################
@@ -154,4 +155,4 @@ qi_use_lib(${PROG}_sim ALCOMMON ALPROXIES BOOST QI qpOASES JACOBIAN vrepAPI)
 
 
 # Utils
-qi_create_bin(xsens_data_plot src/utils/xsens_data_plot.cpp DEPENDS ROOT)
+qi_create_bin(xsens_data_plot src/utils/xsens_data_plot.cpp)

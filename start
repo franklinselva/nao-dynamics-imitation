@@ -27,7 +27,7 @@ export DYLD_LIBRARY_PATH=$(pwd)/build-pepper-config/sdk/lib
 echo "Loaded Dynamic Models"
 echo "*************************"
 
-./build-pepper-config/sdk/bin/nao_dynamics_imitation 0.0.0.0 9763 192.168.1.73 9559 0.3 1
+./build-pepper-config/sdk/bin/nao_dynamics_imitation 0.0.0.0 9763 192.168.1.73 9559 0.2 2
 
 
 elif [ "$1" = "DATA" ]
