@@ -3,8 +3,10 @@ import xml.etree.ElementTree as ET
 import os
 
 from utils import logger, print_segment, print_joint
+from utils import FRAME_ID
 from utils import joint as joint_holder
 from utils import segment as segment_holder
+from utils import frame as frame_holder
 
 dirpath = os.path.abspath("../")
 
@@ -108,8 +110,9 @@ class MVNX:
         self.modality = modality
 
         if path is None:
-            print('Path is been provided. Taking default path')
             self.path = os.path.join(dirpath, "recordings/mvnx/all_test.mvnx")
+            print(logger.OKCYAN +
+                  "[INFO] Parsing file: \t{}".format(self.path) + logger.ENDC)
         else:
             self.path = path
 
@@ -145,6 +148,8 @@ class MVNX:
         return self.root
 
     def parse_subject(self):
+        """Parse information of the subject for Xsens MVN
+        """
         if self.root is None:
             self.root = self.parse_mvnx(self.path)
 
@@ -156,13 +161,14 @@ class MVNX:
 
         if self.verbose == True:
             print(logger.OKGREEN +
-                  "[INFO] label: \t{}".format(self.subject_name) + logger.ENDC)
+                  "[INFO] label: \t\t\t{}".format(self.subject_name) + logger.ENDC)
             print(logger.OKGREEN +
-                  "[INFO] Frame rate: \t{}".format(self.frameRate) + logger.ENDC)
+                  "[INFO] Frame rate: \t\t{}".format(self.frameRate) + logger.ENDC)
             print(logger.OKGREEN +
                   "[INFO] No. of segments: \t{}".format(self.segmentCount) + logger.ENDC)
             print(logger.OKGREEN +
                   "[INFO] Body Configuration: \t{}".format(self.configuration) + logger.ENDC)
+            print(logger.OKGREEN + '-'*50 + logger.ENDC)
 
     def parse_modality(self, modality):
         """[With a given XML Tree, parse out the salient modalities within each frame]
@@ -211,6 +217,11 @@ class MVNX:
             return self.parse_modality(arg)
 
     def parse_sensors(self):
+        """Parse sensor information of Xsens MVN Analyze
+
+        Returns:
+            sensors_information (list): list of sensor names for the Xsens MVN Analyze
+        """
         self.sensors = self.root[2][2]
         self.sensors_information = []
         for sensor in self.sensors:
@@ -276,6 +287,11 @@ class MVNX:
         return self.segments, self.segments_information
 
     def parse_joints(self):
+        """Parse joint information and store in custom specific class
+
+        Returns:
+            joint_information (list): Returns the list of specific class - joint
+        """
         self.joints = self.root[2][3]
         self.joints_information = []
 
@@ -299,15 +315,82 @@ class MVNX:
 
         return self.joints_information
 
+    def parse_frame(self):
+        """Parse frame information with details related from Xsens User Manual. For now, only information on position, orientation, acceleration, joint_angle and centre of mass are extracted. 
+
+        Returns:
+            frame_information (list): Returns the list of frames at each timestep.
+        """
+        self.frames = self.root[2][6]
+        self.frame_information = []
+        count = 1
+
+        for frame in self.frames:
+            frame_data = frame_holder()
+            # print(logger.OKCYAN +
+            #   "[INFO] Processing frame {}...".format(count) + logger.ENDC, flush=True, end="\r")
+
+            # Only parse information on Normal poses
+            if frame.attrib['type'] == 'normal':
+                frame_data.TIME = frame.attrib['time']
+                frame_data.TIMESTAMP = frame.attrib['tc']
+                frame_data.ms = frame.attrib['ms']
+                frame_data.TYPE = frame.attrib['type']
+
+                # Parse position information
+                positions = frame[FRAME_ID.POSITION].text.split()
+                for i in range(0, len(positions) - 1):
+                    positions[i] = float(positions[i])
+
+                positions = np.asarray(positions, dtype=np.float32)
+                frame_data.POSITION = positions.reshape(
+                    (int(positions.size/3), 3))
+
+                # Parse orientation information
+                orientations = frame[FRAME_ID.ORIENTATION].text.split()
+                for i in range(0, len(orientations) - 1):
+                    orientations[i] = float(orientations[i])
+
+                orientations = np.asarray(orientations, dtype=np.float32)
+                frame_data.ORIENTATION = orientations.reshape(
+                    (int(orientations.size/4), 4))
+
+                # Parse Euler's angle
+                joint_angles = frame[FRAME_ID.JOINT_ANGLE].text.split()
+                for i in range(0, len(joint_angles) - 1):
+                    joint_angles[i] = float(joint_angles[i])
+
+                joint_angles = np.asarray(joint_angles, dtype=np.float32)
+                frame_data.JOINT_ANGLE = joint_angles.reshape(
+                    (int(joint_angles.size/3), 3))
+
+                # Parse CoM information
+                CoM = frame[FRAME_ID.CENTRE_OF_MASS].text.split()
+                for i in range(0, len(CoM) - 1):
+                    CoM[i] = float(CoM[i])
+
+                CoM = np.asarray(CoM, dtype=np.float32)
+                frame_data.CoM = CoM.reshape((int(CoM.size/3), 3))
+
+                self.frame_information.append(frame_data)
+                count += 1
+
+        if self.verbose:
+            if self.joints_information == []:
+                print(logger.FAIL +
+                      "[ERR.] Unable to parse frame information" + logger.ENDC)
+            else:
+                print(logger.OKGREEN +
+                      "[INFO] Successfully parsed frame information" + logger.ENDC)
+
+        return self.frame_information
+
     def parse_all(self):
         self.parse_subject()
         self.parse_segments()
         self.parse_sensors()
         self.parse_joints()
-        for key in self.mapping.keys():
-            setattr(self, key, self.parse_modality(key))
-
-        self.parse_time()
+        self.parse_frame()
 
         # self.parse_timecode()
         # self.parse_ms()

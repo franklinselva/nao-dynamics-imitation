@@ -1,4 +1,5 @@
 
+
 class logger:
     """Logger based colouring for print statements
     """
@@ -29,6 +30,40 @@ class joint:
     NAME = ""
     CONNECTOR1 = ""
     CONNECTOR2 = ""
+
+
+class FRAME_ID:
+    """Used as enumeration for the frame ID. Lists the available information for a given frame at 1 second.
+    """
+    ORIENTATION = 0
+    POSITION = 1
+    VELOCITY = 2
+    ACCELERATION = 3
+    ANGULAR_VELOCITY = 4
+    ANGULAR_ACCELERATION = 5
+    FOOT_CONTACT = 6
+    SENSOR_FREE_ACCELERATION = 7
+    SENSOR_MAGNETIC_FIELD = 8
+    SENSOR_ORIENTATION = 9
+    JOINT_ANGLE = 10
+    JOINT_ANGLE_XYZ = 11
+    JOINT_ANGLE_ERGO = 12
+    JOINT_ANGLE_ERGO_XYZ = 13
+    CENTRE_OF_MASS = 14
+
+
+class frame:
+    TIME = int()
+    TIMESTAMP = None
+    ms = None
+    TYPE = ""
+
+    POSITION = None
+    ORIENTATION = None
+    VELOCITY = None
+    ACCELERATION = None
+    JOINT_ANGLE = None
+    CENTRE_OF_MASS = None
 
 
 def print_segment(segment):
