@@ -117,11 +117,13 @@ class MVNX:
         else:
             self.path = path
 
-        if root is None:
-            self.parse_mvnx(self.path)
-            self.parse_all()
-        else:
-            self.root = root
+        self.root = None
+
+        # if root is None:
+        #     self.parse_mvnx(self.path)
+        #     self.parse_all()
+        # else:
+        #     self.root = root
 
     def parse_mvnx(self, path):
         """
@@ -285,7 +287,7 @@ class MVNX:
         # for seg in self.segments_information:
         #     print_segment(seg)
 
-        return self.segments, self.segments_information
+        return self.segments_information
 
     def parse_joints(self):
         """Parse joint information and store in custom specific class
@@ -344,6 +346,7 @@ class MVNX:
                     positions[i] = float(positions[i])
 
                 positions = np.asarray(positions, dtype=np.float32)
+                frame_data.PLOT_POSITIONS = positions
                 frame_data.POSITION = positions.reshape(
                     (int(positions.size/3), 3))
 
@@ -371,6 +374,7 @@ class MVNX:
                     CoM[i] = float(CoM[i])
 
                 CoM = np.asarray(CoM, dtype=np.float32)
+                frame_data.PLOT_CoM = CoM
                 frame_data.CoM = CoM.reshape((int(CoM.size/3), 3))
 
                 self.frame_information.append(frame_data)

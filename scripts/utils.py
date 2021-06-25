@@ -58,6 +58,9 @@ class frame:
     ms = None
     TYPE = ""
 
+    PLOT_POSITIONS = None
+    PLOT_CoM = None
+
     POSITION = None
     ORIENTATION = None
     VELOCITY = None
