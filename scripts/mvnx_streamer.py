@@ -29,33 +29,40 @@ class mvnx_streamer():
             print(logger.FAIL +
                   "[ERR.] Unable to bind socket: {}".format(e) + logger.ENDC)
 
-    def encode_message(self):
+    def send_message(self):
         msg = ""
         msg_prefix = "MXTP"
 
         if PUB_JOINTS:
             msg_prefix = msg_prefix + "20"
-            yield msg
+            try:
+                self.sock.sendto(msg.encode('utf-8'),
+                                 (SERVER_IP, SERVER_PORT))
+            except Exception as e:
+                print(logger.FAIL + "[ERR.] Unable to stream data")
 
         if PUB_CoM:
             msg_prefix = msg_prefix + "24"
-            yield msg
+            try:
+                self.sock.sendto(msg.encode('utf-8'),
+                                 (SERVER_IP, SERVER_PORT))
+            except Exception as e:
+                print(logger.FAIL + "[ERR.] Unable to stream data")
 
         if PUB_QUAT:
             msg_prefix = msg_prefix + "02"
-            yield msg
+            try:
+                self.sock.sendto(msg.encode('utf-8'),
+                                 (SERVER_IP, SERVER_PORT))
+            except Exception as e:
+                print(logger.FAIL + "[ERR.] Unable to stream data")
 
     def stream_udp(self):
         """Stream Xsens data parsed from recorded MVNX files using UDP Protocol 
         """
         try:
             while True:
-                msg = self.encode_message()
-                try:
-                    self.sock.sendto(msg.encode('utf-8'),
-                                     (SERVER_IP, SERVER_PORT))
-                except Exception as e:
-                    print(logger.FAIL + "[ERR.] Unable to stream data")
+                self.send_message()
         except KeyboardInterrupt:
             print(logger.OKGREEN + "[INFO] Closing connection" + logger.ENDC)
             exit(2)
