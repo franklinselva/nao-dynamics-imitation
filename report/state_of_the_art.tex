@@ -330,12 +330,44 @@ point approximation method of Centre of Mass (CoM). Note that the concepts of Co
 
 \subsection{Linear Inverse Pendulum Approach}
 
+When it comes to real-time motion planning and control, single point masses plays extremely major role in holding the balance of the biped robots. A number of physical points can be simplified and summarized from 
+these models where some of the points include Centre of Mass (CoM) and Centre of Pressure (CoP). The CoM is defined as the sum of the mass of the individual links of a system and CoP is defined as the point on the 
+ground that represents the overall force interaction of all ground contact points. The dynamics of any system of rigid bodies can be approximated usind the dynamics at CoM. At any time $t$, the sum of the force acting 
+on the system results in the acceleration of CoM in the system. Mathematically, it can be represented as,
+
+
+\begin{equation}
+    S.\begin{bmatrix}
+        f_{gr} \\
+        \tau_{gr}
+    \end{bmatrix} = 
+    \begin{bmatrix}
+        ma \\
+        \dot{H}
+    \end{bmatrix}
+\end{equation}
+
+
+where $m$ is the total mass of the system, $a$ is a $(3 \times 1)$ vector representing the CoM acceleration. $\dot{H}$ represent the change in amgular momentum, $f_{gr}$ is the ground reaction forces and $\tau_{gr}$ is the torque vector. And $S$ can be represented as the 
+Selection Matrix equal to \cite{elhasairi2015humanoid}, 
+
+
+\begin{equation}
+    S = \begin{bmatrix}
+        I_{3 \times 3} && I_{3 \times 3} && 0_{3 \times 3} && 0_{3 \times 3} \\
+        (P_R - COM)\times && (P_L - COM)\times && I_{3 \times 3} && I_{3 \times 3}
+    \end{bmatrix}
+\end{equation}
+
+where $P_R$ and $P_L$ are the feet position, $I_{N \times N}$ and $0_{N \times N}$ are the identity matrix and zero matrices of degree $N$; and $v\times$ is the left cross product matrix of any vector $v$
+
+
 Consider a simple inverted pendulum model as in figure [\ref{ipm}] with mass $m$ and link length $l_1$, the kinematics and dynamics for the model can be represented as,
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=.15]{images/ipm.jpeg}\hfill
-    \caption{Simple Inverse Pendulum Model}\hfill
+    \includegraphics[scale=.5]{images/LIP.jpg}\hfill
+    \caption{Linear Inverse Pendulum Model}\hfill
     \label{ipm}
 \end{figure}
 
@@ -382,7 +414,7 @@ Consider a double inverted pendulum model as in figure [\ref{dipm}] with mass $m
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.15]{images/dipm.jpeg}\hfill
+    \includegraphics[scale=0.45]{images/DIPM.jpg}\hfill
     \caption{Double Inverse Pendulum Model}\hfill
     \label{dipm}
 \end{figure}
