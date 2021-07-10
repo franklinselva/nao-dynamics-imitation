@@ -329,7 +329,7 @@ point approximation method of Centre of Mass (CoM). Note that the concepts of Co
 
 
 \subsection{Linear Inverse Pendulum Approach}
-
+\label{sec: LIPM}
 When it comes to real-time motion planning and control, single point masses plays extremely major role in holding the balance of the biped robots. A number of physical points can be simplified and summarized from 
 these models where some of the points include Centre of Mass (CoM) and Centre of Pressure (CoP). The CoM is defined as the sum of the mass of the individual links of a system and CoP is defined as the point on the 
 ground that represents the overall force interaction of all ground contact points. The dynamics of any system of rigid bodies can be approximated usind the dynamics at CoM. At any time $t$, the sum of the force acting 
@@ -337,6 +337,7 @@ on the system results in the acceleration of CoM in the system. Mathematically, 
 
 
 \begin{equation}
+    \label{eq: scaling-pendulum}
     S.\begin{bmatrix}
         f_{gr} \\
         \tau_{gr}
@@ -359,10 +360,9 @@ Selection Matrix equal to \cite{elhasairi2015humanoid},
     \end{bmatrix}
 \end{equation}
 
-where $P_R$ and $P_L$ are the feet position, $I_{N \times N}$ and $0_{N \times N}$ are the identity matrix and zero matrices of degree $N$; and $v\times$ is the left cross product matrix of any vector $v$
+where $P_R$ and $P_L$ are the feet position, $I_{N \times N}$ and $0_{N \times N}$ are the identity matrix and zero matrices of degree $N$; and $v\times$ is the left cross product matrix of any vector $v$. Equation \ref{eq: scaling-pendulum} 
+represents the forces acting at CoM due to gravity and ground reaction forces in the first row and torque about CoM due to change in anguluar momentum.
 
-
-Consider a simple inverted pendulum model as in figure [\ref{ipm}] with mass $m$ and link length $l_1$, the kinematics and dynamics for the model can be represented as,
 
 \begin{figure}[h!]
     \centering
@@ -371,47 +371,44 @@ Consider a simple inverted pendulum model as in figure [\ref{ipm}] with mass $m$
     \label{ipm}
 \end{figure}
 
-Position:
+Consider a simple inverted pendulum model as in figure [\ref{ipm}] with single point mass $m$ and link length $l$, given the assumptions that no angular momentum will be generated or changed for the single point mass. Furthermore, an additional assumption
+is made to the dynamics of the system can be represented 
+as,
+
 \begin{equation}
-\begin{split}
-    x_1 &= -l_1\sin{q_1} \\
-    y_1 &= l_1\cos{q_1}
-\end{split}
+    \label{eq: CoP}
+    m\ddot{x} = \frac{m\mathbf{g}}{z_0}(x - x_{CoP})
 \end{equation}
 
-Velocity:
-\begin{equation}
-\begin{split}
-    \Dot{x_1} &= -l_1\cos({q_1})\Dot{q_1} \\
-    \Dot{y_1} &= -l_1\sin({q_1})\Dot{q_1}
-\end{split}
-\end{equation}
+where $x$ represents the CoM horizontal position at a constant height $z_0$, and $x_{CoP} = \frac{F_T - \tau}{F_N}$ represent the CoP position where $F_T$ is the tangential component of the ground reaction force, $\tau$ is the ankle torque and $F_N = m\mathbf{g}$ is the normal
+vertical component of the ground reaction force. Thus the LIPM model can be used for ankle balance strategy for legged and humanoid robots.
 
-Acceleration:
-\begin{equation}
-\begin{split}
-    \Ddot{x_1} &= l_1 \sin{(q_1)}\Dot{q_1}^2 - l_1\cos{(q_1)}\Ddot{q_1} \\
-    \Ddot{y_1} &= -l_1 \cos{(q_1)}\Dot{q_1}^2 - l_1 \sin{(q_1)}\Ddot{q_1}
-\end{split}
-\end{equation}
+There are number of ways of using $X_{CoP}$ as the control input for the system as surveyed in \cite{elhasairi2015humanoid}.
+Firstly, the rate of change of $x_{CoP}$ can be limited to achieve smooth trajectories. Secondly, the CoP position is often a measured quantity in most humanoid robots. Thirdly, it is not possible to change CoP position instantaneously. except during the 
+transition from single to double support. 
 
-Forces and Torques:
-\begin{equation}
-\begin{split}
-    m_1\Ddot{x_1} &= F_{x1} \\
-    m_1\Ddot{y_1} &= F_{y1} - m_1g
-\end{split} 
-\end{equation}
-\begin{equation}
-    \tau_1 = m_1l_1^2\Ddot{q_1} + m_1gl_1\sin{q_1}
-\end{equation}
 
-where $F_{x1}$ and $F_{y1}$ represent the reaction forces on the link from the fixed point.
+
+
+
 
 \subsection{Double Inverse Pendulum Approach}
+\label{sec: DIPM}
 
-Consider a double inverted pendulum model as in figure [\ref{dipm}] with mass $m$ and link lengths $l_1$ and $l_2$, the kinematics and dynamics for the model can be represented as,
+The single point mass based assumptions from the previous section \ref{sec: LIPM} can cause internal forces disturbing the system. This is due to the fact that the primary assumption is massless legs of the system.
+These systems are linearised models of the good approximation of the system dynamics. 
 
+Consider a double inverted pendulum model as in figure \ref{dipm} with mass $m$ and link lengths $l_1$ and $l_2$, to capture the effect of the upprt body motion of the biped balance, the humanoid robot can be modelled as 
+non-linear fully-actuated, unconstrained double inverse pendulum mode. Then the equation of motion s can be given by,
+
+\begin{equation}
+    \label{eq: DIPM}
+    M(q)\ddot{q} + c(q, \dot{q}) = \tau
+\end{equation}
+
+where $q$ is the joint vector, M is the mass-inertia matrix, $\tau$ is the torque vector and $c$ is the vector of a Corolis, centripedal and gravitational forces. The DIPM model used the hip-balance strategy defined in \cite{atkeson2007multiple}. In these models, the feet are normally
+assumed to be in contact with ground and do not contribute kinetic or potential energy of the system. The CoP calculation is still the same assuming that it does not leave the support polygon defined by the feet as in equation \ref{eq: CoP}.
+ 
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.45]{images/DIPM.jpg}\hfill
@@ -419,79 +416,17 @@ Consider a double inverted pendulum model as in figure [\ref{dipm}] with mass $m
     \label{dipm}
 \end{figure}
 
-Position:
-\begin{equation}
-\begin{split}
-    x_1 &= -l_1\sin{q_1} \\
-    y_1 &= l_1\cos{q_1}
-\end{split}
-\end{equation}
-
-\begin{equation}
-\begin{split}
-    x_2 &= -l_1\sin{q_1} - l_2\sin{(q_1+q_2)} \\
-    y_2 &= l_1\cos{q_1} + l_2\cos{(q_1+q_2)}
-\end{split}
-\end{equation}
-
-Velocity:
-\begin{equation}
-\begin{split}
-    \Dot{x_1} &= -l_1\cos(q_1)\Dot{q_1} \\
-    \Dot{y_1} &= -l_1\sin(q_1)\Dot{q_1}
-\end{split}
-\end{equation}
-
-\begin{equation}
-\begin{split}
-    \Dot{x_2} &= -l_1\cos(q_1)\Dot{q_1} - -l_1\cos(q_1+q_2)\Dot{(q_1+q_2)} \\
-    \Dot{y_2} &= -l_1\sin(q_1)\Dot{q_1} - -l_1\sin(q_1+q_2)\Dot{(q_1+q_2)}
-\end{split}
-\end{equation}
-
-Acceleration:
-\begin{equation}
-\begin{split}
-    \Ddot{x_1} &= l_1 \sin{(q_1)}\Dot{q_1}^2 - l_1 \cos{(q_1)}\Ddot{q_1} \\
-    \Ddot{y_1} &= -l_1 \cos{(q_1)}\Dot{q_1}^2 - l_1 \sin{(q_1)}\Ddot{q_1}
-\end{split}
-\end{equation}
-
-\begin{equation}
-\begin{split}
-    \Ddot{x_2} &= -l_1\cos{(q_1)}\Ddot{q_1} + l_1\sin{(q_1)}\Dot{q_1}^2 - l_2\cos{(q_1+q_2)}(\Ddot{q_1} + \Ddot{q_2}) + l_2\sin(q_1+q_2)(\Dot{q_1} + \Dot{q_2})^2 \\
-    \Ddot{y_2} &= -l_1\sin{(q_1)}\Ddot{q_1} + l_1\sin{(q_1)}\Dot{q_1}^2 - l_2\sin{(q_1+q_2)}(\Ddot{q_1} + \Ddot{q_2}) + l_2\cos(q_1+q_2)(\Dot{q_1} + \Dot{q_2})^2
-\end{split}
-\end{equation}
-
-Forces and Torques:
-\begin{equation}
-\begin{split}
-    m_1\Ddot{x_1} &= F_{x1} + F_{x_2} \\
-    m_1\Ddot{y_1} &= F_{y1} + F_{y_2} - m_1g
-\end{split}
-\end{equation}
-
-\begin{equation}
-\begin{split}
-    m_2\Ddot{x_2} &= F_{x2} \\
-    m_2\Ddot{y_2} &= F_{y2} - m_2g
-\end{split}
-\end{equation}
-
-where $F_{x1}$,$F_{x2}$,$F_{x3}$ and $F_{y1}$,$F_{y2}$,$F_{y3}$ represent the reaction forces on the link from the fixed point.
-
-\begin{equation}
-\begin{split}
-    \tau_1 &= m_1l_1^2\Ddot{q_1} + m_1gl_1\sin{q_1} \\
-    \tau_2 &= m_2l_2^2 (\Ddot{q_1} + \Ddot{q_2}) + m_2gl_2\sin(q_1+q_2)
-\end{split}
-\end{equation}
-
-\subsection{Cart Table Model}
-
 
 \subsection{Spherical Inverse Pendulum Approach}
+
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{images/SIPM.jpg}\hfill
+    \caption{Double Inverse Pendulum Model}\hfill
+    \label{fig: sipm}
+\end{figure}
 
 \subsection{Static Balace Control}
 
