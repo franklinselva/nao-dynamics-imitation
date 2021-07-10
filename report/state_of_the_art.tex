@@ -323,7 +323,6 @@ point approximation method of Centre of Mass (CoM). Note that the concepts of Co
 \begin{enumerate}
     \item Linear Inverted Pendulum Model
     \item Double Inverted Pendulum Model
-    \item Cart Table Model
     \item Spherical Inverted Pendulum Model (Simple and Double)
 \end{enumerate}
 
@@ -388,10 +387,6 @@ Firstly, the rate of change of $x_{CoP}$ can be limited to achieve smooth trajec
 transition from single to double support. 
 
 
-
-
-
-
 \subsection{Double Inverse Pendulum Approach}
 \label{sec: DIPM}
 
@@ -419,16 +414,47 @@ assumed to be in contact with ground and do not contribute kinetic or potential 
 
 \subsection{Spherical Inverse Pendulum Approach}
 
+There are evidences to use simplified non-linear spherical inverse pendulum model for defining the motion of the humanoid robots. These models are marginally stable and if it is subjected to any slight disturbance, it will lose its upright stable posture.
+To maintain this unstable equilibrium of the SIP model, different forms of feedback controls are used. The equations of motion for non-linear spherical inverse kinematic models are given by \cite{elhasairi2015humanoid}, 
 
 
+\begin{align}
+    \label{eq: non-linear SIPM}
+    \begin{split}
+    \ddot{\theta} &= \frac{\tau_\theta}{ml^2} + \frac{\mathbf{g}}{l}\cos(\phi)\sin(\theta) - \phi^2\sin(\theta)\cos(\theta) \\
+    \ddot{\phi} &= \frac{\tau_\phi}{ml^2\cos^2(\theta)} + \frac{\mathbf{g}\sin*(\phi)}{lcos(\theta)} + 2\frac{\dot{\phi}\dot{\theta}\sin(\theta)}{\cos(\theta)}
+    \end{split}
+\end{align}
+
+where $\theta$ and $\phi$ represent the ankle orientation along x- and z-axis respectively.
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{images/SIPM.jpg}\hfill
-    \caption{Double Inverse Pendulum Model}\hfill
+    \caption{Linearized Spherical Inverse Pendulum Model}\hfill
     \label{fig: sipm}
 \end{figure}
 
-\subsection{Static Balace Control}
+From equations \ref{eq: non-linear SIPM}, it can be seen that the system is non-linear and there is a degree of cross coupling between the two degrees of freedom. Like any other LIPM model, simple SIPM models use ankle-balance strategy. To use traditional control methods, the system needs to be linearized for small values of $\theta$
+and $\phi$. Then the equation of motions describing the pendulum are represented as,
+
+
+\begin{align}
+    \label{eq: linear SIPM}
+    \begin{split}
+        \ddot{\theta} &= \frac{\tau_\theta}{ml^2} + \frac{\mathbf{g}}{l}\theta \\
+        \ddot{\phi} &= \frac{\tau_\theta}{ml^2} + \frac{\mathbf{g}}{l}\phi
+    \end{split}
+\end{align}
+
+
+Equations \ref{eq: linear SIPM} are the linearized approximation of the SIPM model which holds the dynamics of the system with $x_{CoP} = -l \times \sin(\theta)$ as,
+
+\begin{equation}
+    \label{eq: CoP SIPM}
+    m\ddot{x} = \frac{m\mathbf{g}}{z_0}(x - x_{CoP})
+\end{equation}
+
+\subsection{Static vs Dynamic Balance}
 
 During the walking gait, at any time, the projection of the centre of mass if the robot is within the support
 polygon \cite{katic2003survey}. This allowed the static walker to maintain balance if stopped at any timestep.
@@ -436,16 +462,56 @@ However, this resulted in the slower walking speeds and larger translation of th
 other. The effect of the inertial forces acting on the robot segments are not taken into account except for the 
 gravitaional forces.
 
-\subsection{ Dynamics Balance Control}
-
 During dynamic balance, the centre of mass is allowed outside the support polygon to an extent but there might be 
 parts where the robot might fall \cite{katic2003survey}. The velocity and acceleration of each link of the robot
 model is taken into account resulting in comparitively faster motion maintaining the postural stability. Most of the
 modern robots are using dynamic control for its efficiency and versatile gait structure compared to static control.
 
 
-\section{Approaches in Posture Control and Motion Retargetting}
-\subsection{Mansard's work}
-\subsection{D. Gucci's work}
-\subsection{Kumar Munirathinam's work}
+\section{Approaches in Dynamic Motion Retargetting}
 
+This section presents the various works focusing on dynamics based motion retargetting systems implemented on real robots.
+
+\subsection{Dyanmic Retargetting in HRP-2 robot}
+
+The case study presented in \cite{ramosponce} for motion imitation focusing on dynamics of human motion allows quickly and 
+efficiently to generate long sequence of dynamic movement for humanoid robots. The motion generation is based on combination 
+of two very efficient tools: motion capture and hierarchical operational space inverse dynamics, which enables the retargetted 
+dynamics to fit with the constraints of the real robot. The method produces reliable movements on the robot. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.25]{images/mansard's-work.png}\hfill
+    \caption{Dynamic Retargetting Scheme \cite{ramosponce}}\hfill
+    \label{fig: mansard's work}
+\end{figure}
+
+From this study, it can be considered that the operational-space inverse-dynamics is a mature tool that is able to replace 
+the inverse kinematics approach for all robots where dynamics matters. Particularly, in humanoid robotics, inverse dynamics 
+can be directly applied by sending the reference acceleration output, obtained with the inverse-dynamics solver, to the robot. 
+In particular, the Stack of Tasks (SoT) proposed in \cite{ramosponce}, while enforcing the dynamics of the retargeted motion, 
+provides the robot programmer with some easy edition capabilities to correct the defects of the retargeted motion or to augment
+the original movement with some artificial features.
+
+\subsection{Motion Retargetting in iCub}
+
+The work proposed in \cite{gucci:hal-01895145} presebted a framework for teleoperation of iCub robot based on inverse kinematics 
+with Quadratic solver. It allows a robust real-time retargetting of generic motions. The CoM retargetting and fall detection proposed
+in this work is robust due to the presented ZMP correction approach that guarantees the stability of the retargeted motion in double support.
+This approach is validated in simualtion and on real robot perfecting the balance restoration in the kinematic approach. More information
+on this work is detailed and adapted in chapter \ref{chapter-3}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{images/gucci-work.png}\hfill
+    \caption{Motion Retargetting Pipeline \cite{gucci:hal-01895145}}\hfill
+    \label{fig: gucci's work}
+\end{figure}
+
+\subsection{Hybrid Retargetting using Time Scaling}
+
+This work by \cite{karthikmunirathinam} is to take advantage of motion tracking by manipulating the motion by time scaling. This method changes
+the traveling time of the reference motion by decelerating the motion if unbalanced and by accelerating the motion in order to synchronise with the
+reference motion by decelerating the motion if unbalanced and by accelerating inorder to keep it synchronising with the human actor. This approach serves as 
+a different variant in the domain of motion imitation of humanoid robots since when a suitable solution with time scaling is not found, joint based control 
+to ensure the balance of the system is turned back on. A set of motions has been recorded and are validated in simuation using virtual NAO robot. 
