@@ -20,12 +20,12 @@ balance constraints for which the control strategy must satisfy at all cost. The
 is discussed in this section.
 
 \subsection{Rigid body dynamics}
-
+\label{rigid-body-dynamics}
 The Newton-Euler's equations for a rigid body $\mathcal{B}_j$ that are related to linear momentum $p_j$ and angular momentum $\omega_j$ is formulated as follows.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.4]{images/rigid-body.png}\hfill
+    \includegraphics[scale=0.55]{images/rigid-body.png}\hfill
     \caption{Schematic of a rigid body}\hfill
     \label{fig: rigid-body}
 \end{figure}
@@ -110,7 +110,61 @@ where $r_k = r_{\mathcal{O}k}$ is the distance vector from origin to force point
 $f_r$ and $m_r$ are the reaction forces and moments respectively exerted by the body $\mathcal{B}_r$ on the body $\mathcal{B}_i$ at point $\mathcal{O}_r$;
 $f_e$ and $m_e$ represent the forces and moments exerted on the environment by body $\mathcal{B}_i$. These values are assumed to be known.
 
-\subsection{Dynamic Model of humanoid robot}
+\subsection{Dynamic Model of NAO robot}
+
+This section derives the dynamic model of the humanoid robot NAO considering the absence of force sensors in the robot feet. 
+The mass, CoM and Inertial matrices of the NAO robot v5 H25 is documented on the aldebaran website \cite{aldebaran-masses}. The mass and coordinates of CoM of individual 
+links are taken and processed. The CoM given in the documentation is presented relatively to a local coordinate system $\mathcal{R}_j$ attached to the corresponding body $\mathcal{B}_j, i={1, 2, ..., 25}$.
+To define the frame system corresponding to the modified DH rule, one has to rotate, translate or do both to compensate the new model for 
+inverse dynamics model.
+
+Let $CoM_j^A = [x_A, y_A, z_A]^T$ be the coordinates of the local reference frame $\mathcal{R}_j$ specified in the documentation \cite{aldebaran-masses}. Then the inertial tensor
+considering the system of particles of the body about the center of mass with $r=xyz$ as the position vector is defined as,
+
+\begin{equation}
+    \label{eq: inertial-tensor}
+    J_j^j = \begin{bmatrix}
+        \int(y^2 + z^2)dm && -\int xydm && -\int xzdm \\
+        -\int xydm && \int (x^2 + z^2)dm && -\int yz dm \\
+        -\int xz dm && -\int yz dm && -\int(x^2 + y^2) dm
+    \end{bmatrix} 
+\end{equation}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.35]{images/flowchart-transformation-frames.jpg}\hfill
+    \caption{Rotation and Translation of Body reference frame}\hfill
+    \label{fig: body-frame-transformation}
+\end{figure}
+
+Since the matrix in equation \ref{eq: inertial-tensor} depends on the coordinates of the CoM, when the reference frame changes, the value of inertial tensors changes automatically \cite{karthikmunirathinam}.
+To perform rotation from the provided CoM coordinate $CoM_j^A$ represented from $\mathcal{R}_j$ to the coordinate $CoM_j^M$ represented in $\mathcal{F}_j$, the rotation matrix is defined and the rotation matrix
+can be computed as,
+
+\begin{equation}
+    \label{eq: rotation-frame}
+    ^AJ = {^M}A_A{^A}J({^M}A_A)^T
+\end{equation}
+
+and the translation can be computed by \cite{karthikmunirathinam},
+
+\begin{align}
+    \label{eq: translation-frame}
+        {^M}J + m \begin{bmatrix}
+            y^2_A + z^2_A && -x_Ay_A && -x_Az_A \\
+            -y_Ax_A && x^2_A + z^2_A && -y_Az_A \\
+            -z_Ax_A && -z_Ay_A && x^2_A+y^2_A
+        \end{bmatrix} = {^A}J + m \begin{bmatrix}
+            y^2_M + z^2_M && -x_My_M && -x_Mz_M \\
+            -y_Mx_M && x^2_M + z^2_M && -y_Mz_M \\
+            -z_Mx_M && -z_My_M && x^2_M+y^2_M
+        \end{bmatrix}
+\end{align}
+
+
+Once the frames are transformed to the respective notation, recursive Newton-Euler formalism of dynamic equation from section \ref{rigid-body-dynamicsdra}
+can be used to formulate the dynamic model of the equations.
+
 \subsection{Centroidal dynamics of humanoid robot}
 
 \subsection{Zero Moment Point (ZMP)}
@@ -125,11 +179,11 @@ can be given by,
 
 \begin{equation}
     \begin{split}
-        P_{ZMP} = P_{CoM} - \ddot{P}_{CoM}(\frac{z_{CoM} - z_{ZMP}}{g + \ddot{z}_{CoM}})
+        P_{ZMP} = P_{CoM} - \ddot{P}_{CoM}(\frac{z_{CoM} - z_{ZMP}}{\mathbf{g} + \ddot{z}_{CoM}})
     \end{split}
 \end{equation}
 
-where $g = -9.81 m/s^2$ is the gravity acceleration. Fixing these points onto a specific position on the floor is 
+where $\mathbf{g} = -9.81 m/s^2$ is the gravity acceleration. Fixing these points onto a specific position on the floor is 
 over-constraining and leaves less free DOF for the other tasks. However, this precise control over the point positioning is advantageous
 for choosing safer positions far from the foot’s edges and for avoiding points too far from the ankle which would require too much torque
 to hold the whole body \cite{louisepouble}.
@@ -229,9 +283,101 @@ Through the LIPM model it is possible to establish a simple relation between the
 \end{equation}
 
 \subsection{Posture Control}
-\subsubsection{Multi-Double Inverted Pendulum Model (M-DIP)}
-\subsection{Acceleration Control}
+\label{sec: posture-control}
 
+This section provides a method for the simplification of humanoid robot and the human actor as a composition of inverted pendulum models. These simplified multi-double inverted pendulum models are used for posture control
+during the motion retargetting.
+
+\subsubsection{Multi-Double Inverted Pendulum Model (M-DIP)}
+The full humanoid robot may be simplified using a combination of different double inverted pendulums as represented in figure \ref{fig: human-mdip}. The current position of the individual pendulums is represented as $\mathbb{P}_i$ and $\mathbf{P}_i$ for
+human actor and humanoid respectively where i represent the left hand ($lh$), right hand ($rh$), right leg ($rl$) and left leg ($ll$). Then the state of the human actor $\mathbb{P}$ and humanoid robot $\mathbf{P}$ is represented as, 
+
+
+\begin{align*}
+    \label{eq: pendulum-state}
+        \mathbb{P} = \begin{bmatrix} \mathbb{P}_{rh} && \mathbb{P}_{rl} && \mathbb{P}_{lh} && \mathbb{P}_{ll} \end{bmatrix}^T \qquad
+        \mathbf{P} = \begin{bmatrix} \mathbf{P}_{rh} && \mathbf{P}_{rl} && \mathbf{P}_{lh} && \mathbf{P}_{ll} \end{bmatrix}^T
+\end{align*}
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.25]{images/flowchart-xsens-pendulum.jpg}\hfill
+    \includegraphics[scale=0.2]{images/flowchart-NAO-pendulum.jpg}\hfill
+    \caption{Human actor and NAO robot as M-DIP model }\hfill
+    \label{fig: human-mdip}
+\end{figure}
+
+The individual pendulums states are comprised of roll and pitch angles in the robot frame and can be used the formulate the equation of motions from equation \ref{eq: inverse-dynamic-model} \cite{pierro2012stabilizer}.
+The mass, velocity and acceleration contribution of the M-DIP as composition can be computed as,
+
+Mass:
+\begin{equation}
+    \label{eq: MDIP-mass}
+    \mathbb{M} = m_{rl} + m_{ll} + m_{rh} + m_{rh}
+\end{equation}
+
+Velocity:
+\begin{equation}
+    \label{eq: MDIP-velocity}
+    \mathbb{\dot{X}}_i = m_il_{sl}l_i\begin{bmatrix}
+        0 && -\sin(\gamma_{sl} - \gamma_i)\dot{\gamma}_i \\
+        \sin(\alpha_{sl} - \alpha_i)\dot{\alpha}_i && 0
+    \end{bmatrix} \qquad \mathit{,i = rh, rl, lh, ll}
+\end{equation}
+
+
+Acceleration:
+\begin{equation}
+    \label{eq: MDIP-acceleration}
+    \ddot{\mathbb{X}}_i = m_il_{sl}l_i\begin{bmatrix}
+        0 && -\cos(\gamma_{sl} - \gamma_i) \\
+        \cos(\alpha_{sl} - \alpha_i) && 0
+    \end{bmatrix} \qquad \mathit{,i = rh, rl, lh, ll}
+\end{equation}
+
+where $i=sl$ represent the pendulum in contact with the environment (in this case, the legs); $\alpha_i$ and $\gamma_i$
+represent the roll and pitch angles of the respective pendulums $i$ respectively. Given the velocity and acceleration contribution of the M-DIP to the composition model, the position of ZMP can also be retrieved
+as, 
+
+\begin{equation}
+    \label{eq: MDIP-zmp}
+    p_{ZMP, H} = \frac{1}{\mathbf{g}\mathbb{M}}\{\mathbb{\ddot{X}}\mathbb{\ddot{P}} + \mathbb{\dot{X}}\mathbb{\dot{P}} + \mathbb{M}l_{sl}\mathbf{g}\begin{bmatrix}
+        \sin(\gamma_{sl}) \\
+        -\sin(\gamma_{sl})
+    \end{bmatrix}_{H}\}
+\end{equation}
+
+The equation \ref{eq: MDIP-zmp} can also be rewritten for calculating the postion of robot ZMP as,
+
+\begin{equation}
+    \label{eq: MDIP-robot-zmp}
+    p_{ZMP, R} = \frac{1}{\mathbf{g}\mathbf{M}}\{\mathbf{\ddot{X}}\mathbf{\ddot{P}} + \mathbf{\dot{X}}\mathbf{\dot{P}} + \mathbf{M}l_{sl}\mathbf{g}\begin{bmatrix}
+        \sin(\gamma_{sl}) \\
+        -\sin(\gamma_{sl})
+    \end{bmatrix}_{R}\}
+\end{equation}
+
+where,
+\\
+$\mathbb{P}_{i} = [-\arctan(\frac{-y_i}{z_i}) \quad \arctan(\frac{-y_i}{z_i})]^T$ is the position state of the respective pendulum $i$; \\
+$\mathbb{\dot{X}} = [\mathbb{\dot{X}}_i, \mathit{i = rh, rl, lh, ll}]^T$ is the velocity contribution of the pendulum model of human; \\
+$\mathbf{\dot{X}} = [\mathbf{\dot{X}}_i, \mathit{i = rh, rl, lh, ll}]^T$ is the velocity controibution of the pendulum model of robot; \\
+$\mathbb{\ddot{X}} = [\mathbb{\ddot{X}}_i, \mathit{i = rh, rl, lh, ll}]^T$ is the acceleration contribution of the pendulum of human; \\
+$\mathbf{\ddot{X}} = [\mathbf{\ddot{X}}_i, \mathit{i = rh, rl, lh, ll}]^T$ is the acceleration contribution of the pendulum of robot.
+
+\subsubsection{Acceleration Control}
+
+The human actor and the robot are simplified to the composition of M-DIP model and the posture control can be implemented directly using the acceleration feedback between the 
+two subjects. The acceleration control for the motion-retargetting can be implemented as a weighted-constraint based problem \cite{van1985method},
+
+\begin{equation}
+    \label{eq: MDIP-control}
+    \lim_{a \Rightarrow \infty} (HJ)^+ H\dot{e}^* = argmin (||H_iJ_i\dot{q} - H_i\dot{e}^*_i||^2), \quad \mathnormal{s.t. \quad J_i\dot{q} = \dot{e}_i^*}
+\end{equation}
+
+
+where 
 \section{Task Specification Approach}
 
 \subsection{Joint trajectory tracking}
