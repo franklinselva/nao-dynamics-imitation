@@ -50,12 +50,15 @@
 \contentsline {subsection}{\numberline {3.3.3}Posture Control}{47}{subsection.3.3.3}%
 \contentsline {subsection}{\numberline {3.3.4}Joint Limits Avoidance}{47}{subsection.3.3.4}%
 \contentsline {chapter}{\numberline {4}Implementation}{48}{chapter.4}%
-\contentsline {section}{\numberline {4.1}NAO robot}{48}{section.4.1}%
+\contentsline {section}{\numberline {4.1}NAO robot platform}{48}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}NAOqi C++ SDK}{49}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}CopelliaSim support}{49}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Xsens MVN Analyze}{49}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Sensor Setup}{49}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Xsens Networking Protocol}{49}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Network Streaming}{49}{subsection.4.2.3}%
-\contentsline {chapter}{Conclusion}{50}{chapter*.4}%
-\contentsline {chapter}{Bibliography}{50}{chapter*.4}%
+\contentsline {subsection}{\numberline {4.1.2}CopelliaSim support}{50}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Xsens MVN Analyze}{51}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Sensor Setup}{51}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Xsens Networking Protocol}{52}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Datagram Protocol}{52}{subsection.4.2.3}%
+\contentsline {subsubsection}{Message format}{53}{subsection.4.2.3}%
+\contentsline {subsubsection}{ID string}{53}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}MVN Data capture}{54}{subsection.4.2.4}%
+\contentsline {chapter}{Conclusion}{55}{chapter*.4}%
+\contentsline {chapter}{Bibliography}{55}{chapter*.4}%

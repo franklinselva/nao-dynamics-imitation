@@ -65,10 +65,103 @@ behaviour of the humanoid robot in the real world \cite{ramosponce}.
 
 \section{Xsens MVN Analyze}
 
+MVN Analyze/Animate, developed by Xsens, is a tool to capture and compute the 6DOF motion data of an inertial sensor-driven system. It allows the export of the data to third party 
+applications such as Motion Builder, making the data available to drive rigged characters in e.g. animations. The data transfer to other applications is primarily file based when using MVN Analyze/Animate. With the XME API (SDK) there are many other options.
+Typically, Xsens inertial sensor technology is used for orientation, attitude- and positioning data. The technology is integrated by fleet operators, robotics integrator, digital mapping companies, drone developers, Vehicle-testing, Autonomous Vehicles, Warehouse 
+and Logistics (AGV/AMR), Maritime/offshore, Aerospace, Heavy-Industry and Agriculture.In robotics research community, the MVN analyze system is used for motion imitation purposes due to its low-cost efficient sensor suit. This section describes the sensor suit setup and 
+network streaming protocol over UDP networking.
+
 
 \subsection{Sensor Setup}
+The hardware of Xsens MVN is available as a body-wired solution that streams data wirelessly to a PC/laptop (MVN Link) and a completely wireless solution(MVN Awinda). 
+In the field of humanoid robotics and bio-mechanics, to capture the motion of the human body, 17 motion trackers are attached to the feet, lower legs, upper legs, pelvis, shoulders, sternum, head, upper arms, fore arms, and hands. The sensor modules are inertial and magnetic measurement units that contain 3D gyroscopes, 3D accelerometers and 3D magnetometers.
+
+Each module comes with higher sensor fusion algorithms, with advnced signal processing frameworks like StrapDown Integration (SDI). Due to the use of SDI, 3D tracking accuracy of each motion tracker is equivalent both for MVN Link (240 Hz) as well as MVN Awinda (60 Hz), 
+with only a reduced time resolution for the latter. Hence, for high dynamic movements including frequent interactions with the floor (contacts), MVN Link is recommended. Xsens MVN framework provides implementation in C++ and python. The Software Development Kit (SDK) allows 
+fetching raw data for direct manipulation to our wishes. It can be noted that the Xsens software has to setup to enable data sharing available outside the software.
+
 \subsection{Xsens Networking Protocol}
-\subsection{Network Streaming}
+
+The streaming feature in Xsens software enables the computer that run MVN Analyze to stream the captured data over a network to other client computers (in this case, 
+the windows computer that runs imitation software). The network environment will be assumed to be a local 100 Mbit Ethernet network, larger network topologies are not 
+considered and can be covered by file transfer of the already given file export functionality or later extensions to the network protocol. Thus, few packet loss or data 
+corruption during transfer is to be expected, as well as constant connectivity.
+
+Network communication uses a protocol stack, thus the streaming protocol will be implemented on top of a given set of protocols already available for the network clients. 
+In this case, the layers to build upon are IP and UDP (or TCP, which is also supported). IP (Internet Protocol, RFC 791) is the network layer protocol used in Ethernet networks 
+and defines the source and destination of the packets within the network. Upon this, UDP (User Datagram Protocol, RFC 768) is used to encapsulate the data. The UDP Protocol is 
+unidirectional, and contrary to TCP (Transmission Control Protocol, RFC 793) it is stateless and does not require the receiver to answer incoming packets. This allows greater speed.
+The default port for xsens network streamer is 9763 and can be changed if needed.
+
+\subsection{Datagram Protocol}
+
+The motion capture data is sampled and sent at regular time intervals for which the length depends upon the configuration of MVN Analyze/Animate. Common sampling rates lie between 
+60 and 240 Hertz. The update rate of the real-time network stream can be modified separately. The data content in the datagram is defined by the specific protocol set, but basically, 
+the positions and rotation of all segments of the body at a sampling instance are sent away as one or more UDP datagrams.
+
+Each datagram starts with a 24-byte header followed by a variable number of bytes for each body segment, depending on the selected data protocol. All data is sent in ‘network byte order’,
+ which corresponds to big-endian notation. The message format that are sent over the network is detailed in the following subsections.
+
+\subsubsection{Message format}
+
+Each message streamed from Xsens software contains a header describing the type of the data and some identification information, so the receiving end can apply it to the right target.
+
+\begin{quote}
+    \textbf{
+    6 bytes ID String \\
+    4 bytes sample counter \\
+    1 byte datagram counter \\
+    1 byte number of items \\
+    4 bytes time code \\
+    1 byte character ID \\
+    1 byte number of body segments – from MVN 2019 \\
+    1 byte number of props – from MVN 2019 \\
+    1 byte number of finger tracking data segments – from MVN 2019 \\
+    2 bytes reserved for future use \\
+    2 bytes size of payload}
+\end{quote}
+
+\subsubsection{ID string}
+
+The ID String is an ASCII string which consists of 6 characters (not terminated by a null character). It serves to unambiguously identify the UDP datagram as containing motion data of the 
+format according to this specification. Since the values in the string are characters, this string is not converted to a big- endian notation, but the first byte is simply the first character, etc.
+
+~
+
+\begin{tabular}{ccccccc}
+    ASCII & M & X & T & P & \textit{x} & \textit{y} \\
+    Hex & 4D & 58 & 54 & 50 & \textit{hex(x)} & \textit{hex(y)} \\
+\end{tabular}
+
+~
+
+where \textit{xy} be the desired message type that is being published. The required messages published for this research work is tabulated in Table \ref{tab: xsens-message}. The message followed by the 
+header string from above is the respective sensor data retrieved from the Xsens software. The messages are processed sequentially to the imitation software therby performing realtime imitaion.
+
+~
+
+\begin{table}[h!]
+    \label{tab: xsens-message}
+    \begin{tabular}{|c|l|}
+        \hline
+        \textbf{\textit{xy}} & \textbf{Description} \\
+        \hline
+        02 & \textbf{Pose data (Quaternion)}. Absolute position and orientation of sensor segments. \\
+        \hline 
+        20 & \textbf{Joint data}. Joint definition and angles \\
+        \hline
+        24 & \textbf{Centre of Mass}. Absolute position of centre of mass \\
+        \hline
+    \end{tabular}
+    \caption{Essential xsens message type for motion retargetting}
+\end{table}
+
+\subsection{MVN Data capture}
+
+Since only a set of actions from motion capture suit are recorded and validated on the real robot, the files are exported to \textit{MVNX} format, a prioritized XML format provided by Xsens. A custom \textit{python} scripts are developed 
+for procssing MVNX files to the desired format. A sample of data plotter developed is preseted in Figure~\ref{fig: xsens-plot}. The data once captured either
+directly from the software or from MVNX files are further processed and sent to the real robot for imitation.  
+
 
 \begin{figure}[h!]
     \centering
@@ -77,3 +170,6 @@ behaviour of the humanoid robot in the real world \cite{ramosponce}.
     \caption{Xsens data plot pelvis joint}\hfill
     \label{fig: xsens-plot}
 \end{figure}
+
+The figure \ref{fig: xsens-plot} represent the position and CoM plot of pelvis joint during the recorded motion. 
+The initial stage of the motion is clearly upper body imitation followed by single support and movement along frontal plane of the human actor.

@@ -52,6 +52,13 @@ L.~Penco, B.~Cl{\'e}ment, V.~Modugno, E.~M. Hoffman, G.~Nava, D.~Pucci,
   Available: \url{https://hal.archives-ouvertes.fr/hal-01895145}
 \BIBentrySTDinterwordspacing
 
+\bibitem{aldebaran-masses}
+\BIBentryALTinterwordspacing
+N.~A. Robotics. Masses, centre of masses and inertial matrix for nao v5 h25.
+  [Online]. Available:
+  \url{http://doc.aldebaran.com/2-1/family/robots/masses_robot.html}
+\BIBentrySTDinterwordspacing
+
 \bibitem{FUKAYA2001273}
 \BIBentryALTinterwordspacing
 N.~Fukaya, S.~Toyama, T.~Asfour, and R.~Dillmann, ``Design of a humanoid hand
@@ -254,13 +261,6 @@ W.~Khalil and E.~Dombre, \emph{Modeling, identification and control of
 W.~Khalil, ``Unified dynamic modeling of robots using newton-euler
   techniques.''
 
-\bibitem{aldebaran-masses}
-\BIBentryALTinterwordspacing
-N.~A. Robotics. Masses, centre of masses and inertial matrix for nao v5 h25.
-  [Online]. Available:
-  \url{http://doc.aldebaran.com/2-1/family/robots/masses_robot.html}
-\BIBentrySTDinterwordspacing
-
 \bibitem{louisepouble}
 L.~Poubel, ``Whole-body online human motion imitation by a humanoid robot using
   task specification,'' 2013.
@@ -273,5 +273,12 @@ P.~Pierro, ``Stabilizer architecture for humanoid robots collaborating with
 C.~Van~Loan, ``On the method of weighting for equality-constrained
   least-squares problems,'' \emph{SIAM Journal on Numerical Analysis}, vol.~22,
   no.~5, pp. 851--864, 1985.
+
+\bibitem{github}
+\BIBentryALTinterwordspacing
+H.~S. Selvakumar. Nao dynamics motion retargetting - nao-dynamics-imitation.
+  [Online]. Available:
+  \url{https://github.com/franklinselva/nao-dynamics-imitation}
+\BIBentrySTDinterwordspacing
 
 \end{thebibliography}

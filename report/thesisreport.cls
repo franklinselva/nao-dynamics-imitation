@@ -17,6 +17,7 @@
 \usepackage[explicit]{titlesec}
 \usepackage{etoolbox}
 \usepackage{setspace}
+\usepackage{verbatim}
 
  \bibliographystyle{IEEEtran}
  
