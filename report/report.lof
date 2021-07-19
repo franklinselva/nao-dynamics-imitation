@@ -16,6 +16,9 @@
 \contentsline {figure}{\numberline {3.4}{\ignorespaces Representation of offset projection of human actor \cite {penco:hal-01895145}}}{43}{figure.3.4}%
 \contentsline {figure}{\numberline {3.5}{\ignorespaces Human actor and NAO robot as M-DIP model }}{45}{figure.3.5}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces NAO - Aldebaran Robotics \cite {aldebaran-masses}}}{49}{figure.4.1}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces NAO robot in CopelliaSim simulator}}{50}{figure.4.2}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Xsens data plot pelvis joint}}{54}{figure.4.3}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Illustration of the experimental setup}}{48}{figure.4.1}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces NAO - Aldebaran Robotics \cite {aldebaran-masses}}}{49}{figure.4.2}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces NAO robot in CopelliaSim simulator}}{51}{figure.4.3}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Xsens MVN Analyze Suit}}{52}{figure.4.4}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Xsens data plot pelvis joint}}{55}{figure.4.5}%
+\addvspace {10\p@ }

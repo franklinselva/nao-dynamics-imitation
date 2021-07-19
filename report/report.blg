@@ -6,6 +6,7 @@ A level-1 auxiliary file: thesisfront.aux
 A level-1 auxiliary file: introduction.aux
 A level-1 auxiliary file: state_of_the_art.aux
 A level-1 auxiliary file: dynamcis_based_imitation.aux
+A level-1 auxiliary file: experimental_setup.aux
 A level-1 auxiliary file: implementation.aux
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
@@ -27,7 +28,7 @@ Warning--empty journal in pierro2012stabilizer
 Done.
 You've used 43 entries,
             4039 wiz_defined-function locations,
-            1065 strings with 16234 characters,
+            1066 strings with 16256 characters,
 and the built_in function-call counts, 32104 in all, are:
 = -- 2484
 > -- 782

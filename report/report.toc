@@ -49,16 +49,18 @@
 \contentsline {subsection}{\numberline {3.3.2}Balance Control}{47}{subsection.3.3.2}%
 \contentsline {subsection}{\numberline {3.3.3}Posture Control}{47}{subsection.3.3.3}%
 \contentsline {subsection}{\numberline {3.3.4}Joint Limits Avoidance}{47}{subsection.3.3.4}%
-\contentsline {chapter}{\numberline {4}Implementation}{48}{chapter.4}%
-\contentsline {section}{\numberline {4.1}NAO robot platform}{48}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}NAOqi C++ SDK}{49}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}CopelliaSim support}{50}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Xsens MVN Analyze}{51}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Sensor Setup}{51}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Xsens Networking Protocol}{52}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Datagram Protocol}{52}{subsection.4.2.3}%
-\contentsline {subsubsection}{Message format}{53}{subsection.4.2.3}%
-\contentsline {subsubsection}{ID string}{53}{subsection.4.2.3}%
-\contentsline {subsection}{\numberline {4.2.4}MVN Data capture}{54}{subsection.4.2.4}%
-\contentsline {chapter}{Conclusion}{55}{chapter*.4}%
-\contentsline {chapter}{Bibliography}{55}{chapter*.4}%
+\contentsline {chapter}{\numberline {4}Expermental Setup}{48}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Proposed Setup}{48}{section.4.1}%
+\contentsline {section}{\numberline {4.2}NAO robot platform}{49}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}NAOqi C++ SDK}{50}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}CopelliaSim support}{50}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Xsens MVN Analyze}{51}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Sensor Setup}{52}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Xsens Networking Protocol}{53}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Datagram Protocol}{53}{subsection.4.3.3}%
+\contentsline {subsubsection}{Message format}{54}{subsection.4.3.3}%
+\contentsline {subsubsection}{Header ID string}{54}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}MVN Data Streamer}{55}{subsection.4.3.4}%
+\contentsline {chapter}{\numberline {5}Implementation}{56}{chapter.5}%
+\contentsline {chapter}{Conclusion}{57}{chapter*.4}%
+\contentsline {chapter}{Bibliography}{57}{chapter*.4}%
