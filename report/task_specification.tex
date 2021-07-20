@@ -1,4 +1,5 @@
 \chapter{Hierrachical Quadratic Programming}
+\label{chapter-4}
 
 In robotics, the use of inverse kinematics is very common and widely implemented for any applications. In humanoid robots, the robot structure
 is redundant which means it has more DoF than the number need to position the end-effector in the desired pose. These extra DOFs can be used to
@@ -62,20 +63,18 @@ This simplifies the calculation, since the pseudo-inverse of a diagonal matrix i
 From equation \ref{eq: SVD}, the pseudo inverse can be calculated with less computation with linear independent columns or independent rows \cite{louisepouble}. 
 With these equality tasks, the cartesian tracking, CoM projection computation for balance, avoiding singularities and much mor can be achieved.
 
+\subsection{Inequality tasks}
 
-\subsection{Optimization tasks}
-
-Some tasks, rather than yielding a value needs to return the minimization or maximization of a value. As long as the function is described only in function of the robot’s 
-joints, it can be made into an optimization task. These tasks are described by $Z$ vector consisting of a weighted gradient of a function,
+This type of tasks or constraints are most commonly used for bound type functions like joint limit, joint velocity limit and much more. It consists of maintaining values 
+within the theshold limit Similar to equality-only least square quadratic program in equation \ref{eq: equality-task-3}, a set of linear inequality constraints can be 
+written as,
 
 \begin{equation}
-    \label{eq:optimization-task}
-    Z = \kappa_i \bigtriangledown f_i(q)
+    \label{eq: inequal-task-1}
+    \mathit{Find} \quad x^* \in \{ x, \ \mathit{s.t} \  Cx \le d\}
 \end{equation}
 
-Here $f_i(q)$ is the function needs to be optimized and $\kappa_i$ is the weight assigned for the task $i$. This type of task is very useful, for example, for minimizing the diverence 
-between captured human joint angles and the robot’s angles. It is also commonly used in industrial robots to maximize the distance from the joint angles and the joint limits. In summary, 
-anything which can be made into an equality task can be made into an optimization. Unlike equality tasks, optimization tasks cannot be hard constraints, since the optimal value might not be reached.
+The above constraints are very useful, for example, for minimizing the diverence between captured human joint angles and the robot’s angles. It is also commonly used in industrial robots to maximize the distance from the joint angles and the joint limits. Unlike equality tasks, optimization tasks cannot be hard constraints, since the optimal value might not be reached.
 
 \section{Quadratic Programming Approach}
 
@@ -177,15 +176,77 @@ recursively \cite{escande2014hierarchical}.
     \underline{A}_{k - 1}x_k &= \underline{b}_{k - 1} + \underline{w}_{k - 1}^ *
 \end{align}
 
-The hierrachy is kept such that $(k -1) \gg k \gg (k + 1)$ to prioritize the constraints planned. Equation \ref{eq: HQP-2} confirms that 
+The hierrachy is kept such that $(k -1) \gg k \gg (k + 1)$ to prioritize the planned constraints. Equation \ref{eq: HQP-2} confirms that 
 higher level constraints are kept when solving for lower level tasks. The eHQP problem derived in this section allows equality constraints to
- be achieved at its best if possible.  A tasks that will be solved using eHQP will be presented in section \ref{sec: HQP-imitation}.
+ be achieved at its best if possible.  The tasks to be solved using eHQP are presented in section \ref{sec: HQP-imitation}.
+
+\subsection{Hierrachy of Inequality Quadratic Program}
+
+As a minimization HQP problem, the linear inequality constraints in equation \ref{eq: inequal-task-1} for two tasks $(p = 2)$ is formulated as,
+
+\begin{eqnarray}
+    \label{eq: inequal-task-2}
+    \min_{x, w_2} ||w_2|| \\
+    \mathit{subject \ to} \ C_{1}x \le d_1 + w_1^* \\
+    C_2x \le d_2 + w_2
+\end{eqnarray}
 
 
-\section{eHQP in Motion Imitation}
+\section{HQP in Motion Imitation}
 \label{sec: HQP-imitation}
 
-\subsection{Joint trajectory tracking}
-\subsection{Balance Control}
+When imitating human motion, it is necessary to first clarify exactly which aspects of the motion are to be copied. Among these, it is also necessary to specify which ones 
+are the most important. Is tracking the hand position in the world frame more important than tracking the elbow angle? Does the robot need to keep balance or is it attached 
+to some structure? The answers to these questions will influence in the quantity, type and priority of the tasks chosen.
+
+In this work, the following tasks will be considered: \textit{joint-limit avoidance, end-effector tracking, joint tracking, ZMP balancing, posture tracking and fall-detection}.
+Each task will be discussed individually.
+
+\subsection[Joint Limit Avoidance]{Task 1: Joint Limit Avoidance}
+To imitate the motion, staying away from joint limits should be a high priority of all. In fact, in any robotics applications, avoiding the joint limits
+is always the highest prioirity. The solution achieved from imitation should stay within the joint limit configurations and the resultant joint configuration 
+shouldn't comply other tasks. 
+
+Staying away from the joint limits can be described as staying as close as possible to the median value for the joint position.
+The joint limit avoidance defines a bound on a function of the robot configuration:
+
+\begin{equation}
+    \label{eq: joint-limit-1}
+    e_{min}(\Omega) \le e(q) \le e_{max}(\Omega)
+\end{equation}
+
+where $q$ and $\Omega$ represent the current joint vector and the desired parameters of the robot motor limits. 
+This linear inequality constraint is homogenous to the configuration and can be achieved by,
+
+\begin{equation}
+    \label{eq: joint-limit-2}
+    [e_{min}(\Omega) - e(q)] \le J\dot{q} \le [e_{max}(\Omega) - e(q)]
+\end{equation}
+
+where $J$ represent the robot Jacobian, a set of kinematic chains broken from the robot structure.
+Then the inequality constraints for the HQP be represented as,
+
+\begin{align}
+    \label{eq: joint-limit-3}
+    \begin{bmatrix}
+        C_1 \\ C_2
+    \end{bmatrix} \dot{q} \le 
+    \begin{bmatrix}
+        d_1 \\ d_2
+    \end{bmatrix}
+\end{align}
+
+In the above constraints, $(C_1, d_1) = ()$ and $(C_2, d_2) = ()$ are the constraint matrices and vectors of lower and upper joint limits respectively.
+
+\subsection[Balance Control]{Task 2: Balance Control}
+
+The ZMP and CoM retargetting presented on section \ref{sec: balance-control} can be formulated to obtain the optimal correction that 
+satisfies the balance condition on the humanoid.
+
+\begin{eqnarray}
+    \label{eq: balance-task-1}
+    \min_{pZMP} (\dot{P}_{CoM}^{ref} - \dot{P}_{CoM})^T Q (\dot{P}_{CoM}^{ref} - \dot{P}_{CoM}) \\
+    \mathit{such \ that} \ 
+\end{eqnarray}
 \subsection{Posture Control}
-\subsection{Joint Limits Avoidance}
+\subsection{Joint Tracking}

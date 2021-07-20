@@ -14,12 +14,12 @@
   actively improving and notably better than dynamics, it allows the robot only to move and imitate slow actions. 
   For the fast paced motions, \textit{momentum} gets build up and needs dynamics to be taken into account. Due to the 
   differences in redundancy between humanoid robots and humans, real-time imitation in humanoid robots while keeping 
-  balance and support changes is still an interesting problem that need to be addressed.
+  balance and support changes is still an challenging problem that need to be addressed.
 
   ~
   
   On this research, motion retargetting or the motion imitation based on dynamic balance and support with dynamic filtering 
-  is planned to be implemented on humanoid robot \textit{NAO v5}, from Aldebaran Robotics. The imitation will be carried out 
+  is implemented on humanoid robot \textit{NAO v5}, from Aldebaran Robotics. The imitation will be carried out 
   online using marker-based motion capture suit from \textit{Xsens}, specifically \textit{Xsens MVN Analyze} system.
   
   ~
@@ -35,20 +35,23 @@
  \section*{Acknowledgements}
  
  I would first like to thank my thesis advisor Dr Sophie Sakka for her motivation and opportunity for the thesis topic.
-  I would like forward my thanks to Prof. Olivier Kermorgant for his continuous motivation and help in informing 
-  students about thesis positions without which I would not have found the position. 
+ Her experience, knowledge and continuous advicess have allowed me to become a better researcher and have ultimately made 
+ this thesis possible. I am specifically grateful to the members in \textit{Robots! Association} for their support and providing 
+ a very friendly environment during my thesis period. 
+
+ ~
+ 
+I would also like to thank Dr Olivier Kermorgant and Christine Chevallereau for accepting to be members of the jury, for their 
+interest in my work and for their feedback on the thesis.
 
 ~
 
-I would also like to thank Prof. Ina Taralova for her indispensable advice regarding the rules and practices involved 
-in the organisation of this report , which I have tried to implement to the best of my abilities.
+Finally, my deepest thanks go out to my parents for their constant support, advice, love and help not only during the development 
+of this thesis, but throughout all of my life. Thanks for always being there when I most needed it, in spite of the distance; thanks
+for all the encouragements at all times; thanks for all the beliefs I was always taught. And, overall, thanks God for the life and 
+for always giving me the strength to keep forward despite all the difficulties.
 
-~
-
-Finally, I must express my very profound gratitude to my parents and my friends for providing me with unfailing 
-support and continuous encouragement throughout my years of study and through the process of researching and writing 
-this report. This accomplishment would not have been possible without them.
- \newpage
+\newpage
  
  
 \section*{Notations}
@@ -87,11 +90,20 @@ this report. This accomplishment would not have been possible without them.
 
 \section*{Abbreviations}
 
-\begin{tabular}{p{3cm}p{10cm}}
+\begin{tabular}{p{3cm}p{15cm}}
 CoM & Centre of Mass \\
 DoF & Degrees of Freedom \\
 ZMP & Zero Moment Point \\
 OSID & Operational Space Inverse Dynamics \\
+QP & Quadratic Programming \\
+HQP & Hierrachical Quadratic Programming \\
+eHQP & Equality-constrained Hierrachical Quadratic Programming \\
+iHQP & Inequality-constrianed Hierrachical Quadratic Programming \\
+M-DIP & Multi- Double Inverse Pendulum Model \\
+SoT & Stack of Tasks \\
+MVNX & Xsens-specific XML format \\
+UDP & User Datagram Protocol \\
+
 
 
 \end{tabular}
@@ -112,12 +124,7 @@ OSID & Operational Space Inverse Dynamics \\
 \include{task_specification.tex}
 \include{experimental_setup.tex}
 \include{implementation.tex}
- 
- 
- \chapter*{Conclusion}
- \addcontentsline{toc}{chapter}{Conclusion}
- 
- 
+\include{conclusion.tex}
  
  
  
