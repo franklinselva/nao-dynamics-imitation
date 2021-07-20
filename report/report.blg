@@ -9,6 +9,7 @@ A level-1 auxiliary file: dynamcis_based_imitation.aux
 A level-1 auxiliary file: task_specification.aux
 A level-1 auxiliary file: experimental_setup.aux
 A level-1 auxiliary file: implementation.aux
+A level-1 auxiliary file: conclusion.aux
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
@@ -18,54 +19,55 @@ Database file #1: biblio.bib
 -- IEEEtran.bst version 1.13 (2008/09/30) by Michael Shell.
 -- http://www.michaelshell.org/tex/ieeetran/bibtex/
 -- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty journal in louisepouble
 Warning--empty booktitle in evolution
 Warning--empty year in alma991010593879705596
 Warning--empty booktitle in LaValle2006PlanningA
 Warning--empty journal in khalilunified
 Warning--empty year in khalilunified
-Warning--empty journal in louisepouble
 Warning--empty journal in pierro2012stabilizer
+Warning--empty booktitle in scaling-human-nao
 
 Done.
-You've used 45 entries,
+You've used 46 entries,
             4039 wiz_defined-function locations,
-            1076 strings with 16618 characters,
-and the built_in function-call counts, 34132 in all, are:
-= -- 2650
-> -- 828
+            1082 strings with 16748 characters,
+and the built_in function-call counts, 34507 in all, are:
+= -- 2673
+> -- 832
 < -- 286
-+ -- 457
-- -- 141
-* -- 1613
-:= -- 4977
-add.period$ -- 103
-call.type$ -- 45
-change.case$ -- 41
++ -- 459
+- -- 142
+* -- 1626
+:= -- 5040
+add.period$ -- 106
+call.type$ -- 46
+change.case$ -- 42
 chr.to.int$ -- 702
-cite$ -- 52
-duplicate$ -- 2412
-empty$ -- 2942
-format.name$ -- 172
-if$ -- 7948
+cite$ -- 54
+duplicate$ -- 2447
+empty$ -- 2994
+format.name$ -- 173
+if$ -- 8034
 int.to.chr$ -- 0
-int.to.str$ -- 45
-missing$ -- 425
-newline$ -- 176
-num.names$ -- 47
-pop$ -- 1062
+int.to.str$ -- 46
+missing$ -- 431
+newline$ -- 179
+num.names$ -- 48
+pop$ -- 1083
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 2638
+skip$ -- 2668
 stack$ -- 0
-substring$ -- 1668
-swap$ -- 1939
+substring$ -- 1669
+swap$ -- 1953
 text.length$ -- 52
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 45
-warning$ -- 7
-while$ -- 155
-width$ -- 47
-write$ -- 449
-(There were 7 warnings)
+type$ -- 46
+warning$ -- 8
+while$ -- 156
+width$ -- 48
+write$ -- 456
+(There were 8 warnings)

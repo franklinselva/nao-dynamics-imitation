@@ -1,73 +1,80 @@
-\contentsline {chapter}{\numberline {1}Introduction}{11}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Service Robotics}{12}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Humanoid robots}{13}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Measuring Human Movement}{15}{section.1.3}%
-\contentsline {section}{\numberline {1.4}Challenges in Motion Imitation}{16}{section.1.4}%
-\contentsline {section}{\numberline {1.5}Problem Statement}{17}{section.1.5}%
-\contentsline {section}{\numberline {1.6}Thesis Organisation}{18}{section.1.6}%
-\contentsline {chapter}{\numberline {2}State of the Art}{19}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Approaches in Humanoid Robot Control}{19}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}Motion Planning}{19}{subsection.2.1.1}%
-\contentsline {subsubsection}{Generic methods}{20}{subsection.2.1.1}%
-\contentsline {subsubsection}{Motion Planning in Humanoid robots}{21}{Item.3}%
-\contentsline {subsection}{\numberline {2.1.2}Kinematics Approach}{22}{subsection.2.1.2}%
-\contentsline {subsubsection}{Basic Concepts}{22}{subsection.2.1.2}%
-\contentsline {subsubsection}{Kinematic Control of Redundant robots}{24}{subsection.2.1.2}%
-\contentsline {subsubsection}{Generalized form of Task Priority}{25}{equation.2.1.5}%
-\contentsline {subsubsection}{Kinematic Control in humanoid robots}{25}{equation.2.1.5}%
-\contentsline {subsection}{\numberline {2.1.3}Dynamics Approach}{26}{subsection.2.1.3}%
-\contentsline {subsubsection}{Basic Concepts}{26}{subsection.2.1.3}%
-\contentsline {subsubsection}{Dynamic Control in Humanoid Robots}{28}{equation.2.1.10}%
-\contentsline {subsection}{\numberline {2.1.4}Optimal Control}{29}{subsection.2.1.4}%
-\contentsline {subsubsection}{Optimal Control in Humanoid Robots}{29}{subsection.2.1.4}%
-\contentsline {section}{\numberline {2.2}Approaches in Humanoid Balance Control}{30}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Linear Inverse Pendulum Approach}{31}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Double Inverse Pendulum Approach}{32}{subsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Spherical Inverse Pendulum Approach}{34}{subsection.2.2.3}%
-\contentsline {subsection}{\numberline {2.2.4}Static vs Dynamic Balance}{35}{subsection.2.2.4}%
-\contentsline {section}{\numberline {2.3}Approaches in Dynamic Motion Retargetting}{35}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Dyanmic Retargetting in HRP-2 robot}{35}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Motion Retargetting in iCub}{36}{subsection.2.3.2}%
-\contentsline {subsection}{\numberline {2.3.3}Hybrid Retargetting using Time Scaling}{37}{subsection.2.3.3}%
-\contentsline {chapter}{\numberline {3}Dynamics Based Whole Body Imitation}{38}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Dynamic Considerations}{38}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Rigid body dynamics}{39}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Multi body dynamics}{40}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Dynamic Model of NAO robot}{41}{subsection.3.1.3}%
-\contentsline {subsection}{\numberline {3.1.4}Centroidal dynamics of humanoid robot}{42}{subsection.3.1.4}%
-\contentsline {subsection}{\numberline {3.1.5}Zero Moment Point (ZMP)}{42}{subsection.3.1.5}%
-\contentsline {section}{\numberline {3.2}Control Approach}{43}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Balance Control}{43}{subsection.3.2.1}%
-\contentsline {subsubsection}{CoM Retargetting}{43}{subsection.3.2.1}%
-\contentsline {subsubsection}{Floating base Control}{44}{equation.3.2.13}%
-\contentsline {subsubsection}{ZMP Retargetting}{45}{equation.3.2.16}%
-\contentsline {subsection}{\numberline {3.2.2}Posture Control}{46}{subsection.3.2.2}%
-\contentsline {subsubsection}{Multi-Double Inverted Pendulum Model (M-DIP)}{46}{subsection.3.2.2}%
-\contentsline {subsubsection}{Acceleration Control}{48}{equation.3.2.22}%
-\contentsline {chapter}{\numberline {4}Hierrachical Quadratic Programming}{49}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Types of Tasks}{49}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Equality tasks}{50}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Optimization tasks}{51}{subsection.4.1.2}%
-\contentsline {section}{\numberline {4.2}Quadratic Programming Approach}{51}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Null Space Projection}{52}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Hierrachy of Equality Quadratic Program}{53}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}eHQP in Motion Imitation}{54}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Joint trajectory tracking}{54}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Balance Control}{54}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Posture Control}{54}{subsection.4.3.3}%
-\contentsline {subsection}{\numberline {4.3.4}Joint Limits Avoidance}{54}{subsection.4.3.4}%
-\contentsline {chapter}{\numberline {5}Expermental Setup}{55}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Proposed Setup}{55}{section.5.1}%
-\contentsline {section}{\numberline {5.2}NAO robot platform}{56}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}NAOqi C++ SDK}{57}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}CopelliaSim support}{57}{subsection.5.2.2}%
-\contentsline {section}{\numberline {5.3}Xsens MVN Analyze}{58}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Sensor Setup}{59}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Xsens Networking Protocol}{60}{subsection.5.3.2}%
-\contentsline {subsection}{\numberline {5.3.3}Datagram Protocol}{60}{subsection.5.3.3}%
-\contentsline {subsubsection}{Message format}{61}{subsection.5.3.3}%
-\contentsline {subsubsection}{Header ID string}{61}{subsection.5.3.3}%
-\contentsline {subsection}{\numberline {5.3.4}MVN Data Streamer}{62}{subsection.5.3.4}%
-\contentsline {chapter}{\numberline {6}Implementation}{63}{chapter.6}%
-\contentsline {chapter}{Conclusion}{64}{chapter*.4}%
-\contentsline {chapter}{Bibliography}{64}{chapter*.4}%
+\contentsline {chapter}{\numberline {1}Introduction}{12}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Service Robotics}{13}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Humanoid robots}{14}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Measuring Human Movement}{16}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Challenges in Motion Imitation}{17}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Problem Statement}{18}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Thesis Organisation}{19}{section.1.6}%
+\contentsline {chapter}{\numberline {2}State of the Art}{20}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Approaches in Humanoid Robot Control}{20}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Motion Planning}{20}{subsection.2.1.1}%
+\contentsline {subsubsection}{Generic methods}{21}{subsection.2.1.1}%
+\contentsline {subsubsection}{Motion Planning in Humanoid robots}{22}{Item.3}%
+\contentsline {subsection}{\numberline {2.1.2}Kinematics Approach}{23}{subsection.2.1.2}%
+\contentsline {subsubsection}{Basic Concepts}{23}{subsection.2.1.2}%
+\contentsline {subsubsection}{Kinematic Control of Redundant robots}{25}{subsection.2.1.2}%
+\contentsline {subsubsection}{Generalized form of Task Priority}{26}{equation.2.1.5}%
+\contentsline {subsubsection}{Kinematic Control in humanoid robots}{26}{equation.2.1.5}%
+\contentsline {subsection}{\numberline {2.1.3}Dynamics Approach}{27}{subsection.2.1.3}%
+\contentsline {subsubsection}{Basic Concepts}{27}{subsection.2.1.3}%
+\contentsline {subsubsection}{Dynamic Control in Humanoid Robots}{29}{equation.2.1.10}%
+\contentsline {subsection}{\numberline {2.1.4}Optimal Control}{30}{subsection.2.1.4}%
+\contentsline {subsubsection}{Optimal Control in Humanoid Robots}{30}{subsection.2.1.4}%
+\contentsline {section}{\numberline {2.2}Approaches in Humanoid Balance Control}{31}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Linear Inverse Pendulum Approach}{32}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Double Inverse Pendulum Approach}{33}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Spherical Inverse Pendulum Approach}{35}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Static vs Dynamic Balance}{36}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Approaches in Dynamic Motion Retargetting}{36}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Dyanmic Retargetting in HRP-2 robot}{36}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Motion Retargetting in iCub}{37}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Hybrid Retargetting using Time Scaling}{38}{subsection.2.3.3}%
+\contentsline {chapter}{\numberline {3}Dynamics Based Whole Body Imitation}{39}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Dynamic Considerations}{39}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Rigid body dynamics}{40}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Multi body dynamics}{41}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Dynamic Model of NAO robot}{42}{subsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.1.4}Centroidal dynamics of humanoid robot}{43}{subsection.3.1.4}%
+\contentsline {subsection}{\numberline {3.1.5}Zero Moment Point (ZMP)}{43}{subsection.3.1.5}%
+\contentsline {section}{\numberline {3.2}Control Approach}{44}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Balance Control}{44}{subsection.3.2.1}%
+\contentsline {subsubsection}{CoM Retargetting}{44}{subsection.3.2.1}%
+\contentsline {subsubsection}{Floating base Control}{45}{equation.3.2.13}%
+\contentsline {subsubsection}{ZMP Retargetting}{46}{equation.3.2.16}%
+\contentsline {subsection}{\numberline {3.2.2}Posture Control}{47}{subsection.3.2.2}%
+\contentsline {subsubsection}{Multi-Double Inverted Pendulum Model (M-DIP)}{47}{subsection.3.2.2}%
+\contentsline {subsubsection}{Acceleration Control}{49}{equation.3.2.22}%
+\contentsline {chapter}{\numberline {4}Hierrachical Quadratic Programming}{50}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Types of Tasks}{50}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Equality tasks}{51}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Inequality tasks}{52}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Quadratic Programming Approach}{52}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Null Space Projection}{53}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Hierrachy of Equality Quadratic Program}{54}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Hierrachy of Inequality Quadratic Program}{55}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}HQP in Motion Imitation}{55}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Joint Limit Avoidance}{56}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Balance Control}{56}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Posture Control}{57}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Joint Tracking}{57}{subsection.4.3.4}%
+\contentsline {chapter}{\numberline {5}Expermental Setup}{58}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Proposed Setup}{58}{section.5.1}%
+\contentsline {section}{\numberline {5.2}NAO robot platform}{59}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}NAOqi C++ SDK}{60}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}CopelliaSim support}{60}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}Xsens MVN Analyze}{61}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Sensor Setup}{62}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Xsens Networking Protocol}{63}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Datagram Protocol}{63}{subsection.5.3.3}%
+\contentsline {subsubsection}{Message format}{64}{subsection.5.3.3}%
+\contentsline {subsubsection}{Header ID string}{64}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}MVN Data Streamer}{65}{subsection.5.3.4}%
+\contentsline {chapter}{\numberline {6}Implementation}{66}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Methodology}{66}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Robot Model}{67}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Kinematic Modelling}{67}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Masses and CoM}{68}{subsection.6.2.2}%
+\contentsline {section}{\numberline {6.3}Human Motion}{69}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Scaling Function}{69}{subsection.6.3.1}%
+\contentsline {chapter}{Conclusion}{71}{chapter*.4}%
+\contentsline {chapter}{Bibliography}{72}{chapter*.4}%
