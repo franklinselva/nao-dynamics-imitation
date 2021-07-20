@@ -1,24 +1,26 @@
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces Humanoid robots over decades}}{13}{figure.1.1}%
-\contentsline {figure}{\numberline {1.2}{\ignorespaces Human Locomotion using Differential Equations}}{15}{figure.1.2}%
-\contentsline {figure}{\numberline {1.3}{\ignorespaces A motion imitation performance by HRP-2 humanoid robot}}{16}{figure.1.3}%
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Humanoid robots over decades}}{14}{figure.1.1}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Human Locomotion using Differential Equations}}{16}{figure.1.2}%
+\contentsline {figure}{\numberline {1.3}{\ignorespaces A motion imitation performance by HRP-2 humanoid robot}}{17}{figure.1.3}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Sampling based motion planning of NASA Valkyrie \cite {Vijayakumar}}}{20}{figure.2.1}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Linear Inverse Pendulum Model}}{31}{figure.2.2}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Double Inverse Pendulum Model}}{32}{figure.2.3}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Linearized Spherical Inverse Pendulum Model}}{33}{figure.2.4}%
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Dynamic Retargetting Scheme \cite {ramosponce}}}{35}{figure.2.5}%
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Motion Retargetting Pipeline \cite {gucci:hal-01895145}}}{36}{figure.2.6}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Sampling based motion planning of NASA Valkyrie \cite {Vijayakumar}}}{21}{figure.2.1}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Linear Inverse Pendulum Model}}{32}{figure.2.2}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Double Inverse Pendulum Model}}{33}{figure.2.3}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Linearized Spherical Inverse Pendulum Model}}{34}{figure.2.4}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Dynamic Retargetting Scheme \cite {ramosponce}}}{36}{figure.2.5}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Motion Retargetting Pipeline \cite {gucci:hal-01895145}}}{37}{figure.2.6}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Schematic of a rigid body}}{38}{figure.3.1}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Rigid-body representation of tree structured model}}{39}{figure.3.2}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Rotation and Translation of Body reference frame}}{40}{figure.3.3}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Representation of offset projection of human actor \cite {penco:hal-01895145}}}{43}{figure.3.4}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Human actor and NAO robot as M-DIP model }}{45}{figure.3.5}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Schematic of a rigid body}}{39}{figure.3.1}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Rigid-body representation of tree structured model}}{40}{figure.3.2}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Rotation and Translation of Body reference frame}}{41}{figure.3.3}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Representation of offset projection of human actor \cite {penco:hal-01895145}}}{44}{figure.3.4}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Human actor and NAO robot as M-DIP model }}{46}{figure.3.5}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Illustration of the experimental setup}}{48}{figure.4.1}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces NAO - Aldebaran Robotics \cite {aldebaran-masses}}}{49}{figure.4.2}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces NAO robot in CopelliaSim simulator}}{51}{figure.4.3}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Xsens MVN Analyze Suit}}{52}{figure.4.4}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Xsens data plot pelvis joint}}{55}{figure.4.5}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Illustration of the experimental setup}}{55}{figure.5.1}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces NAO - Aldebaran Robotics \cite {aldebaran-masses}}}{56}{figure.5.2}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces NAO robot in CopelliaSim simulator}}{58}{figure.5.3}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Xsens MVN Analyze Suit}}{59}{figure.5.4}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Xsens data plot pelvis joint}}{62}{figure.5.5}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Work flow representation of Imitation Program}}{63}{figure.6.1}%

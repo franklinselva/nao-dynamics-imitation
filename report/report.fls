@@ -608,6 +608,9 @@ INPUT state_of_the_art.aux
 INPUT ./dynamcis_based_imitation.aux
 INPUT dynamcis_based_imitation.aux
 INPUT dynamcis_based_imitation.aux
+INPUT ./task_specification.aux
+INPUT task_specification.aux
+INPUT task_specification.aux
 INPUT ./experimental_setup.aux
 INPUT experimental_setup.aux
 INPUT experimental_setup.aux
@@ -847,6 +850,15 @@ INPUT ./images/flowchart-NAO-pendulum.jpg
 INPUT images/flowchart-NAO-pendulum.jpg
 INPUT ./images/flowchart-NAO-pendulum.jpg
 INPUT ./images/flowchart-NAO-pendulum.jpg
+INPUT ./task_specification.tex
+OUTPUT task_specification.aux
+INPUT ./task_specification.tex
+INPUT ./task_specification.tex
+INPUT ./task_specification.tex
+INPUT ./task_specification.tex
+INPUT task_specification.tex
+INPUT ./task_specification.tex
+INPUT task_specification.tex
 INPUT ./experimental_setup.tex
 OUTPUT experimental_setup.aux
 INPUT ./experimental_setup.tex
@@ -896,6 +908,11 @@ INPUT ./implementation.tex
 INPUT implementation.tex
 INPUT ./implementation.tex
 INPUT implementation.tex
+INPUT ./images/flowchart-block-diagram.png
+INPUT ./images/flowchart-block-diagram.png
+INPUT images/flowchart-block-diagram.png
+INPUT ./images/flowchart-block-diagram.png
+INPUT ./images/flowchart-block-diagram.png
 INPUT ./report.bbl
 INPUT report.bbl
 INPUT ./report.bbl
@@ -913,6 +930,9 @@ INPUT state_of_the_art.aux
 INPUT ./dynamcis_based_imitation.aux
 INPUT dynamcis_based_imitation.aux
 INPUT dynamcis_based_imitation.aux
+INPUT ./task_specification.aux
+INPUT task_specification.aux
+INPUT task_specification.aux
 INPUT ./experimental_setup.aux
 INPUT experimental_setup.aux
 INPUT experimental_setup.aux

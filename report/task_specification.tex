@@ -1,0 +1,191 @@
+\chapter{Hierrachical Quadratic Programming}
+
+In robotics, the use of inverse kinematics is very common and widely implemented for any applications. In humanoid robots, the robot structure
+is redundant which means it has more DoF than the number need to position the end-effector in the desired pose. These extra DOFs can be used to
+perform other tasks like \textit{avoiding singularities, balancing, dodging obstacles, minimizing energy consumption, etc.} 
+
+Usually more than one aspect of the task must be transmitted to the robot. For this purpose, \textit{task prioritization} will be used by allowing the jacobian of one task 
+into the null projection of another task \cite{khalil2004modeling}. To implement the \textit{task prioritization} effectively, an highly efficient method known as 
+"Hierrachical Quadratic Programming (HQP)" can be used. HQP results in handling stacks of tasks with less computation intensity \cite{escande2014hierarchical} . This chapter details the task specification and HQP for this
+research from the concepts explained in chapter \ref{chapter-3}.
+
+\section{Types of Tasks}
+
+A task or constraint refers to any geometric goals which must be achieved by the robot. For example, reaching a certain point in the world frame, reaching a 
+particular joint angle, avoiding an obstacle, placing the center of mass in a specific location and so on. Another way of seeing them is as constraints 
+which limit the robot’s allowed motion: the robot can place itself in any way as long as it doesn’t disturb the task.
+
+Several tasks of each type will be performed. Each type will be described separately below. The mathematical description will be given as well as 
+examples of when that type of task is useful. The way of arranging these tasks according to their priorities will be detailed. And finally, the tasks 
+used in this work will be defined.
+
+\subsection{Equality tasks}
+
+This type of task or constraint is the most commonly found when dealing with inverse kinematics. It consists of tracking values which can be described in function 
+of the robot’s joints. For example, the position and orientation of an end-effector, the position of the center of mass, and many other key points in 
+the robot’s body can be described in function of the joint configuration. For a given task involving \textit{DGM} and \text{IGM}, let the pose descriptor be $X$ and joint descriptor be $q$. Then the change in joint vector $\Dot{q}$ with jacobian $J$
+ is given by,
+
+ \begin{equation}
+     \label{eq: equality-task}
+    \dot{X} = J \dot{q}
+ \end{equation}
+
+Then the objective that need to be accomphlished can be represented in the task space velocity as $\dot{e}_H^*$. Once obtained, the robot input can be computed as a quadratic problem as,
+\begin{equation}
+    \label{eq: equality-task-2}
+    \mathit{Find} \quad \dot{q}^*  \in \min_{\dot{q}} ||J\dot{q} - \dot{e}_H^*|| \\
+\end{equation}
+
+More generally, the linear constraints in equation \ref{eq: equality-task-2} can be represented in the form $Ax = b$ as \cite{escande2014hierarchical},
+
+\begin{equation}
+    \label{eq: equality-task-3}
+    \mathit{Find} \quad x^*  \in \min_{x} ||Ax - b|| \\
+\end{equation}
+
+Among the possible task vector $x^*$, the pseudo inverse can be computed as ,
+
+$$x = A^+b$$
+
+$A^+$ can be calculated from Singular Value Decomposition (SVD).
+This simplifies the calculation, since the pseudo-inverse of a diagonal matrix is found by taking the reciprocal of each of its non-zero elements \cite{louisepouble}.
+
+\begin{align}
+    \label{eq: SVD}
+    \begin{split}
+        A^+_L &= (A^tA)^{-1}A^t \\
+        A^+_R &= A^t(AA^t)^{-1}     
+    \end{split}
+\end{align}
+
+From equation \ref{eq: SVD}, the pseudo inverse can be calculated with less computation with linear independent columns or independent rows \cite{louisepouble}. 
+With these equality tasks, the cartesian tracking, CoM projection computation for balance, avoiding singularities and much mor can be achieved.
+
+
+\subsection{Optimization tasks}
+
+Some tasks, rather than yielding a value needs to return the minimization or maximization of a value. As long as the function is described only in function of the robot’s 
+joints, it can be made into an optimization task. These tasks are described by $Z$ vector consisting of a weighted gradient of a function,
+
+\begin{equation}
+    \label{eq:optimization-task}
+    Z = \kappa_i \bigtriangledown f_i(q)
+\end{equation}
+
+Here $f_i(q)$ is the function needs to be optimized and $\kappa_i$ is the weight assigned for the task $i$. This type of task is very useful, for example, for minimizing the diverence 
+between captured human joint angles and the robot’s angles. It is also commonly used in industrial robots to maximize the distance from the joint angles and the joint limits. In summary, 
+anything which can be made into an equality task can be made into an optimization. Unlike equality tasks, optimization tasks cannot be hard constraints, since the optimal value might not be reached.
+
+\section{Quadratic Programming Approach}
+
+Humanoid robots are usually redundant with respective allowing to add more tasks to the task space. Ensuring task priorities for the assigned tasks 
+will help the optimum performance. However, to achieve a task in three-dimensional space, will require infinite joint configurations to achieve a goal.
+The space where motions can be performed without perturbating the task is known as task's null projector.
+To efficiently compute and optimize the tasks for the application, hierrachical quadratic programming can be used as proposed in \cite{escande2013planning}. This
+optimization technique provides  online faster computation and can cope up with the redundancy of the humanoid robot.
+
+
+\subsection{Null Space Projection}
+
+The null space projector is directly linked to task Jacobian and is alternatively called as Jacobian's null projector. The act of performing a task within the other task is usually called as
+projecting the task vector $Z_2$ into the Jacobian $J_1$'s null space. Then the projection on Jacobian $J_1$ is given by,
+
+\begin{equation}
+    \label{eq: null-space-1}
+    P_1 = I - A_1^+ A_1
+\end{equation}
+
+where $I$ is the identity matrix. The task prioriy is set such that task $j$ has higher prioirity than task $j+1$. Then equation \ref{eq: equality-task} can be computed as quadratic problem as,
+
+\begin{equation}
+    \label{eq: null-space-2}
+    \min_x(\underline{A}_p x - \underline{b}_p)^T Q (\underline{A}_p x - \underline{b}_p) 
+\end{equation}
+
+such that,
+\begin{equation*}
+    \underline{A}_p = \begin{bmatrix}
+        A_1 \\ A_2 \\ ... \\ A_p
+    \end{bmatrix} \qquad 
+    \underline{b}_p = \begin{bmatrix}
+        b_1 \\ b_2 \\ ... \\ b_p
+    \end{bmatrix}
+\end{equation*}
+
+
+where $(\underline{A}_p, \underline{b}_p)$ is a set of non-conflicting linear constraints that need to be satisfied for best simultaneously and $Q$ is the weighing matrix for optimizing the constraints for the tasks proposed.
+Then the  second contraint $(A_2, b_2)$ is solved with the null projector of task 1 with constraint $(A_1, b_1)$ using the minimization of quadratic programming as \cite{escande2014hierarchical},
+
+\begin{equation}
+    \label{eq: null-space-3}
+    \min_x ||A_2P_1x_2 - (b_2 - A_2A_1^+b_1)||
+\end{equation}
+
+Similarily the third constraint $(A_3, b_3)$ on the null projection of task 2 can be given by,
+
+\begin{equation}
+    \label{eq: null-space-4}
+    x_2^* = (A_2P_2)^+(b_2 -  A_2A_1^+b_1) + P_2 \tilde{x}_3
+\end{equation}
+
+and the complete solution solving $(A_1, b_1)$ at its best and $(A_2, b_2)$ if possible is given by,
+
+\begin{equation}
+    \label{eq: null-space-5}
+    x_2^* = A_1^+b_1 + (A_2P_2)^+(b_2 -  A_2A_1^+b_1) + P_2 \tilde{x}_3
+\end{equation}
+
+The solution in equation \ref{eq: null-space-5}  can be extended recursively to solve the $p$ levels of the hierrachy with $P_0 = I$, $x_0 = 0$ and $P_k = P_{k - 1}\tilde{P}_k$ the projector into the null space of $A_k$
+is given by,
+
+\begin{equation}
+    \label{eq: null-space-6}
+    x_p^* = \Sigma_{k=1}^p (A_kP_{k-1})^+(b_k -  A_kA_{k - 1}^+b_{k - 1}) + P_k \tilde{x}_{k+1}
+\end{equation}
+
+The basic projector $P$ in equation \ref{eq: null-space-6} can be replaced by the advanced projector suggested by Escande \cite{escande2010fast} as,
+
+\begin{equation}
+    \label{eq: null-space-7}
+    x_p^* = \Sigma_{k=1}^p Z_{k - 1}(A_kZ_{k-1})^+(b_k -  A_kA_{k - 1}^+b_{k - 1}) + Z_pz_{p + 1}
+\end{equation}
+
+where $Z_k$ is a basis of a null space of $\underline{A}_k$ (\textit{i.e.} $A_iZ_i = 0$ and $Z_i^TZ_i = I$, $i = 1, 2, ..., k$) and is a vector of dimension of null space of $\underline{A}_k$.
+The writing in last equation is more efficient than equation \ref{eq: null-space-6} due to its corresponding matrix size \cite{escande2014hierarchical}.
+
+\subsection{Hierrachy of Equality Quadratic Program}
+
+The Equality-only Hierrachical Quadratic Program is considered (eHQP) as a least-square problem. It is written
+as a set of $p$ eHQP: at level k, the QP is  solved using,
+
+\begin{align}
+    \label{eq: HQP}
+    \quad min_{x_k, w_k}||w_k|| \\
+    \mathit{s.t.} \quad    A_kx_k &= b_k + w_k \\
+    \underline{A}_{k - 1}x_k &= \underline{b}_{k - 1} + \underline{w}_{k - 1}^*
+\end{align}
+
+where $\underline{A}_{k - 1}, \underline{b}_{k - 1}$ and $\underline{w}_{k - 1}^*$ are the matrix and vectors composed of the stacked quantities 
+as represented in equation \ref{eq: null-space-2}. The weight $\underline{w}_{k - 1}^*$ is a fixed value updated from the previous QP.
+The langrangian of the above equations give the optimality conditions for computing the weights $\underline{w}_k$ 
+recursively \cite{escande2014hierarchical}.
+
+\begin{align}
+    \label{eq: HQP-2}
+    w_k &= A_kx_k - b_k \\
+    \underline{A}_{k - 1}x_k &= \underline{b}_{k - 1} + \underline{w}_{k - 1}^ *
+\end{align}
+
+The hierrachy is kept such that $(k -1) \gg k \gg (k + 1)$ to prioritize the constraints planned. Equation \ref{eq: HQP-2} confirms that 
+higher level constraints are kept when solving for lower level tasks. The eHQP problem derived in this section allows equality constraints to
+ be achieved at its best if possible.  A tasks that will be solved using eHQP will be presented in section \ref{sec: HQP-imitation}.
+
+
+\section{eHQP in Motion Imitation}
+\label{sec: HQP-imitation}
+
+\subsection{Joint trajectory tracking}
+\subsection{Balance Control}
+\subsection{Posture Control}
+\subsection{Joint Limits Avoidance}

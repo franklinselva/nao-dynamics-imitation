@@ -6,6 +6,7 @@ A level-1 auxiliary file: thesisfront.aux
 A level-1 auxiliary file: introduction.aux
 A level-1 auxiliary file: state_of_the_art.aux
 A level-1 auxiliary file: dynamcis_based_imitation.aux
+A level-1 auxiliary file: task_specification.aux
 A level-1 auxiliary file: experimental_setup.aux
 A level-1 auxiliary file: implementation.aux
 Reallocated singl_function (elt_size=4) to 100 items from 50.
@@ -26,45 +27,45 @@ Warning--empty journal in louisepouble
 Warning--empty journal in pierro2012stabilizer
 
 Done.
-You've used 43 entries,
+You've used 45 entries,
             4039 wiz_defined-function locations,
-            1066 strings with 16256 characters,
-and the built_in function-call counts, 32104 in all, are:
-= -- 2484
-> -- 782
-< -- 262
-+ -- 429
-- -- 135
-* -- 1515
-:= -- 4703
-add.period$ -- 98
-call.type$ -- 43
-change.case$ -- 39
-chr.to.int$ -- 642
-cite$ -- 50
-duplicate$ -- 2277
-empty$ -- 2785
-format.name$ -- 164
-if$ -- 7468
+            1076 strings with 16618 characters,
+and the built_in function-call counts, 34132 in all, are:
+= -- 2650
+> -- 828
+< -- 286
++ -- 457
+- -- 141
+* -- 1613
+:= -- 4977
+add.period$ -- 103
+call.type$ -- 45
+change.case$ -- 41
+chr.to.int$ -- 702
+cite$ -- 52
+duplicate$ -- 2412
+empty$ -- 2942
+format.name$ -- 172
+if$ -- 7948
 int.to.chr$ -- 0
-int.to.str$ -- 43
-missing$ -- 405
-newline$ -- 170
-num.names$ -- 45
-pop$ -- 1018
+int.to.str$ -- 45
+missing$ -- 425
+newline$ -- 176
+num.names$ -- 47
+pop$ -- 1062
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 2481
+skip$ -- 2638
 stack$ -- 0
-substring$ -- 1526
-swap$ -- 1815
-text.length$ -- 48
+substring$ -- 1668
+swap$ -- 1939
+text.length$ -- 52
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 43
+type$ -- 45
 warning$ -- 7
-while$ -- 145
-width$ -- 45
-write$ -- 429
+while$ -- 155
+width$ -- 47
+write$ -- 449
 (There were 7 warnings)
