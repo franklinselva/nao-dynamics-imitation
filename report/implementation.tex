@@ -50,17 +50,56 @@ frames in the model which are not necessarily defined according to the previous 
 \begin{equation}
     \label{eq: robot-dgm-1}
     \begin{bmatrix}
-        \dot{x}_{lhand} \\ \dot{x}_{rhand} \\ \dot{x}_{lleg} 
+        \dot{x}_{lhand} \\ \dot{x}_{rhand} \\ \dot{x}_{xleg} 
     \end{bmatrix} = J \begin{bmatrix}
-        \dot{q}_{lhand} \\ \dot{q}_{rhand} \\ \dot{q}_{lleg}
+        \dot{q}_{lhand} \\ \dot{q}_{rhand} \\ \dot{q}_{xleg}
     \end{bmatrix}
 \end{equation}
 
 Equation \ref{eq: robot-dgm-1} can be simply represented as $\dot{X} = J\dot{q}$ in the next sections where $J$ is the robot Jacobian and $x_i$ is a $3 \times 1$ vector without
-considering the end-effector oriendation. The above equation has a vector size of $(6 + 6 +5) \times 1$ considering only three kinematic chains for the sake of redundancy. 
-In other words, the right foot will always be in contact with the floor. 
+considering the end-effector oriendation. $xleg$ refers to $lleg$ and $rleg$ depending on the support phase of the robot. Considering both feet 
+of the robot for kinematic modelling uses all the joints $q$, the robot will not be redundant and adding tasks will cause overconstraint. To avoid the situation, two seperate models
+were created such that the above equation has a vector size of $(6 + 5 + 5) \times 1$ considering only three kinematic chains for the sake of redundancy. 
+In other words, either left foot or right foot will always be in contact with the environment (\textit{i.e.} floor).
 This work was implemented in MATLAB and was exported to a C++ library "Jacobian" (available in \cite{github}). 
 
+\subsection{Support Phases}
+
+Since the kinematic analysis is composed of two models for each single support (right foot and left foot), the computation is extended to a lighter version compared to the computation 
+of 23 joints. The transition between single support (SS) and double support (DS) is tabulated in Table \ref{tab: support-phases} which introduces the constraints of using the kinematic models developed in the 
+above section.
+
+
+In table \ref{tab: support-phases}, FH refers to the feet height of NAO, LH refers to the lift height during single support of the respective legs. $X_{balance}$ refers to the optimal 
+projection of CoM onto the horizontal plane during the imitation process. 
+
+\begin{table}[h!]
+    \label{tab: support-phases}
+    \begin{tabular}{|l|c|c|c|c|c|}
+        \hline
+        Support & Pos. of abs. frame & $X$ & $X_{balance}$ & DS (constraint) & SS (constraint)\\
+        \hline
+        Right Foot & Right Foot  & $\begin{bmatrix}
+            x_{lhand} \\ x_{rhand} \\ x_{lankle}
+        \end{bmatrix}$ & $\begin{bmatrix}
+            0 \\ 0
+        \end{bmatrix}$ & $z_{lankle} = FH$ & $z_{lankle} = FH + LH$ \\
+        \hline
+        Both feet & Right Foot  & $\begin{bmatrix}
+            x_{lhand} \\ x_{rhand} \\ x_{lankle} \\z_{lfoot} = 0 \\z_{ltoe} = 0
+        \end{bmatrix}$ & $\begin{bmatrix}
+            \frac{x_{lfoot}}{2} \\ \frac{y_{lfoot}}{2}
+        \end{bmatrix}$ & - & - \\
+        \hline
+        Left Foot & Left Foot & $\begin{bmatrix}
+            x_{lhand} \\ x_{rhand} \\ x_{rankle}
+        \end{bmatrix}$ & $\begin{bmatrix}
+            0 \\ 0
+        \end{bmatrix}$ & $z_{rankle} = FH$ & $z_{rankle} = FH + LH$\\
+        \hline
+    \end{tabular}
+    \caption{Transition between support phases}
+\end{table}
 \subsection{Masses and CoM}
 
 The robot's dynamic parameters like masses and Centre of Masses can be obtained from the 
@@ -125,4 +164,18 @@ In summary considering a link $l$, the scaling can be processed as,
 
 where $P_a$ refers to the antecedent position to the link $l$. Since the robot doesn’t have a spine, the distances connecting shoulders and hips 
 should remain constant. The shoulders cannot be scaled directly from the hips because of the different torso proportions between the human and the 
-robot. It was chosen to scale a segment which goes from the point between the hips to the point between the shoulders, preserving symmetry.
+robot. It was chosen to scale a segment which goes from the point between the hips to the point between the shoulders, preserving symmetry. Also the 
+position of absolute frame during single support is at right foot at any case. Considering the support changes into imitation, the absolute frame 
+cannot stay at right frame and hence moved to the center of the feet. A threshold of 200 mm is set to avoid false positives due to jittering.
+
+\section{Robot Control}
+
+For the robot control part, the program is developed with the possiblity of extending as an application to the NAO community. The data received from 
+Xsens is processed and sent to the robot control for motion imitation. A flowchart of the program is shown on Figure \ref{fig: flowchart-robot-control}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{images/flowchart-block-diagram.png}\hfill
+    \caption{Block Diagram Representation of Imitation Program}\hfill
+    \label{fig: flowchart-robot-control}
+\end{figure}
