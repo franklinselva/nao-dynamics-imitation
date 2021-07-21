@@ -13,7 +13,7 @@
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Schematic of a rigid body}}{40}{figure.3.1}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Rigid-body representation of tree structured model}}{41}{figure.3.2}%
 \contentsline {figure}{\numberline {3.3}{\ignorespaces Rotation and Translation of Body reference frame}}{42}{figure.3.3}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Representation of offset projection of human actor \cite {penco:hal-01895145}}}{45}{figure.3.4}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Representation of offset projection of human actor \cite {penco:hal-01895145}}}{44}{figure.3.4}%
 \contentsline {figure}{\numberline {3.5}{\ignorespaces Human actor and NAO robot as M-DIP model }}{47}{figure.3.5}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
@@ -25,4 +25,5 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {6.1}{\ignorespaces Block Diagram Representation of Imitation Program}}{66}{figure.6.1}%
 \contentsline {figure}{\numberline {6.2}{\ignorespaces NAO Robot's DoF Arrangement \cite {louisepouble}}}{68}{figure.6.2}%
-\contentsline {figure}{\numberline {6.3}{\ignorespaces Proportional scaling of human motion \cite {louisepouble}}}{70}{figure.6.3}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Proportional scaling of human motion \cite {louisepouble}}}{71}{figure.6.3}%
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Block Diagram Representation of Imitation Program}}{72}{figure.6.4}%

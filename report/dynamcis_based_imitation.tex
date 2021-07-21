@@ -366,16 +366,4 @@ $\mathbf{\dot{X}} = [\mathbf{\dot{X}}_i, \mathit{i = rh, rl, lh, ll}]^T$ is the 
 $\mathbb{\ddot{X}} = [\mathbb{\ddot{X}}_i, \mathit{i = rh, rl, lh, ll}]^T$ is the acceleration contribution of the pendulum of human; \\
 $\mathbf{\ddot{X}} = [\mathbf{\ddot{X}}_i, \mathit{i = rh, rl, lh, ll}]^T$ is the acceleration contribution of the pendulum of robot.
 
-\subsubsection{Acceleration Control}
-
-The human actor and the robot are simplified to the composition of M-DIP model and the posture control can be implemented directly using the acceleration feedback between the 
-two subjects. The acceleration control for the motion-retargetting can be implemented as a weighted-constraint based problem \cite{van1985method},
-
-\begin{equation}
-    \label{eq: MDIP-control}
-    \lim_{a \Rightarrow \infty} (HJ)^+ H\dot{e}^* = argmin (||H_iJ_i\dot{q} - H_i\dot{e}^*_i||^2), \quad \mathnormal{s.t. \quad J_i\dot{q} = \dot{e}_i^*}
-\end{equation}
-
-
-where 
 

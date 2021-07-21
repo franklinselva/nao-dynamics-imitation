@@ -100,6 +100,8 @@ projection of CoM onto the horizontal plane during the imitation process.
     \end{tabular}
     \caption{Transition between support phases}
 \end{table}
+
+
 \subsection{Masses and CoM}
 
 The robot's dynamic parameters like masses and Centre of Masses can be obtained from the 
@@ -132,7 +134,7 @@ must reach the same point in task space as the human actor, but due to greater d
 To achieve this criteria, a scaling function need to be implemented before
 feeding the Xsens data to the robot control.
 
-\subsection{Scaling Function}
+\subsection*{Scaling Function}
 
 In a previous work \cite{scaling-human-nao}, the use of a scaling factor for each limb based on the ratio between the lengths of the kinematic chain of actor and 
 imitator was proposed. This factor was then multiplied by the captured human data to obtain the desired positions for the robot. Since each limb 

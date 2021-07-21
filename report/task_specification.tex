@@ -191,6 +191,17 @@ As a minimization HQP problem, the linear inequality constraints in equation \re
     C_2x \le d_2 + w_2
 \end{eqnarray}
 
+This iHQP problem can be solved using a classical active search. However, this would not take into account the specific form of the varibable $w_2$
+In practice, its specific role in the constraint equations can be taken into account to reduce the amount of computation.
+Concluding the HQP problem containing both equality and inequality constraints, the formulation can be written as,
+
+\begin{align}
+    \label{eq: HQP-final}
+    \dot{q}_i = \min_{\dot{q},w_i} ||A_i\dot{q} - b_i||^2 + ||w||^2 \\
+    \mathit{s.t.} \ C_i\dot{q} - w \le d_i \\
+    \mathit{s.t.} \ C_{i - 1}\dot{q} \leq d_{i-1} \\
+    \mathit{s.t.} \ A_{i - 1}\dot{q} = b_{i - 1}
+\end{align}
 
 \section{HQP in Motion Imitation}
 \label{sec: HQP-imitation}
@@ -246,7 +257,55 @@ satisfies the balance condition on the humanoid.
 \begin{eqnarray}
     \label{eq: balance-task-1}
     \min_{pZMP} (\dot{P}_{CoM}^{ref} - \dot{P}_{CoM})^T Q (\dot{P}_{CoM}^{ref} - \dot{P}_{CoM}) \\
-    \mathit{such \ that} \ 
+    \mathit{such \ that} \ \dot{P}_{CoM} = \dot{P}_{CoM}^* + \frac{1}{z^*_{CoM}}(P_{CoM} - P_{ZMP}) \\
+    lb_{SP} \le P_{ZMP} \leq ub_{SP}
 \end{eqnarray}
-\subsection{Posture Control}
-\subsection{Joint Tracking}
+
+$(lb_{SP}, ub_{SP})$ is the lower and upper limit of Support Polygon; $z_{CoM}^*$ is the height of the CoM in previous QP; $Q$ is the weighing matrix
+The computation of CoM height using LIPM model helps in better estimation of ZMP position and consequently, a more accurate correction \cite{gucci:hal-01895145}.
+
+\subsection[End-effector tracking]{Task 3: End-effector tracking}
+
+To track the end-effector of the tree-structured robot, both position and orientations are considered. Considering the human actor task vector $X_H$ and the robot task vector $X_R$,
+the end-effector tracking can be achieved and the change in joint vector $\dot{q}$ is,
+
+\begin{equation}
+    \label{eq: end-effector-tracking-1}
+    \dot{q} = J^+(X_H - X_R)   
+\end{equation}
+
+The equality constraints can then be computed using for the current joint configuration $q^c$,
+
+\begin{equation}
+    \label{eq: end-effector-tracking-2}
+    A_{3}(q^c)\dot{q} = (X_H - X_R) = b_3
+\end{equation}
+
+where the constraint matrix $A_3(q^c) = J(q^c)$ is the robot jacobian; $X_H$ and $X_R$ are the set of end-effector states respective to human and robot.
+
+\subsection[Joint trajectories tracking]{Task 4: Joint trajectories tracking}
+
+To imitate the approximately exact motion from human actor data, the differene between joint vectors of human actor $q_H$ and humanoid robot $q_R$ need to be minimum resulting in 
+inequality linear constraints and is represented as,
+
+\begin{equation}
+    \label{eq: joint-tracking-1}
+    \min \kappa ||q_H - q_R||^2
+\end{equation}
+
+As a iHQP problem, equation \ref{eq: joint-tracking-1} can be rewritten as ,
+
+\begin{equation}
+    C_4\dot{q} \le d_4
+\end{equation}
+
+where $C_4 = I$ and $d_4 = \kappa(q_H - q_R)^2 $ is the computation performed. $\kappa$ is a custom weight matrix to provide compartively less weight to leg chains.
+\subsection[Posture Control]{Task 4: Posture Control}
+The human actor and the robot are simplified to the composition of M-DIP model and the posture control can be implemented directly using the acceleration feedback between the 
+two subjects. The acceleration control for the motion-retargetting can be implemented as a weighted-constraint based problem \cite{van1985method},
+
+\begin{equation}
+    \label{eq: posture-control-1}
+    \min ||\ddot{\mathbb{X}}_H - \ddot{\mathbf{X}}_R||
+\end{equation}
+

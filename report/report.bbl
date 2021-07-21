@@ -269,11 +269,6 @@ W.~Khalil, ``Unified dynamic modeling of robots using newton-euler
 P.~Pierro, ``Stabilizer architecture for humanoid robots collaborating with
   humans,'' 2012.
 
-\bibitem{van1985method}
-C.~Van~Loan, ``On the method of weighting for equality-constrained
-  least-squares problems,'' \emph{SIAM Journal on Numerical Analysis}, vol.~22,
-  no.~5, pp. 851--864, 1985.
-
 \bibitem{escande2014hierarchical}
 A.~Escande, N.~Mansard, and P.-B. Wieber, ``Hierarchical quadratic programming:
   Fast online humanoid-robot motion generation,'' \emph{The International
@@ -284,6 +279,11 @@ A.~Escande, N.~Mansard, and P.-B. Wieber, ``Hierarchical quadratic programming:
   constraints,'' in \emph{2010 IEEE International Conference on Robotics and
   Automation}.\hskip 1em plus 0.5em minus 0.4em\relax IEEE, 2010, pp.
   3733--3738.
+
+\bibitem{van1985method}
+C.~Van~Loan, ``On the method of weighting for equality-constrained
+  least-squares problems,'' \emph{SIAM Journal on Numerical Analysis}, vol.~22,
+  no.~5, pp. 851--864, 1985.
 
 \bibitem{github}
 \BIBentryALTinterwordspacing

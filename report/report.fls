@@ -926,6 +926,10 @@ INPUT ./images/proportional-scaling.png
 INPUT images/proportional-scaling.png
 INPUT ./images/proportional-scaling.png
 INPUT ./images/proportional-scaling.png
+INPUT ./images/flowchart-block-diagram.png
+INPUT ./images/flowchart-block-diagram.png
+INPUT images/flowchart-block-diagram.png
+INPUT ./images/flowchart-block-diagram.png
 INPUT ./conclusion.tex
 OUTPUT conclusion.aux
 INPUT ./conclusion.tex
