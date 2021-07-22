@@ -35,7 +35,7 @@ then
 echo "STARTING XSENS DATA FLOW AND CONNECTION TEST"
 export DYLD_LIBRARY_PATH=$(pwd)/build-pepper-config/sdk/lib
 
-./build-pepper-config/sdk/bin/xsens_data_plot 0.0.0.0
+./build-pepper-config/sdk/bin/xsens_data_plot 127.0.0.1
 
 else
 echo "Provide Argument (SIMULATION/REAL/DATA)!"

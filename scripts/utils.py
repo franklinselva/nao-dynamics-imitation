@@ -68,6 +68,13 @@ class frame:
     JOINT_ANGLE = None
     CENTRE_OF_MASS = None
 
+    STR_POSITION = ""
+    STR_CENTRE_OF_MASS = ""
+    STR_JOINT_ANGLE = ""
+    STR_ACCELERATION = ""
+    STR_VELOCITY = ""
+    STR_ORIENTATION = ""
+
 
 def print_segment(segment):
     print(logger.OKCYAN + "Segment Name: \t {}".format(segment.NAME) + logger.ENDC)

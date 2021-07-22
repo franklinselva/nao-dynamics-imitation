@@ -112,7 +112,7 @@ class MVNX:
 
         if path is None:
             self.path = os.path.join(dirpath, "recordings/mvnx/all_test.mvnx")
-            print(logger.OKCYAN +
+            print(logger.OKBLUE +
                   "[INFO] Parsing file: \t{}".format(self.path) + logger.ENDC)
         else:
             self.path = path
@@ -341,6 +341,7 @@ class MVNX:
                 frame_data.TYPE = frame.attrib['type']
 
                 # Parse position information
+                frame_data.STR_POSITION = frame[FRAME_ID.POSITION].text
                 positions = frame[FRAME_ID.POSITION].text.split()
                 for i in range(0, len(positions) - 1):
                     positions[i] = float(positions[i])
@@ -351,6 +352,7 @@ class MVNX:
                     (int(positions.size/3), 3))
 
                 # Parse orientation information
+                frame_data.STR_ORIENTATION = frame[FRAME_ID.ORIENTATION].text
                 orientations = frame[FRAME_ID.ORIENTATION].text.split()
                 for i in range(0, len(orientations) - 1):
                     orientations[i] = float(orientations[i])
@@ -369,6 +371,7 @@ class MVNX:
                     (int(joint_angles.size/3), 3))
 
                 # Parse CoM information
+                frame_data.STR_CENTRE_OF_MASS = frame[FRAME_ID.CENTRE_OF_MASS].text
                 CoM = frame[FRAME_ID.CENTRE_OF_MASS].text.split()
                 for i in range(0, len(CoM) - 1):
                     CoM[i] = float(CoM[i])
@@ -405,6 +408,8 @@ class MVNX:
 
 def main():
     mvnx = MVNX()
+    _, _, _, _, frames = mvnx.parse_all()
+    print(frames[0].STR_POSITION)
 
 
 if __name__ == "__main__":

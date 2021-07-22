@@ -1,6 +1,7 @@
 from os import remove
 from mvnx_parser import MVNX
 from utils import logger
+from time import sleep
 
 import socket
 
@@ -21,28 +22,40 @@ class mvnx_streamer():
         self.mvnx = MVNX()
         _, self.segments, self.sensors, self.joints, self.frames = self.mvnx.parse_all()
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
+        self.sock = socket.socket(
+            socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)  # (, , 0)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+        self.START = True
+        self.ID = 0
 
         try:
-            self.sock.accept((SERVER_IP, SERVER_PORT))
+            self.sock.bind((SERVER_IP, SERVER_PORT))
         except Exception as e:
             print(logger.FAIL +
                   "[ERR.] Unable to bind socket: {}".format(e) + logger.ENDC)
 
     def send_message(self):
-        msg = ""
-        msg_prefix = "MXTP"
+        if self.START:
+            print(logger.OKGREEN + "[INFO] Started broadcasting messages")
+            self.START = False
 
         if PUB_JOINTS:
-            msg_prefix = msg_prefix + "20"
+            msg = ""
+            msg_prefix = "MXTP20"
+            msg = msg_prefix + self.frames[self.ID].STR_POSITION
             try:
-                self.sock.sendto(msg.encode('utf-8'),
-                                 (SERVER_IP, SERVER_PORT))
+                self.sock.sendto(msg.encode('utf-8'), (SERVER_IP, SERVER_PORT))
+
             except Exception as e:
-                print(logger.FAIL + "[ERR.] Unable to stream data")
+                print(
+                    logger.FAIL + "[ERR.] Unable to stream data: {}".format(e) + logger.ENDC)
 
         if PUB_CoM:
-            msg_prefix = msg_prefix + "24"
+            msg = ""
+            msg_prefix = "MXTP24"
+            msg = msg_prefix + self.frames[self.ID].STR_CENTRE_OF_MASS
             try:
                 self.sock.sendto(msg.encode('utf-8'),
                                  (SERVER_IP, SERVER_PORT))
@@ -50,12 +63,18 @@ class mvnx_streamer():
                 print(logger.FAIL + "[ERR.] Unable to stream data")
 
         if PUB_QUAT:
-            msg_prefix = msg_prefix + "02"
+            msg = ""
+            msg_prefix = "MXTP02"
+            msg = msg_prefix + self.frames[self.ID].STR_ORIENTATION
             try:
                 self.sock.sendto(msg.encode('utf-8'),
                                  (SERVER_IP, SERVER_PORT))
             except Exception as e:
                 print(logger.FAIL + "[ERR.] Unable to stream data")
+
+        sleep(1)  # Sending messages per second
+
+        self.ID += 1
 
     def stream_udp(self):
         """Stream Xsens data parsed from recorded MVNX files using UDP Protocol 
