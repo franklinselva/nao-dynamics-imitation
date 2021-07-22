@@ -19,7 +19,7 @@
   ~
   
   On this research, motion retargetting or the motion imitation based on dynamic balance and support with dynamic filtering 
-  is implemented on humanoid robot \textit{NAO v5}, from Aldebaran Robotics. The imitation will be carried out 
+  is implemented on humanoid robot \textit{NAO v5 H25}, from Aldebaran Robotics. The imitation will be carried out 
   online using marker-based motion capture suit from \textit{Xsens}, specifically \textit{Xsens MVN Analyze} system.
   
   ~
@@ -56,13 +56,16 @@ for always giving me the strength to keep forward despite all the difficulties.
  
 \section*{Notations}
     \begin{tabular}{p{3cm}p{10cm}}
-        $x$ & Pose State Vector \\
+        $x_i$ & Pose State $i$ \\
+        $X$ & Pose State Vector \\
         $q$ & Joint State Vector \\
+        $\dot{q}$ & Joint Velocity Vector \\
+        $\ddot{q}$ & Joint Acceleration Vector \\
+        $A_H$ & Parameter $A$ of Human Actor \\
+        $A_R$ & Parameter $A$ of Humanoid Robot \\
         $r_i$ & position vector of body $i$ \\
         $m_i$ & mass of body $i$ \\
         $M$ & Total mass of the robot \\
-        $\dot{q}$ & Joint Velocity Vector \\
-        $\ddot{q}$ & Joint Acceleration Vector \\
         $\xi$ & generalized velocity vector \\
         $\tau$ & Generalized torque \\
         $M(\ddot{q})$ & Generalized Inertial Matrix of Robot \\
@@ -70,9 +73,9 @@ for always giving me the strength to keep forward despite all the difficulties.
         $I_i$ & Inertia matrix of body $i$ \\
         $\mathbf{g}$ & Gravity vector \\
          & \\
-        $P_{CoM}$ & Position of CoM of the robot \\
+        $P_{CoM}$ or $X_{CoM}$ & Position of CoM of the robot \\
         $P_{CoM_i}$ & Position of CoM of body $i$ \\
-        $P_{ZMP}$ & Position of ZMP \\
+        $P_{ZMP}$ or $X_{ZMP}$ & Position of ZMP \\
 
         & \\
 
@@ -80,9 +83,8 @@ for always giving me the strength to keep forward despite all the difficulties.
         $\mathcal{R}_i$ & Local coordinate system of body $i$ \\
         
         & \\
-        
-
-
+        $\kappa$ & Normalization matrix or vectors in constraints \\
+        $Q$ & Weighing matrix in QP \\
 
     \end{tabular}
 
@@ -119,22 +121,23 @@ UDP & User Datagram Protocol \\
 
 
 \include{introduction.tex}
-\newpage
+\leavevmode\thispagestyle{empty}\newpage
+
 
 \include{state_of_the_art.tex}
-\newpage
+\leavevmode\thispagestyle{empty}\newpage
 
 \include{dynamcis_based_imitation.tex}
-\newpage
+\leavevmode\thispagestyle{empty}\newpage
 
 \include{task_specification.tex}
-\newpage
+\leavevmode\thispagestyle{empty}\newpage
 
 \include{experimental_setup.tex}
-\newpage
+\leavevmode\thispagestyle{empty}\newpage
 
 \include{implementation.tex}
-\newpage
+\leavevmode\thispagestyle{empty}\newpage
 
 \include{conclusion.tex}
  

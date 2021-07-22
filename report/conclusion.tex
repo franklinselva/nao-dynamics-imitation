@@ -1,2 +1,26 @@
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
+
+
+Humanoid robots are redundant open serial chains not fixed to their environment with a few 
+dozen DOF. In order to cope with this complexity, the approach of imitation uses captured 
+human motion as the basis for motion generation. This approach takes much of the burden of 
+motion prediction away from the robot.
+
+Due to the kinematic and dynamic differences between human beings and humanoid robots, motion 
+transfer is not a straightforward matter. Besides taking into account the physical limitations
+ of the robot, issues such as kinematic singularities, self-collision and balance must be 
+ addressed. Moreover, for real-time imitation, time constraints must be enforced.
+
+
+In this research, whole-body motion imitation of human motion by the humanoid robot NAO 
+using hierrachical quadratic programming was implemented with five tasks: tracking 
+end-effectors, keeping static balance, avoiding joint limits, posture control and tracking human joint values. 
+
+A method to scale the human motion to the robot’s dimensions one body segment at a time was introduced. 
+The scaled end-effector positions in Cartesian space were tracked while keeping static balance for single 
+support on either foot, double support and transition between supports. The joint limits were avoided 
+by a combination of a clamping loop and a task which minimizes the distance from the average joint value. 
+The joint values were kept as close as possible to the performer’s whenever that didn’t affect the higher 
+priority tasks to imitate the manner as well as possible. More information and discussion will be added on the 
+final version of the report.
