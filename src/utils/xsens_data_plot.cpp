@@ -442,6 +442,7 @@ void visualize_xsens_data(int fd, int argc, char *argv[])
             {
                 //TODO
                 printf("other type\n");
+                std::cout << "The received message is: " << header.ID_String << std::endl;
             }
             //break;
         }

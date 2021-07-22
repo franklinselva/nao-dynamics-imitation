@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
         /// 4 bytes floating point rotation around segment z�axis. ///
         /// *******************************************************///
 
-        if (init_ID == "MXTP20" || buffer == "MXTP20")
+        if (init_ID == "MXTP20" || init_buffer == "MXTP20")
         {
             std::cout << "\033[1;34m[INFO] Started receiving data from ID: \033[0m" << init_ID << std::endl;
 
@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
         /// ********************************************************************///
         // std::cout << "INIT ID: " << init_ID << std::endl;
 
-        if (init_ID == "MXTP02" && !first || buffer == "MXTP02")
+        if (init_ID == "MXTP02" && !first || init_buffer == "MXTP02")
         {
             std::cout << "\033[1;34m[INFO] Started receiving data from ID: \033[0m" << init_ID << std::endl;
 
