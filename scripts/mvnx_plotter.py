@@ -45,9 +45,9 @@ class mvnx_plotter():
         x, y, z = position[:, (ID-1) + 0], position[:,
                                                     (ID-1) + 1], position[:, (ID - 1) + 2]
 
-        ax.plot(x, label='Q_x')
-        ax.plot(y, label='Q_y')
-        ax.plot(z, label='Q_z')
+        ax.plot(x, label='P_x')
+        ax.plot(y, label='P_y')
+        ax.plot(z, label='P_z')
         ax.legend()
         plt.show()
 
@@ -96,4 +96,5 @@ if __name__ == "__main__":
         ID = int(input("> "))
 
         if ID != 0:
-            plotter.plot_joint(ID)
+            # plotter.plot_joint(ID)
+            plotter.plot_com()
