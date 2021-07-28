@@ -32,6 +32,37 @@ class joint:
     CONNECTOR2 = ""
 
 
+class SEGMENT_ID:
+    """Used as enumeration and segment ID for broadcasting message with SOCKET
+    """
+    
+    PELVIS = (0, "Pelvis")
+    L5 = (1, "L5")
+    L3 = (2, "L3")
+    T12 = (3, "T12")
+    T8 = (4, "T8")
+    NECK = (5, "Neck")
+    HEAD = (6, "Head")
+    RIGHT_SHOULDER = (7, "Right Shoulder")
+    RIGHT_UPPER_ARM = (8, "Right Upper Arm")
+    RIGHT_FOREARM = (9, "Right Forearm")
+    RIGHT_HAND = (10, "Right Hand")
+    
+    LEFT_SHOULDER = (11, "Left Shoulder")
+    LEFT_UPPER_HAND = (12, "Left Upper Arm")
+    LEFT_FOREARM = (13, "Left Forearm")
+    LEFT_HAND = (14, "Left Hand")
+    
+    RIGHT_UPPER_LEG = (15, "Right Upper Leg")
+    RIGHT_LOWER_LEG = (16, "Right Lower Leg")
+    RIGHT_FOOT = (17, "Right Foot")
+    RIGHT_TOE = (18, "Right Toe")
+    
+    LEGT_UPPER_LEG = (19, "Left Upper Leg")
+    LEFT_LOWER_LEG = (20, "Left Lower Leg")
+    LEFT_FOOT = (21, "Left Foot")
+    LEFT_TOE = (22, "Left Toe")
+    
 class FRAME_ID:
     """Used as enumeration for the frame ID. Lists the available information for a given frame at 1 second.
     """
@@ -89,3 +120,13 @@ def print_joint(joint):
           "Joint Connector 1: \t{}".format(joint.CONNECTOR1) + logger.ENDC)
     print(logger.OKCYAN +
           "Joint Connector 2: \t{}".format(joint.CONNECTOR2) + logger.ENDC)
+
+import struct
+def bytes_conversion_po(position, orientation, segment_id):
+    data = struct.pack('>f', position[segment_id][0]) + struct.pack('>f', position[segment_id][1]) + struct.pack('>f', position[segment_id][2]) + \
+        struct.pack('>f', orientation[segment_id][0]) + struct.pack('>f', orientation[segment_id][1]) + struct.pack('>f', orientation[segment_id][2]) + struct.pack('>f', orientation[segment_id][3])
+    return data
+
+def bytes_conversion_com(centre_of_mass):
+    data = struct.pack('>f', centre_of_mass[0][0]) + struct.pack('>f', centre_of_mass[0][1]) + struct.pack('>f', centre_of_mass[0][2]) 
+    return data

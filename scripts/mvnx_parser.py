@@ -9,7 +9,7 @@ from utils import joint as joint_holder
 from utils import segment as segment_holder
 from utils import frame as frame_holder
 
-dirpath = os.path.abspath("../")
+dirpath = os.path.abspath("./")
 
 
 class MVNX:
