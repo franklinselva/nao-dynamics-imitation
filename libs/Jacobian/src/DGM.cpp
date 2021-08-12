@@ -50,8 +50,6 @@ Vector3d NAO::GetP_LHand(std::vector<float> &q)
 
 	Vector3d P_LHand;
 
-	
-
     float theta2 = q[2];
     float theta3 = q[3];
     float theta4 = q[4];
@@ -290,26 +288,3 @@ Vector3d NAO::GetXYZ_CoM(std::vector<float> &q)
 //    return XYZ_CoM;
 //}
 //
-
-Eigen::MatrixXd RotationEuler(float roll, float pitch, float yaw)
-{
-    Eigen::MatrixXd Rx(3,3), Ry(3,3), Rz(3,3), R(3,3);
-
-    Rx << 1, 0, 0,
-      0, cos(roll), -sin(roll),
-      0, sin(roll), cos(roll);
-
-    Ry << cos(pitch), 0, sin(pitch),
-      0, 1, 0,
-      -sin(pitch), 0, cos(pitch);
-
-    Rz << cos(yaw), -sin(yaw), 0,
-      sin(yaw), cos(yaw), 0,
-      0, 0, 1;
-
-    R = Rz*Ry;
-    R = R*Rx;
-
-    return R;
-}
-

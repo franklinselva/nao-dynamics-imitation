@@ -7,7 +7,10 @@ find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 include_directories(include)
 
 FILE(GLOB _include include/Jacobian.h)
-FILE(GLOB _src src/DGM.cpp)
+FILE(GLOB _src src/DGM_rectified2.cpp
+                src/DKM_rectified2.cpp
+                src/DGM_wrt_RF.cpp
+                src/DKM_wrt_RF.cpp)
 
 add_library(JACOBIAN STATIC ${_src} ${_include})
 

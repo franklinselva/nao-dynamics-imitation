@@ -42,18 +42,6 @@ int main(int argc, char *argv[])
 
     ///*********************INITIALISATION ROBOT**************************///
 
-    std::cout << "Prepare yourself" << std::endl;
-    std::cout << "...5..." << std::endl;
-    sleep(1);
-    std::cout << "...4..." << std::endl;
-    sleep(1);
-    std::cout << "...3..." << std::endl;
-    sleep(1);
-    std::cout << "...2..." << std::endl;
-    sleep(1);
-    std::cout << "...1..." << std::endl;
-    sleep(1); /// Let some time for operator preparation.
-
     /// Read the arguments
     std::string VREP_IP, ROBOT_IP, XSENS_IP;
     int VREP_PORT, ROBOT_PORT, XSENS_PORT, mode;

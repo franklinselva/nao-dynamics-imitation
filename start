@@ -17,7 +17,7 @@ echo "Loaded Dynamic Models";
 # echo "Started Naoqi framework and server for simulated robot";
 echo "*************************"
 
-./build-pepper-config/sdk/bin/nao_dynamics_imitation_sim 0.0.0.0 9763 127.0.0.1 19999 127.0.0.1 9669 0.3 2
+./build-pepper-config/sdk/bin/nao_dynamics_imitation_sim 0.0.0.0 9763 127.0.0.1 19999 127.0.0.1 9559 0.3 2
 
 elif [ "$1" = "REAL" ]
 then
@@ -36,6 +36,11 @@ echo "STARTING XSENS DATA FLOW AND CONNECTION TEST"
 export DYLD_LIBRARY_PATH=$(pwd)/build-pepper-config/sdk/lib
 
 ./build-pepper-config/sdk/bin/xsens_data_plot 127.0.0.1
+
+elif [ "$1" = "STREAM" ]
+then
+echo "STARTING XSENS DATA FLOW - MVNX BROADCASTER"
+python scripts/mvnx_streamer.py 
 
 else
 echo "Provide Argument (SIMULATION/REAL/DATA)!"

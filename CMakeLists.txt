@@ -98,7 +98,12 @@ INSTALL(DIRECTORY ${QPOASES_INCLUDE_DIRS}/include/qpOASES
 
 set(JACOBIAN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libs/Jacobian)
 FILE(GLOB JACOBIAN_include ${JACOBIAN_PATH}/include/Jacobian.h)
-FILE(GLOB JACOBIAN_src ${JACOBIAN_PATH}/src/*.cpp)
+FILE(GLOB JACOBIAN_src ${JACOBIAN_PATH}/src/DGM_rectified2.cpp
+						${JACOBIAN_PATH}/src/DGM.cpp
+						${JACOBIAN_PATH}/src/DGM_wrt_RF.cpp
+						${JACOBIAN_PATH}/src/DKM_rectified2.cpp
+						${JACOBIAN_PATH}/src/DKM.cpp
+						${JACOBIAN_PATH}/src/DKM_wrt_RF.cpp)
 
 set(JACOBIAN_INCLUDE_DIRS ${JACOBIAN_PATH}/include)
 

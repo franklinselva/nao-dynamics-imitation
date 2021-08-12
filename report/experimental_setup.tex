@@ -157,6 +157,7 @@ header string from above is the respective sensor data retrieved from the Xsens 
 
 \begin{table}[h!]
     \label{tab: xsens-message}
+    \centering
     \begin{tabular}{|c|l|}
         \hline
         \textbf{\textit{xy}} & \textbf{Description} \\
@@ -168,8 +169,67 @@ header string from above is the respective sensor data retrieved from the Xsens 
         24 & \textbf{Centre of Mass}. Absolute position of centre of mass \\
         \hline
     \end{tabular}
-    \caption{Essential xsens message type for motion retargetting}
+    \caption{Essential XSENS message type for Motion Retargetting}
 \end{table}
+
+\subsubsection{Data string}
+
+Once the header string is formed, the data string which collects the information of the message that needs to be published, processed and concatenated with the header string. These strings collectively should 
+mostly be less than 1500 bytes and are sent through UDP Networks. The list of information that need to be processed are listed in order below.
+
+\begin{itemize}
+    \item \textbf{Sample Counter - }The sample counter is a 32-bit unsigned integer value which is incremented by one, each time a new tracking data is processed.
+    \item \textbf{Datagram Counter - }The size of the datagram is usually limited by Maximum Transmission Unit (MTU), until approx. 1500 bytes of the underlying network. If the data is split, then datagram counter helps in determining the number of data packages sent through single datagram
+    \item \textbf{No. of items -}The number of items is stored in 8-bit unsigned integer value. The number indicates the number of segments or points being tracked.
+    \item \textbf{Time Code -}The timecode represents the time data recorded by MVN Analyze in milliseconds. The timecode is stored in 32-bit unsigned integer value.
+    \item \textbf{Character ID -} Since the research is focused on single user and will always be 0
+    \item \textbf{Number of body segments -} The value contains the number of regular body segments of the character. In practice, this value is always 23.
+    \item \textbf{Reserved bytes for future use -} Any left-over bytes near the end of the datagram header are reserved for future versions of this protocol.
+    \item \textbf{Payload size -}The last 2 byte contain the size of the payload, meaning the size of the datagram without the header. This value can be ised when an unknown datagram is received to skip its contents in a reliable way.
+\end{itemize}
+
+\subsubsection{Tracker data string}
+
+The tracker message at each timestep is then formatted as presented in table \ref{tab: tracker-message-format}.
+\begin{table}[h!]
+    \label{tab: tracker-message-format}
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{\textit{Data}} & \textbf{Datargam Format} \\
+        \hline
+        \multirow{7}{*}{\textbf{Pose (02)}}
+        &4 bytes of segment ID \\
+        &4 bytes x-coordinate of segment position \\
+        &4 bytes y-coordinate of segment position \\
+        &4 bytes z-coordinate of segment position \\
+        &4 bytes x rotation of segment rotation \\
+        &4 bytes y rotation of segment rotation \\
+        &4 bytes z rotation of segment rotation \\
+        \hline 
+        \multirow{5}{*}{\textbf{Joint Angles (20)}}
+        &4 bytes point ID of parent segment connection \\
+        &4 bytes point ID of child segment connection \\
+        &4 bytes floating point rotation around segment x-axis \\
+        &4 bytes floating point rotation around segment y-axis \\
+        &4 bytes floating point rotation around segment z-axis\\
+        \hline
+        \multirow{3}{*}{\textbf{Centre of Mass (24)}}
+        &4 bytes x-coordinates of CoM position \\
+        &4 bytes y-coordinates of CoM position \\
+        &4 bytes z-coordinates of CoM position \\
+        \hline
+    \end{tabular}
+    \caption{Tracking Data Message Configuration}
+\end{table}
+
+Once each part of the datagram string is formatted, the string message is concatenated as
+
+$$\mathbf{Message = Header String + Data String + Tracker Data String}$$
+
+The message is published within 100 Mbps local network either through Ethernet or WiFi. The message parser
+and formatter has been developed in Python3 due to its ease functionalities with formatting XML files.
+
 
 \subsection{MVN Data Streamer}
 

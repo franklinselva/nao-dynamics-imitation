@@ -75,11 +75,19 @@ In Mac, the installer is not the desirable one. So, the choreographe-suite is in
 
 If there are any dynamic linker dependency errors, the additional tools listed below can come in handy.
 
+Use the below license key. Its available for all robotics users and multi-machine users.
+
+```
+654e-4564-153c-6518-2f44-7562-206e-4c60-5f47-5f45
+```
+
 # Worktree Initialization
 
 To initialize the worktree, please run the instruction from belo,
 
+```
 https://developer.softbankrobotics.com/nao6/naoqi-developer-guide/creating-application/creating-new-application-outside-choregraphe-using
+```
 
 # Build
 

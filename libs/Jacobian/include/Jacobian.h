@@ -3,10 +3,14 @@
 #ifndef JACOBIAN_H
 #define JACOBIAN_H
 
-#include <Eigen/Dense> // usr/include
-#include <Eigen/Geometry> // usr/include
+#include <Eigen/Geometry>
+#include <Eigen/Dense>
 #include <iostream>
-#include <cmath>
+#include <fstream>
+// #include <conio.h>
+#include <stdio.h>
+#include <sstream>
+#include <math.h>
 #include <vector>
 
 const float DEG2RAD = M_PI/180;
@@ -15,13 +19,11 @@ const float RAD2DEG= 180/M_PI;
 class NAO
 {
 public:
-
     ///Constructor
     NAO();
 
     ///Destructor
     ~NAO();
-
 
     /// DKM_TORSO
     Eigen::MatrixXd GetJacobianP_LHand(std::vector<float> &q);
@@ -30,7 +32,6 @@ public:
     Eigen::MatrixXd GetJacobianP_RFoot(std::vector<float> &q);
 
     Eigen::MatrixXd GetJacobianXY_CoM(std::vector<float> &q);
-
 
     /// DGM_TORSO
     Eigen::Vector3d GetP_LHand(std::vector<float> &q);
@@ -59,7 +60,6 @@ public:
 
     Eigen::MatrixXd GetJacobianXY_CoM_RF(std::vector<float> &q);
 
-
     /// RECTIFIED means with a coordinate frame always parallel to the floor. ///
     /// DGM_rectified
     Eigen::VectorXd GetP_LHand_rectified(std::vector<float> &q);
@@ -84,12 +84,8 @@ public:
     Eigen::MatrixXd GetJacobianXY_CoM_rectified(std::vector<float> &q);
     Eigen::MatrixXd GetJacobianXY_CoM_RF_rectified(std::vector<float> &q);
 
-
 private:
-
     //AL::ALMemoryProxy *m_memory;
 };
 
-
 #endif
-

@@ -10,7 +10,7 @@
 
 using namespace Eigen;
 
-Eigen::MatrixXd NAO::GetJacobianP_LHand(std::vector<float> &q)
+MatrixXd NAO::GetJacobianP_LHand(std::vector<float> &q)
 {
     /// q[2] -> LShoulderPitch
 	/// q[3] -> LShoulderRoll
