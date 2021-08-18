@@ -174,13 +174,57 @@ cannot stay at right frame and hence moved to the center of the feet. A threshol
 
 For the robot control part, the program is developed with the possiblity of extending as an application to the NAO community. The data received from 
 Xsens is processed and sent to the robot control for motion imitation. 
-% A flowchart of the program is shown on Figure \ref{fig: flowchart-robot-control}.
+A flowchart of the program is shown on Figure \ref{fig: flowchart-robot-control}.
 
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[scale=0.5]{images/flowchart-block-diagram.png}\hfill
-%     \caption{Block Diagram Representation of Imitation Program}\hfill
-%     \label{fig: flowchart-robot-control}
-% \end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{images/flowchart-robot-control.png}\hfill
+    \caption{Flowchart Representation of Imitation Program}\hfill
+    \label{fig: flowchart-robot-control}
+\end{figure}
 
-More information and discussion will be added on the final version of the report.
+Each block of the flowchart is individually explained in Chapter \ref{chapter-3} and Chapter \ref{chapter-4}. However an summary of each block is provided
+in subsections below.
+
+\subsection*{Initial Pose}
+
+The initial poses are the identity poses used when calibrating Xsens suit. In this work, only N-pose will be considered as the initial pose in both the case of calibration
+and the experimentation. Once the experimentation starts, a delay of 5 seconds will let the xsens user to pose in N-pose followed by the imitation program.
+
+\subsection*{Start Imitation}
+
+Start Imitation allows the user to define the configurations for the imitation program. An additional section for letting the user to use recorded motion or real-time 
+imitation can also be setup depending on the situation. If the imitation is online, the program will wait for the first message to be delivered by Xsens Analyze software.
+
+\subsection*{Hardware}
+
+The hardware interface lets the xsens and NAO services get started to check connectivity between services and joint data buffers. Once the data is acquired without
+any interference the actual imitation is started.
+
+\subsection*{Process data}
+
+The acquired UDP message from Xsens needs to be processed to a readable numerical format for further actions. The NAOqi proxy lets collecting data from robot joint buffers and memory 
+buffers. The real-time sensors and encoders can be acquired from ALProxy, ALMotion and ALMemory services.
+
+\subsection*{Desired Task Vectors}
+
+The desired task vectors are processed from human actor. The essential parameters like $X, \ddot{X}, P_{CoM, H}$ and $q_{H}$ are assigned to the temporary memory buffer and scaled to the size 
+of the robot. The vectors and matrices are formatted to the required dimensions of HQP solver.
+
+\subsection*{Current Task Vectors}
+
+The current task vectors are derived from robot memory buffer. The memory buffer is handled using ALMemory proxy and ALPose proxy and are formatted to the vector and matrices.
+
+\subsection*{HQP Solver}
+
+The task vectors and constraints described in section \ref{sec: HQP-imitation} will be programmed in C++ using the library \textit{QPOases}. 
+
+Several iterations might be needed for the IK to reach the final goal, even if the final goal has been scaled down. However, since this is a numerical approach, 
+it is not assured that a solution will be found. In fact, after some iterations, if the hard constraints are not reachable or compatible, the pseudo-inverse won’t 
+come to any useful results. Thus, a maximum number of iterations is set beforehand, so if the IK is taking too many iter- ations to be solved, the current goal can 
+be abandoned and new human data should be taken. It was observed that good results are usually obtained with less than 6 iterations, so a safe limit was set at 
+maxIterations = 20 \cite{louisepouble}.
+
+\section{Results}
+
+The 

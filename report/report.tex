@@ -19,7 +19,7 @@
   ~
   
   On this research, motion retargetting or the motion imitation based on dynamic balance and support with dynamic filtering 
-  is implemented on humanoid robot \textit{NAO v5 H25}, from Aldebaran Robotics. The imitation will be carried out 
+  control is implemented on humanoid robot \textit{NAO v5 H25}, from Aldebaran Robotics. The imitation will be carried out 
   online using marker-based motion capture suit from \textit{Xsens}, specifically \textit{Xsens MVN Analyze} system.
   
   ~
@@ -36,12 +36,12 @@
  
  I would first like to thank my thesis advisor Dr Sophie Sakka for her motivation and opportunity for the thesis topic.
  Her experience, knowledge and continuous advicess have allowed me to become a better researcher and have ultimately made 
- this thesis possible. I am specifically grateful to the members in \textit{Robots! Association} for their support and providing 
+ me to progress in the research problem. I am specifically grateful to the members in \textit{Robots! Association} for their support and providing 
  a very friendly environment during my thesis period. 
 
  ~
  
-I would also like to thank Dr Olivier Kermorgant and Christine Chevallereau for accepting to be members of the jury, for their 
+I would also like to thank Dr Olivier Kermorgant and Dr Christine Chevallereau for accepting to be members of the jury, for their 
 interest in my work and for their feedback on the thesis.
 
 ~
@@ -63,10 +63,10 @@ for always giving me the strength to keep forward despite all the difficulties.
         $\ddot{q}$ & Joint Acceleration Vector \\
         $A_H$ & Parameter $A$ of Human Actor \\
         $A_R$ & Parameter $A$ of Humanoid Robot \\
-        $r_i$ & position vector of body $i$ \\
-        $m_i$ & mass of body $i$ \\
+        $r_i$ & Position vector of body $i$ \\
+        $m_i$ & Mass of body $i$ \\
         $M$ & Total mass of the robot \\
-        $\xi$ & generalized velocity vector \\
+        $\xi$ & Generalized velocity vector \\
         $\tau$ & Generalized torque \\
         $M(\ddot{q})$ & Generalized Inertial Matrix of Robot \\
         $c(q, \dot{q})$ & Vector of Coriolis, Centrifugal and Gravity \\
@@ -106,15 +106,13 @@ SoT & Stack of Tasks \\
 MVNX & Xsens-specific XML format \\
 UDP & User Datagram Protocol \\
 
-
-
 \end{tabular}
 
- \newpage
- 
- \tableofcontents
+\newpage
 
- \listoffigures
+\tableofcontents
+
+\listoffigures
  
 \listoftables
  
